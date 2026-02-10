@@ -878,6 +878,16 @@
             <h3>Request Your Meeting</h3>
             <p class="form-subtitle">Complete the form below and we'll confirm your slot within 24 hours.</p>
             <form id="nrb-meeting-form" novalidate>
+              <!-- HubSpot Tracking Fields (hidden) -->
+              <input type="hidden" id="leadSource" name="lead_source" value="nrb_2026">
+              <input type="hidden" id="nrbCaptureMethod" name="nrb_capture_method" value="qr_form">
+              <input type="hidden" id="nrbIntentLevel" name="nrb_intent_level" value="medium_high">
+              <input type="hidden" id="nrbScenario" name="nrb_scenario" value="qr_self_service">
+              <input type="hidden" id="utmSource" name="utm_source" value="">
+              <input type="hidden" id="utmMedium" name="utm_medium" value="">
+              <input type="hidden" id="utmCampaign" name="utm_campaign" value="">
+              <input type="hidden" id="companyDomain" name="company_domain" value="">
+
               <div class="form-row" style="margin-bottom: 18px;">
                 <div class="form-group">
                   <label for="firstName">First Name <span class="required">*</span></label>
@@ -899,6 +909,10 @@
               <div class="form-group">
                 <label for="organization">Ministry / Organization <span class="required">*</span></label>
                 <input type="text" id="organization" name="organization" placeholder="Your Church or Ministry" required>
+              </div>
+              <div class="form-group">
+                <label for="website">Organization Website</label>
+                <input type="url" id="website" name="website" placeholder="https://www.yourministry.org">
               </div>
               <div class="form-group">
                 <label for="role">Your Role <span class="required">*</span></label>
@@ -1086,6 +1100,31 @@
       });
     });
 
+    // ===== UTM Parameter Capture =====
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var utmFields = { utm_source: 'utmSource', utm_medium: 'utmMedium', utm_campaign: 'utmCampaign' };
+      for (var key in utmFields) {
+        var val = params.get(key);
+        if (val) document.getElementById(utmFields[key]).value = val;
+      }
+      // Default UTMs for NRB QR code scans
+      if (!params.get('utm_source')) {
+        document.getElementById('utmSource').value = 'nrb2026';
+        document.getElementById('utmMedium').value = 'qr';
+        document.getElementById('utmCampaign').value = 'booth';
+      }
+    })();
+
+    // ===== Auto-extract domain from email =====
+    document.getElementById('email').addEventListener('blur', function() {
+      var email = this.value.trim();
+      if (email && email.indexOf('@') !== -1) {
+        var domain = email.split('@')[1];
+        document.getElementById('companyDomain').value = domain;
+      }
+    });
+
     // ===== Form Submission =====
     document.getElementById('nrb-meeting-form').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -1104,22 +1143,47 @@
 
       if (!isValid) return;
 
-      // Collect form data
+      // Extract domain from email
+      var emailVal = document.getElementById('email').value;
+      if (emailVal.indexOf('@') !== -1) {
+        document.getElementById('companyDomain').value = emailVal.split('@')[1];
+      }
+
+      // Collect form data with all HubSpot-ready properties
       var formData = {
+        // Contact properties
         firstName: document.getElementById('firstName').value,
         lastName: document.getElementById('lastName').value,
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
         organization: document.getElementById('organization').value,
+        website: document.getElementById('website').value,
         role: document.getElementById('role').value,
         orgSize: document.getElementById('orgSize').value,
         interest: document.getElementById('interest').value,
         meetingTime: document.getElementById('meetingTime').value,
-        notes: document.getElementById('notes').value
+        notes: document.getElementById('notes').value,
+        // NRB enrichment properties
+        lead_source: document.getElementById('leadSource').value,
+        nrb_capture_method: document.getElementById('nrbCaptureMethod').value,
+        nrb_intent_level: document.getElementById('nrbIntentLevel').value,
+        nrb_scenario: document.getElementById('nrbScenario').value,
+        company_domain: document.getElementById('companyDomain').value,
+        nrb_meeting_requested: true,
+        nrb_preferred_time: document.getElementById('meetingTime').value,
+        nrb_interest_area: document.getElementById('interest').value,
+        lifecycle_stage: 'mql',
+        // UTM tracking
+        utm_source: document.getElementById('utmSource').value,
+        utm_medium: document.getElementById('utmMedium').value,
+        utm_campaign: document.getElementById('utmCampaign').value,
+        // Timestamp
+        submission_timestamp: new Date().toISOString()
       };
 
-      // Log data (replace with actual API/HubSpot integration)
-      console.log('NRB 2026 Meeting Request:', formData);
+      // Log data (replace with actual HubSpot API POST)
+      console.log('=== NRB 2026 Meeting Request (HubSpot-Ready) ===');
+      console.log(JSON.stringify(formData, null, 2));
 
       // Show success state
       document.getElementById('qualifying-form').style.display = 'none';
