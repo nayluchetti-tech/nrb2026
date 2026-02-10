@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NRB 2026 Communication Flow | PRAY.COM Sales Playbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0B0C0D;
+      color: #FFFFFF;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .gold { color: #E3AF4A; }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(180deg, rgba(227,175,74,0.08) 0%, transparent 100%);
+      padding: 48px 24px 40px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(227,175,74,0.1);
+      border: 1px solid rgba(227,175,74,0.25);
+      color: #E3AF4A;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .header p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.6);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* ===== NAV ===== */
+    .flow-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(11,12,13,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 24px;
+      z-index: 100;
+      overflow-x: auto;
+    }
+    .flow-nav-inner {
+      display: flex;
+      gap: 8px;
+      max-width: 1200px;
+      margin: 0 auto;
+      justify-content: center;
+    }
+    .flow-nav a {
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .flow-nav a:hover {
+      background: rgba(227,175,74,0.1);
+      border-color: rgba(227,175,74,0.3);
+      color: #E3AF4A;
+    }
+
+    /* ===== OVERVIEW ===== */
+    .overview {
+      padding: 56px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .overview h2 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 24px;
+    }
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .pipeline-step {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 24px 20px;
+      position: relative;
+    }
+    .pipeline-step::after {
+      content: '>';
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #E3AF4A;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .pipeline-step:last-child::after { display: none; }
+    .pipeline-num {
+      display: inline-flex;
+      width: 28px; height: 28px;
+      background: rgba(227,175,74,0.15);
+      color: #E3AF4A;
+      font-size: 13px;
+      font-weight: 800;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .pipeline-step h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .pipeline-step p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.5;
+    }
+
+    /* ===== SCENARIO SECTIONS ===== */
+    .scenario {
+      padding: 56px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .scenario:nth-child(even) {
+      background: rgba(255,255,255,0.01);
+    }
+    .scenario-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .scenario-number {
+      flex-shrink: 0;
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #E3AF4A 0%, #D4982E 100%);
+      color: #0B0C0D;
+      font-size: 24px;
+      font-weight: 900;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scenario-title h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .scenario-title p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+    }
+    .scenario-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-left: 12px;
+      vertical-align: middle;
+    }
+    .tag-high { background: rgba(227,175,74,0.15); color: #E3AF4A; }
+    .tag-medium { background: rgba(100,180,255,0.15); color: #64B4FF; }
+    .tag-low { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+
+    /* Three columns layout */
+    .scenario-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+    .scenario-col {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .col-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #E3AF4A;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .col-label .icon {
+      width: 24px; height: 24px;
+      background: rgba(227,175,74,0.1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .step-list { list-style: none; }
+    .step-list li {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.5;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-num {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      background: rgba(227,175,74,0.1);
+      color: #E3AF4A;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .data-list { list-style: none; }
+    .data-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 13px;
+    }
+    .data-list li:last-child { border-bottom: none; }
+    .data-label {
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .data-value {
+      color: rgba(255,255,255,0.8);
+      margin-top: 2px;
+    }
+
+    /* Communication sequence cards */
+    .comm-sequence { margin-top: 24px; }
+    .comm-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+    .comm-card:last-child { margin-bottom: 0; }
+    .comm-timing {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .timing-immediate { background: rgba(76,175,80,0.15); color: #4CAF50; }
+    .timing-same-day { background: rgba(227,175,74,0.15); color: #E3AF4A; }
+    .timing-next-day { background: rgba(100,180,255,0.15); color: #64B4FF; }
+    .timing-week { background: rgba(156,39,176,0.15); color: #CE93D8; }
+    .timing-nurture { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+    .comm-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .comm-card p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+    }
+    .comm-channel {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.05);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+      margin-right: 4px;
+    }
+
+    /* Enrichment table */
+    .enrichment-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    .enrichment-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #E3AF4A;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(227,175,74,0.2);
+    }
+    .enrichment-table td {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .enrichment-table tr:last-child td { border-bottom: none; }
+
+    /* HubSpot Properties */
+    .hs-props {
+      background: rgba(255,107,0,0.05);
+      border: 1px solid rgba(255,107,0,0.15);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+    .hs-props h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FF6B00;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hs-prop-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .hs-prop-list li {
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      color: rgba(255,107,0,0.7);
+      padding: 4px 8px;
+      background: rgba(255,107,0,0.05);
+      border-radius: 4px;
+    }
+
+    /* Decision tree */
+    .decision-tree {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 28px;
+      margin-top: 32px;
+    }
+    .decision-tree h3 {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    .decision-branches {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .branch {
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid;
+    }
+    .branch-hot {
+      background: rgba(227,175,74,0.05);
+      border-color: rgba(227,175,74,0.2);
+    }
+    .branch-warm {
+      background: rgba(100,180,255,0.05);
+      border-color: rgba(100,180,255,0.15);
+    }
+    .branch-nurture {
+      background: rgba(255,255,255,0.02);
+      border-color: rgba(255,255,255,0.08);
+    }
+    .branch h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .branch-hot h4 { color: #E3AF4A; }
+    .branch-warm h4 { color: #64B4FF; }
+    .branch-nurture h4 { color: rgba(255,255,255,0.5); }
+    .branch .criteria {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .branch ul {
+      list-style: none;
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+    }
+    .branch ul li {
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    .branch ul li::before {
+      content: '>';
+      position: absolute;
+      left: 0;
+      color: rgba(255,255,255,0.3);
+      font-weight: 700;
+    }
+
+    /* Notes callout */
+    .callout {
+      background: rgba(227,175,74,0.05);
+      border-left: 3px solid #E3AF4A;
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.6;
+    }
+    .callout strong { color: #E3AF4A; }
+
+    /* Footer */
+    .doc-footer {
+      padding: 40px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .pipeline-grid { grid-template-columns: repeat(2, 1fr); }
+      .pipeline-step::after { display: none; }
+      .scenario-columns { grid-template-columns: 1fr; }
+      .decision-branches { grid-template-columns: 1fr; }
+      .hs-prop-list { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .flow-nav-inner { justify-content: flex-start; }
+      .scenario-header { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <div class="header">
+    <span class="header-badge">Internal Sales Playbook</span>
+    <h1>NRB 2026 <span class="gold">Communication Flow</span></h1>
+    <p>Complete lead capture, enrichment, and follow-up sequences for every booth interaction scenario. Feb 17-20, Nashville.</p>
+  </div>
+
+  <!-- ===== STICKY NAV ===== -->
+  <nav class="flow-nav">
+    <div class="flow-nav-inner">
+      <a href="#overview">Overview</a>
+      <a href="#scenario-1">1: Badge Scan</a>
+      <a href="#scenario-2">2: AE Conversation</a>
+      <a href="#scenario-3">3: QR Self-Service</a>
+      <a href="#scenario-4">4: Demo Interest</a>
+      <a href="#scenario-5">5: Pre-Booked Meeting</a>
+      <a href="#enrichment">Enrichment Engine</a>
+      <a href="#decision">Decision Tree</a>
+    </div>
+  </nav>
+
+  <!-- ===== OVERVIEW: CAPTURE > ENRICH > CLASSIFY > COMMUNICATE ===== -->
+  <section class="overview" id="overview">
+    <div class="container">
+      <h2>Lead Pipeline: <span class="gold">4-Stage Process</span></h2>
+      <div class="pipeline-grid">
+        <div class="pipeline-step">
+          <span class="pipeline-num">1</span>
+          <h3>Capture</h3>
+          <p>Badge scan, QR code, business card photo, audio note, or form submission. Get into HubSpot within minutes.</p>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-num">2</span>
+          <h3>Enrich</h3>
+          <p>Automatically pull: company type, size, media presence, NRB role (exhibitor/speaker), and past PRAY.COM interactions.</p>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-num">3</span>
+          <h3>Classify</h3>
+          <p>Score the lead: HOT (pursue meeting at NRB), WARM (post-NRB meeting), or NURTURE (long-term drip sequence).</p>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-num">4</span>
+          <h3>Communicate</h3>
+          <p>Trigger the right sequence: same-day text, next-morning email, post-NRB follow-up, or nurture campaign.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       SCENARIO 1: BADGE SCAN (WALK-BY)
+       ================================================================= -->
+  <section class="scenario" id="scenario-1">
+    <div class="container">
+      <div class="scenario-header">
+        <div class="scenario-number">1</div>
+        <div class="scenario-title">
+          <h2>Badge Scan Walk-By <span class="scenario-tag tag-low">Low Intent</span></h2>
+          <p>Someone passes by the booth and we manage to scan their NRB attendee badge. No conversation.</p>
+        </div>
+      </div>
+
+      <div class="scenario-columns">
+        <!-- CAPTURE -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">1</span> Capture Method</div>
+          <ul class="step-list">
+            <li>
+              <span class="step-num">1</span>
+              <span>Booth staff scans the attendee's NRB badge QR code using the <strong>official NRB Lead Retrieval app</strong></span>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <span>Scan data lands in the NRB system (name, email, title, company, domain)</span>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <span>Internal team downloads the CSV batch from NRB system every <strong>30 minutes</strong> during booth hours</span>
+            </li>
+            <li>
+              <span class="step-num">4</span>
+              <span>CSV is bulk-uploaded to <strong>HubSpot</strong> via import, mapped to contact properties</span>
+            </li>
+          </ul>
+          <div class="callout">
+            <strong>Cadence:</strong> Assign one marketing ops person to export/import every 30 min during Day 1-2, then hourly on Day 3-4.
+          </div>
+        </div>
+
+        <!-- DATA CAPTURED -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">2</span> Data Captured</div>
+          <ul class="data-list">
+            <li><span class="data-label">From NRB Badge</span><div class="data-value">First Name, Last Name, Email, Title, Company Name, Company Domain</div></li>
+            <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_badge_scan</div></li>
+            <li><span class="data-label">Intent Level</span><div class="data-value">Low (passive walk-by, no conversation)</div></li>
+            <li><span class="data-label">HubSpot Lifecycle</span><div class="data-value">Lead</div></li>
+            <li><span class="data-label">Scan Timestamp</span><div class="data-value">Auto-captured by NRB system</div></li>
+          </ul>
+        </div>
+
+        <!-- COMMUNICATION -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">3</span> Communication Sequence</div>
+          <div class="comm-card">
+            <span class="comm-timing timing-same-day">Same Day Evening</span>
+            <h4>Email 1: "Great seeing you at NRB"</h4>
+            <p>Warm intro acknowledging they stopped by. Include a link to book a meeting for the remaining NRB days or post-event. Mention 1 key value prop (SuperFunnel or PRAY Studio).</p>
+            <span class="comm-channel">Email</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-next-day">Day +2</span>
+            <h4>Email 2: Social proof + resource</h4>
+            <p>Share a case study or partner success metric. "Ministries like [partner] saw 4.7x ROI..." with a soft CTA to book a virtual meeting.</p>
+            <span class="comm-channel">Email</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-week">Day +5</span>
+            <h4>Email 3: Post-NRB value offer</h4>
+            <p>Offer a free growth audit or platform demo. "Now that NRB's wrapped, let's talk about what's next for [Company]." Final push for a meeting.</p>
+            <span class="comm-channel">Email</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-nurture">Day +14</span>
+            <h4>Move to nurture track</h4>
+            <p>If no engagement, enroll in the general PRAY.COM content nurture sequence (monthly newsletter, product updates, ministry insights).</p>
+            <span class="comm-channel">Email Drip</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hs-props">
+        <h4>HubSpot Properties to Set</h4>
+        <ul class="hs-prop-list">
+          <li>lead_source = nrb_2026</li>
+          <li>nrb_capture_method = badge_scan</li>
+          <li>nrb_intent_level = low</li>
+          <li>nrb_scenario = walk_by_scan</li>
+          <li>nrb_conversation = false</li>
+          <li>nrb_demo_interest = false</li>
+          <li>lifecycle_stage = lead</li>
+          <li>nrb_scan_date = [timestamp]</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       SCENARIO 2: AE CONVERSATION (NO SCANNER)
+       ================================================================= -->
+  <section class="scenario" id="scenario-2">
+    <div class="container">
+      <div class="scenario-header">
+        <div class="scenario-number">2</div>
+        <div class="scenario-title">
+          <h2>AE Conversation (No Scanner) <span class="scenario-tag tag-medium">Medium Intent</span></h2>
+          <p>An AE without the NRB scan system talks to an attendee. Must capture data manually.</p>
+        </div>
+      </div>
+
+      <div class="scenario-columns">
+        <!-- CAPTURE -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">1</span> Capture Methods (Choose One)</div>
+          <ul class="step-list">
+            <li>
+              <span class="step-num">A</span>
+              <span><strong>Option A: Badge Photo</strong> &mdash; AE photographs the attendee's NRB badge QR code with their personal phone</span>
+            </li>
+            <li>
+              <span class="step-num">></span>
+              <span>AE sends the photo to <strong>nrb-leads@pray.com</strong> with subject line "Badge: [Name]"</span>
+            </li>
+            <li>
+              <span class="step-num">></span>
+              <span>Marketing scans the QR code from the photo and manually enters the data into HubSpot</span>
+            </li>
+            <li>
+              <span class="step-num">B</span>
+              <span><strong>Option B: Business Card</strong> &mdash; AE photographs the business card</span>
+            </li>
+            <li>
+              <span class="step-num">></span>
+              <span>AE sends the photo to <strong>nrb-leads@pray.com</strong> with subject line "Card: [Name]"</span>
+            </li>
+            <li>
+              <span class="step-num">></span>
+              <span>Marketing manually transcribes card info into HubSpot contact</span>
+            </li>
+          </ul>
+          <div class="callout">
+            <strong>AE Protocol:</strong> Always include a 1-sentence note in the email body describing the conversation topic. E.g., "Interested in SuperFunnel, runs a $3M ministry, wants demo."
+          </div>
+        </div>
+
+        <!-- DATA CAPTURED -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">2</span> Data Captured</div>
+          <ul class="data-list">
+            <li><span class="data-label">From Badge/Card</span><div class="data-value">Name, Email, Title, Company, Domain, Phone (if card)</div></li>
+            <li><span class="data-label">From AE Note</span><div class="data-value">Conversation topic, interest area, budget signals, fit indicators</div></li>
+            <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_ae_conversation</div></li>
+            <li><span class="data-label">Intent Level</span><div class="data-value">Medium (engaged in conversation)</div></li>
+            <li><span class="data-label">HubSpot Lifecycle</span><div class="data-value">MQL (Marketing Qualified Lead)</div></li>
+            <li><span class="data-label">AE Owner</span><div class="data-value">[AE Name who captured]</div></li>
+          </ul>
+        </div>
+
+        <!-- COMMUNICATION -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">3</span> Communication Sequence</div>
+          <div class="comm-card">
+            <span class="comm-timing timing-same-day">Same Day (Within 2 Hours)</span>
+            <h4>Email 1: Personal follow-up from AE</h4>
+            <p>Personalized email from the AE who spoke with them. Reference the specific conversation. "Great chatting about [topic] at our booth today. Here's what I mentioned about [product]..." Include calendar link.</p>
+            <span class="comm-channel">Email (AE personal)</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-same-day">Same Day Evening</span>
+            <h4>SMS: Quick reminder</h4>
+            <p>"Hi [Name], it's [AE] from PRAY.COM. Loved our conversation today! If you'd like to continue tomorrow at the booth, here's a link to grab a slot: [calendar link]"</p>
+            <span class="comm-channel">SMS</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-next-day">Day +1</span>
+            <h4>Email 2: Tailored resource</h4>
+            <p>Send a relevant resource based on the conversation: SuperFunnel ROI calculator, PRAY Studio demo video, or Reach distribution overview.</p>
+            <span class="comm-channel">Email</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-week">Day +4 (Post-NRB)</span>
+            <h4>Email 3: Meeting request</h4>
+            <p>"Now that NRB is behind us, I'd love to pick up where we left off. Here are a few times next week..." Direct calendar link.</p>
+            <span class="comm-channel">Email (AE personal)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hs-props">
+        <h4>HubSpot Properties to Set</h4>
+        <ul class="hs-prop-list">
+          <li>lead_source = nrb_2026</li>
+          <li>nrb_capture_method = ae_manual</li>
+          <li>nrb_intent_level = medium</li>
+          <li>nrb_scenario = ae_conversation</li>
+          <li>nrb_conversation = true</li>
+          <li>nrb_conversation_notes = [text]</li>
+          <li>nrb_ae_owner = [AE name]</li>
+          <li>lifecycle_stage = mql</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       SCENARIO 3: QR SELF-SERVICE (BANNER SCAN)
+       ================================================================= -->
+  <section class="scenario" id="scenario-3">
+    <div class="container">
+      <div class="scenario-header">
+        <div class="scenario-number">3</div>
+        <div class="scenario-title">
+          <h2>QR Self-Service Scan <span class="scenario-tag tag-medium">Medium Intent</span></h2>
+          <p>The attendee proactively scans the PRAY QR code on banners to book a meeting immediately or for a later date.</p>
+        </div>
+      </div>
+
+      <div class="scenario-columns">
+        <!-- CAPTURE -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">1</span> Capture Method</div>
+          <ul class="step-list">
+            <li>
+              <span class="step-num">1</span>
+              <span>Attendee scans the <strong>PRAY.COM QR code</strong> on booth banners, table displays, or handout materials</span>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <span>QR redirects to the <strong>NRB Landing Page</strong> (index.html) with the booking form</span>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <span>Attendee fills in: name, email, phone, organization, role, budget, interest, preferred time</span>
+            </li>
+            <li>
+              <span class="step-num">4</span>
+              <span>Form is <strong>natively integrated with HubSpot</strong> &mdash; contact is created/updated instantly with all properties</span>
+            </li>
+            <li>
+              <span class="step-num">5</span>
+              <span>If they choose "Same Day" or "Next Day," a <strong>Calendly link</strong> is presented to confirm the exact time slot</span>
+            </li>
+          </ul>
+          <div class="callout">
+            <strong>QR Placement:</strong> Main booth entrance banner, demo station table tents, handout one-pagers, AE business cards, and the booth backdrop wall. Every surface = a capture point.
+          </div>
+        </div>
+
+        <!-- DATA CAPTURED -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">2</span> Data Captured</div>
+          <ul class="data-list">
+            <li><span class="data-label">From Form</span><div class="data-value">First Name, Last Name, Email, Phone, Organization, Role, Budget Range, Interest Area, Preferred Meeting Time, Notes</div></li>
+            <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_qr_scan</div></li>
+            <li><span class="data-label">Intent Level</span><div class="data-value">Medium-High (proactive action)</div></li>
+            <li><span class="data-label">HubSpot Lifecycle</span><div class="data-value">MQL</div></li>
+            <li><span class="data-label">UTM Params</span><div class="data-value">utm_source=nrb2026&utm_medium=qr&utm_campaign=booth</div></li>
+          </ul>
+        </div>
+
+        <!-- COMMUNICATION -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">3</span> Communication Sequence</div>
+          <div class="comm-card">
+            <span class="comm-timing timing-immediate">Immediate (Auto)</span>
+            <h4>Email 1: Confirmation + calendar link</h4>
+            <p>Automated HubSpot email confirming their submission. "Your meeting request is confirmed! Here's your calendar link to pick the exact slot: [Calendly]. See you at Booth #401."</p>
+            <span class="comm-channel">Email (Automated)</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-immediate">Immediate (Auto)</span>
+            <h4>SMS: Confirmation text</h4>
+            <p>"Thanks for booking with PRAY.COM at NRB! Booth #401. Your calendar link: [URL]. Reply HELP if you need directions."</p>
+            <span class="comm-channel">SMS (Automated)</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-same-day">1 Hour Before Meeting</span>
+            <h4>SMS: Reminder</h4>
+            <p>"Reminder: Your PRAY.COM meeting is in 1 hour at Booth #401. Ask for [AE Name]. See you there!"</p>
+            <span class="comm-channel">SMS (Automated)</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-next-day">Post-Meeting or Post-NRB</span>
+            <h4>Email 2: Follow-up based on outcome</h4>
+            <p>If meeting happened: personalized follow-up from AE. If no-show: "Sorry we missed you! Let's reschedule..." with virtual meeting link.</p>
+            <span class="comm-channel">Email (AE personal)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hs-props">
+        <h4>HubSpot Properties to Set</h4>
+        <ul class="hs-prop-list">
+          <li>lead_source = nrb_2026</li>
+          <li>nrb_capture_method = qr_form</li>
+          <li>nrb_intent_level = medium_high</li>
+          <li>nrb_scenario = qr_self_service</li>
+          <li>nrb_meeting_requested = true</li>
+          <li>nrb_preferred_time = [value]</li>
+          <li>nrb_interest_area = [value]</li>
+          <li>lifecycle_stage = mql</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       SCENARIO 4: MEANINGFUL CONVERSATION + DEMO INTEREST
+       ================================================================= -->
+  <section class="scenario" id="scenario-4">
+    <div class="container">
+      <div class="scenario-header">
+        <div class="scenario-number">4</div>
+        <div class="scenario-title">
+          <h2>Meaningful Conversation + Demo Interest <span class="scenario-tag tag-high">High Intent</span></h2>
+          <p>Deep conversation with booth staff, expressed interest in a demo. Highest-value interaction.</p>
+        </div>
+      </div>
+
+      <div class="scenario-columns">
+        <!-- CAPTURE -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">1</span> Capture Methods (Multiple)</div>
+          <ul class="step-list">
+            <li>
+              <span class="step-num">A</span>
+              <span><strong>Primary: Audio Capture Tool</strong> &mdash; After the conversation, AE opens <a href="booth-audio-capture.html" style="color:#E3AF4A;">booth-audio-capture.html</a> and records a voice note with the person's name, company, and conversation details</span>
+            </li>
+            <li>
+              <span class="step-num">></span>
+              <span>The audio tool transcribes and structures the data, then pushes it to HubSpot via API</span>
+            </li>
+            <li>
+              <span class="step-num">B</span>
+              <span><strong>Plus: Badge/Card Capture</strong> &mdash; Also photograph the badge QR or business card and email to <strong>nrb-leads@pray.com</strong> as backup</span>
+            </li>
+            <li>
+              <span class="step-num">C</span>
+              <span><strong>Meeting Notes:</strong> AE adds post-meeting notes via the audio tool or directly in HubSpot describing how the conversation went, key objections, next steps discussed</span>
+            </li>
+          </ul>
+          <div class="callout">
+            <strong>Critical:</strong> This is our highest-value scenario. Double-capture (audio + badge/card) is mandatory. AEs must record notes within 15 minutes of the conversation ending.
+          </div>
+        </div>
+
+        <!-- DATA CAPTURED -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">2</span> Data Captured</div>
+          <ul class="data-list">
+            <li><span class="data-label">From Badge/Card</span><div class="data-value">Name, Email, Title, Company, Domain</div></li>
+            <li><span class="data-label">From Audio Note</span><div class="data-value">Conversation summary, products discussed, budget signals, pain points, competitor mentions, decision timeline</div></li>
+            <li><span class="data-label">AE Meeting Notes</span><div class="data-value">Meeting quality (1-5), next steps agreed, decision maker confirmed (Y/N), demo given (Y/N)</div></li>
+            <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_demo_conversation</div></li>
+            <li><span class="data-label">Intent Level</span><div class="data-value">High (demo interest, active discussion)</div></li>
+            <li><span class="data-label">HubSpot Lifecycle</span><div class="data-value">SQL (Sales Qualified Lead)</div></li>
+          </ul>
+        </div>
+
+        <!-- COMMUNICATION -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">3</span> Communication Sequence</div>
+          <div class="comm-card">
+            <span class="comm-timing timing-immediate">Within 30 Minutes</span>
+            <h4>Email 1: Personalized AE follow-up</h4>
+            <p>"[Name], incredible conversation today. As promised, here's [specific thing discussed]. I've attached [one-pager/case study]. Let's lock in time to continue &mdash; [calendar link]."</p>
+            <span class="comm-channel">Email (AE personal)</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-same-day">Same Day</span>
+            <h4>SMS + LinkedIn Connect</h4>
+            <p>AE sends personal SMS: "Hey [Name], [AE] from PRAY.COM. Loved our conversation! Just sent you an email with the details we discussed. Talk soon." + LinkedIn connection request.</p>
+            <span class="comm-channel">SMS</span><span class="comm-channel">LinkedIn</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-next-day">Day +1 (During NRB)</span>
+            <h4>Email 2: Schedule next meeting</h4>
+            <p>If no response, push for same-event meeting: "I have a 2PM slot open tomorrow &mdash; want to grab 20 minutes to look at the numbers together?"</p>
+            <span class="comm-channel">Email (AE personal)</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-week">Day +3 (Post-NRB)</span>
+            <h4>Email 3: Executive escalation</h4>
+            <p>If high-value prospect hasn't booked, escalate to a VP or Director-level intro. "Our VP of Partnerships [Name] wanted to reach out personally..."</p>
+            <span class="comm-channel">Email (Executive)</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-week">Day +7</span>
+            <h4>Email 4: Proposal or custom deck</h4>
+            <p>Send a tailored proposal or partnership deck based on the conversation. Include specific ROI projections relevant to their organization size and goals.</p>
+            <span class="comm-channel">Email (AE personal)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hs-props">
+        <h4>HubSpot Properties to Set</h4>
+        <ul class="hs-prop-list">
+          <li>lead_source = nrb_2026</li>
+          <li>nrb_capture_method = audio_note</li>
+          <li>nrb_intent_level = high</li>
+          <li>nrb_scenario = demo_conversation</li>
+          <li>nrb_conversation = true</li>
+          <li>nrb_demo_given = true/false</li>
+          <li>nrb_meeting_quality = [1-5]</li>
+          <li>nrb_conversation_notes = [text]</li>
+          <li>nrb_products_discussed = [list]</li>
+          <li>nrb_next_steps = [text]</li>
+          <li>nrb_ae_owner = [AE name]</li>
+          <li>lifecycle_stage = sql</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       SCENARIO 5: PRE-BOOKED MEETING
+       ================================================================= -->
+  <section class="scenario" id="scenario-5">
+    <div class="container">
+      <div class="scenario-header">
+        <div class="scenario-number">5</div>
+        <div class="scenario-title">
+          <h2>Pre-Booked Meeting <span class="scenario-tag tag-high">High Intent</span></h2>
+          <p>Attendee pre-booked a meeting before or during NRB. Track show/no-show and follow up accordingly.</p>
+        </div>
+      </div>
+
+      <div class="scenario-columns">
+        <!-- CAPTURE -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">1</span> Tracking Process</div>
+          <ul class="step-list">
+            <li>
+              <span class="step-num">1</span>
+              <span><strong>Pre-event:</strong> Contact already in HubSpot from form submission or Calendly booking with meeting time confirmed</span>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <span><strong>Day of meeting:</strong> Booth manager checks the daily meeting roster and confirms attendee arrivals</span>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <span><strong>Showed:</strong> Mark <code>nrb_meeting_status = completed</code> in HubSpot. AE records meeting notes via audio tool or direct entry.</span>
+            </li>
+            <li>
+              <span class="step-num">4</span>
+              <span><strong>No-Show:</strong> Mark <code>nrb_meeting_status = no_show</code>. Trigger no-show follow-up sequence.</span>
+            </li>
+            <li>
+              <span class="step-num">5</span>
+              <span>AE adds meeting notes: how it went, what was discussed, follow-up actions, deal potential rating (1-5)</span>
+            </li>
+          </ul>
+          <div class="callout">
+            <strong>Booth Manager Role:</strong> Print the daily meeting roster each morning. Check off arrivals in real-time. At end of day, bulk-update HubSpot statuses.
+          </div>
+        </div>
+
+        <!-- DATA CAPTURED -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">2</span> Data Tracked</div>
+          <ul class="data-list">
+            <li><span class="data-label">Meeting Status</span><div class="data-value">completed / no_show / rescheduled</div></li>
+            <li><span class="data-label">Meeting Notes</span><div class="data-value">Conversation summary, products demoed, objections, next steps</div></li>
+            <li><span class="data-label">Deal Potential</span><div class="data-value">1 (Long shot) to 5 (Ready to close)</div></li>
+            <li><span class="data-label">Follow-Up Type</span><div class="data-value">Proposal, Virtual Demo, Contract, Nurture</div></li>
+            <li><span class="data-label">Decision Timeline</span><div class="data-value">Immediate / 30 days / 90 days / Unknown</div></li>
+            <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_prebooked</div></li>
+          </ul>
+        </div>
+
+        <!-- COMMUNICATION -->
+        <div class="scenario-col">
+          <div class="col-label"><span class="icon">3</span> Communication Sequence</div>
+
+          <p style="font-size: 12px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">If Attended:</p>
+          <div class="comm-card">
+            <span class="comm-timing timing-same-day">Same Day</span>
+            <h4>Email 1: "Great meeting today"</h4>
+            <p>Personalized recap from AE. "Thanks for spending time with us today, [Name]. Here's a recap of what we discussed: [bullet points]. Next steps: [actions]." Attach one-pager or custom proposal.</p>
+            <span class="comm-channel">Email (AE)</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-week">Day +3</span>
+            <h4>Email 2: Proposal / next-step asset</h4>
+            <p>Send the tailored proposal, pricing sheet, or partnership framework based on what was discussed. Include specific ROI projections.</p>
+            <span class="comm-channel">Email (AE)</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-week">Day +7</span>
+            <h4>Email 3: Virtual follow-up meeting</h4>
+            <p>"Let's get the ball rolling. I have time [dates] to walk through the proposal together. Which works best?" Direct calendar link.</p>
+            <span class="comm-channel">Email (AE)</span><span class="comm-channel">Phone Call</span>
+          </div>
+
+          <p style="font-size: 12px; font-weight: 700; color: #e74c3c; text-transform: uppercase; letter-spacing: 0.08em; margin: 20px 0 12px;">If No-Show:</p>
+          <div class="comm-card">
+            <span class="comm-timing timing-same-day">Same Day</span>
+            <h4>SMS + Email: "We missed you!"</h4>
+            <p>"Hi [Name], we had you down for a meeting today at Booth #401 but didn't see you. No worries &mdash; things get hectic at NRB! Want to reschedule? [calendar link]"</p>
+            <span class="comm-channel">SMS</span><span class="comm-channel">Email</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-next-day">Day +1</span>
+            <h4>Email: Offer alternative</h4>
+            <p>"If the conference got too busy, we totally understand. We'd love to do a 20-minute virtual meeting instead: [calendar link]. Or stop by Booth #401 anytime &mdash; we're here all week."</p>
+            <span class="comm-channel">Email</span>
+          </div>
+          <div class="comm-card">
+            <span class="comm-timing timing-week">Post-NRB</span>
+            <h4>Email: Final post-event outreach</h4>
+            <p>If still no response, send final meeting request with added value: "I put together a custom growth analysis for [Company] based on your profile. Want to walk through it? [calendar link]"</p>
+            <span class="comm-channel">Email (AE)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hs-props">
+        <h4>HubSpot Properties to Set</h4>
+        <ul class="hs-prop-list">
+          <li>lead_source = nrb_2026</li>
+          <li>nrb_capture_method = prebooked</li>
+          <li>nrb_intent_level = high</li>
+          <li>nrb_scenario = prebooked_meeting</li>
+          <li>nrb_meeting_status = completed/no_show</li>
+          <li>nrb_meeting_notes = [text]</li>
+          <li>nrb_deal_potential = [1-5]</li>
+          <li>nrb_follow_up_type = [value]</li>
+          <li>nrb_decision_timeline = [value]</li>
+          <li>lifecycle_stage = sql</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       ENRICHMENT ENGINE
+       ================================================================= -->
+  <section class="scenario" id="enrichment">
+    <div class="container">
+      <div class="scenario-header">
+        <div class="scenario-number" style="background: linear-gradient(135deg, #64B4FF, #3A8FE0);">E</div>
+        <div class="scenario-title">
+          <h2>Enrichment Engine</h2>
+          <p>After capture, every contact is enriched with the following data points to inform classification and communication.</p>
+        </div>
+      </div>
+
+      <table class="enrichment-table">
+        <thead>
+          <tr>
+            <th>Data Point</th>
+            <th>Source</th>
+            <th>HubSpot Property</th>
+            <th>Used For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Company Type</td>
+            <td>Domain lookup + manual research</td>
+            <td><code>company_type</code></td>
+            <td>Church, Ministry, Media Company, Nonprofit, Publisher, Broadcaster</td>
+          </tr>
+          <tr>
+            <td>Organization Size</td>
+            <td>Form data + LinkedIn + website research</td>
+            <td><code>org_size_tier</code></td>
+            <td>Small (&lt;$500K), Medium ($500K-$5M), Large ($5M+)</td>
+          </tr>
+          <tr>
+            <td>Media Presence</td>
+            <td>Social media audit, podcast directories, broadcast listings</td>
+            <td><code>media_presence_score</code></td>
+            <td>Score 1-5: Does the org have existing broadcast/media distribution?</td>
+          </tr>
+          <tr>
+            <td>Previous PRAY.COM Interactions</td>
+            <td>HubSpot CRM history, email engagement, past deals</td>
+            <td><code>previous_interaction</code></td>
+            <td>None, Inbound Lead, Past Demo, Current Customer, Churned</td>
+          </tr>
+          <tr>
+            <td>NRB Role</td>
+            <td>NRB exhibitor/speaker list cross-reference</td>
+            <td><code>nrb_attendee_role</code></td>
+            <td>Attendee only, Exhibitor (will see again at their booth), Speaker (can catch at session)</td>
+          </tr>
+          <tr>
+            <td>NRB Exhibitor Booth</td>
+            <td>NRB floor plan / exhibitor directory</td>
+            <td><code>nrb_exhibitor_booth</code></td>
+            <td>If exhibitor: booth number for AE to visit them back</td>
+          </tr>
+          <tr>
+            <td>NRB Speaking Sessions</td>
+            <td>NRB conference schedule</td>
+            <td><code>nrb_speaking_sessions</code></td>
+            <td>If speaker: session titles and times (AE can attend to build rapport)</td>
+          </tr>
+          <tr>
+            <td>Decision Maker Level</td>
+            <td>Title analysis + org chart research</td>
+            <td><code>decision_maker_level</code></td>
+            <td>C-Level, VP, Director, Manager, Individual Contributor</td>
+          </tr>
+          <tr>
+            <td>Competitor Signals</td>
+            <td>Conversation notes, website analysis</td>
+            <td><code>competitor_signals</code></td>
+            <td>Currently using: Subsplash, Pushpay, Church Community Builder, Gloo, etc.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="margin-top: 24px;">
+        <strong>Enrichment Priority:</strong> For Scenario 4 (demo conversations) and Scenario 5 (pre-booked), enrich within 2 hours of capture. For Scenario 1 (badge scan) and Scenario 2 (AE conversations), enrich within same business day. For Scenario 3 (QR self-service), auto-enrich what you can from form data + domain, full enrichment within 24 hours.
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       DECISION TREE: HOT / WARM / NURTURE
+       ================================================================= -->
+  <section class="scenario" id="decision">
+    <div class="container">
+      <div class="scenario-header">
+        <div class="scenario-number" style="background: linear-gradient(135deg, #CE93D8, #9C27B0);">D</div>
+        <div class="scenario-title">
+          <h2>Lead Classification Decision Tree</h2>
+          <p>Based on capture scenario + enrichment data, every lead is classified into one of three tracks.</p>
+        </div>
+      </div>
+
+      <div class="decision-branches">
+        <!-- HOT -->
+        <div class="branch branch-hot">
+          <h4>HOT: Pursue Meeting at NRB</h4>
+          <p class="criteria">Goal: Close or advance a deal before the conference ends</p>
+          <ul>
+            <li>Scenario 4 or 5 with positive meeting quality (3+)</li>
+            <li>Decision maker (C-Level, VP, Founder)</li>
+            <li>Organization budget $1M+ or strong media presence</li>
+            <li>Expressed specific product interest or asked about pricing</li>
+            <li>Asked for a proposal or follow-up meeting</li>
+            <li>Has authority to sign or strong influence</li>
+          </ul>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(227,175,74,0.15);">
+            <p style="font-size: 11px; font-weight: 700; color: #E3AF4A; text-transform: uppercase;">Action:</p>
+            <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px;">Same-day personal follow-up from AE. Push for second meeting at NRB. AE visits their booth if exhibitor. Executive escalation if needed.</p>
+          </div>
+        </div>
+
+        <!-- WARM -->
+        <div class="branch branch-warm">
+          <h4>WARM: Post-NRB Meeting</h4>
+          <p class="criteria">Goal: Schedule a virtual meeting within 2 weeks of NRB</p>
+          <ul>
+            <li>Scenario 2, 3, or 4 with moderate engagement</li>
+            <li>Manager/Director level at a relevant organization</li>
+            <li>Budget $500K-$5M</li>
+            <li>Interested but didn't commit to next steps</li>
+            <li>Needs to "check with their team" or "discuss internally"</li>
+            <li>NRB exhibitor or speaker (can re-engage during event)</li>
+          </ul>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(100,180,255,0.15);">
+            <p style="font-size: 11px; font-weight: 700; color: #64B4FF; text-transform: uppercase;">Action:</p>
+            <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px;">Same-day email with resource. Post-NRB meeting request within 3-5 days. Send tailored content based on interest area.</p>
+          </div>
+        </div>
+
+        <!-- NURTURE -->
+        <div class="branch branch-nurture">
+          <h4>NURTURE: Long-Term Drip</h4>
+          <p class="criteria">Goal: Stay top of mind until they're ready</p>
+          <ul>
+            <li>Scenario 1 (badge scan only, no conversation)</li>
+            <li>Small org (under $500K budget)</li>
+            <li>Low decision-maker level (IC, volunteer)</li>
+            <li>No specific product interest identified</li>
+            <li>Browsing / "just looking" energy</li>
+            <li>Not the right fit today but could grow into ICP</li>
+          </ul>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <p style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase;">Action:</p>
+            <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px;">3-email NRB follow-up sequence over 2 weeks. Then enroll in general PRAY.COM monthly nurture (newsletter, product updates, webinar invites, case studies).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top: 28px;">
+        <strong>Reclassification Rule:</strong> If a NURTURE lead engages with 2+ emails (opens + clicks) within the first week, auto-upgrade to WARM and notify the AE team. If a WARM lead requests a demo or responds positively to outreach, upgrade to HOT. Classification is dynamic &mdash; review and adjust daily during NRB, weekly after.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="doc-footer">
+    <p><strong style="color: rgba(255,255,255,0.4);">PRAY.COM</strong> | NRB 2026 Sales Communication Flow | Internal Use Only</p>
+    <p style="margin-top: 4px;">Last updated: February 2026 | Questions? Contact the Marketing Ops team</p>
+  </div>
+
+</body>
+</html>
