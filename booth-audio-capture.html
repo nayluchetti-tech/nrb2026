@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PRAY.COM Booth | Audio Lead Capture</title>
+  <title>PRAY.COM Booth | Lead Capture Tool</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- HubSpot Tracking Code (replace XXXXXXX with your portal ID) -->
+  <!-- <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/XXXXXXX.js"></script> -->
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -101,6 +103,53 @@
     .ae-select option {
       background: #1a1b1e;
       color: #FFFFFF;
+    }
+
+    /* ===== CAPTURE MODE TABS ===== */
+    .capture-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .capture-tab {
+      flex: 1;
+      padding: 14px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .capture-tab:hover {
+      border-color: rgba(227,175,74,0.2);
+      background: rgba(255,255,255,0.05);
+    }
+    .capture-tab.active {
+      border-color: #E3AF4A;
+      background: rgba(227,175,74,0.08);
+      color: #E3AF4A;
+    }
+    .capture-tab svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ===== CAPTURE PANELS ===== */
+    .capture-panel {
+      display: none;
+    }
+    .capture-panel.active {
+      display: block;
     }
 
     /* ===== RECORDING AREA ===== */
@@ -211,6 +260,234 @@
       justify-content: center;
     }
 
+    /* ===== PHOTO CAPTURE AREA ===== */
+    .photo-section {
+      margin-bottom: 28px;
+    }
+    .photo-section p.section-hint {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 20px;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .photo-section p.section-hint strong { color: rgba(255,255,255,0.8); }
+
+    .photo-capture-group {
+      margin-bottom: 20px;
+    }
+    .photo-capture-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .photo-capture-label .badge-tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: #E3AF4A;
+      background: rgba(227,175,74,0.12);
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .photo-drop-zone {
+      border: 2px dashed rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .photo-drop-zone:hover {
+      border-color: rgba(227,175,74,0.3);
+      background: rgba(227,175,74,0.03);
+    }
+    .photo-drop-zone.has-photo {
+      border-style: solid;
+      border-color: rgba(227,175,74,0.2);
+      padding: 0;
+    }
+
+    .photo-drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .photo-placeholder {
+      pointer-events: none;
+    }
+    .photo-placeholder svg {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 12px;
+      opacity: 0.3;
+    }
+    .photo-placeholder p {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 4px;
+    }
+    .photo-placeholder span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .photo-preview-wrapper {
+      display: none;
+      position: relative;
+    }
+    .photo-drop-zone.has-photo .photo-placeholder {
+      display: none;
+    }
+    .photo-drop-zone.has-photo .photo-preview-wrapper {
+      display: block;
+    }
+    .photo-preview-wrapper img {
+      width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+      display: block;
+      border-radius: 12px;
+    }
+    .photo-remove-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      transition: background 0.2s;
+    }
+    .photo-remove-btn:hover {
+      background: #e74c3c;
+      border-color: #e74c3c;
+    }
+
+    .photo-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .photo-action-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .photo-action-btn:hover {
+      border-color: rgba(227,175,74,0.3);
+      color: #E3AF4A;
+      background: rgba(227,175,74,0.05);
+    }
+    .photo-action-btn input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .photo-action-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .photo-skip-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: transparent;
+      color: rgba(255,255,255,0.35);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .photo-skip-btn:hover {
+      color: rgba(255,255,255,0.6);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    /* ===== PHOTO ATTACHMENTS IN FORM ===== */
+    .attachments-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .attachment-thumb {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .attachment-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .attachment-thumb .att-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.75);
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #E3AF4A;
+      text-align: center;
+      padding: 2px 4px;
+    }
+    .attachment-none {
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      height: 72px;
+    }
+
     /* ===== TRANSCRIPT DISPLAY ===== */
     .transcript-section {
       display: none;
@@ -253,7 +530,12 @@
     .structured-card h3 {
       font-size: 16px;
       font-weight: 800;
-      margin-bottom: 16px;
+      margin-bottom: 4px;
+    }
+    .structured-card .card-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 20px;
     }
     .field-grid {
       display: grid;
@@ -476,11 +758,29 @@
       font-size: 11px;
       color: rgba(255,255,255,0.3);
     }
+    .recent-badges {
+      display: flex;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .recent-badges span {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      border-radius: 3px;
+      letter-spacing: 0.04em;
+    }
+    .rbadge-audio { background: rgba(227,175,74,0.12); color: #E3AF4A; }
+    .rbadge-card { background: rgba(100,180,255,0.12); color: #64B4FF; }
+    .rbadge-badge { background: rgba(156,39,176,0.12); color: #CE93D8; }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 600px) {
       .field-grid { grid-template-columns: 1fr; }
       .record-btn { width: 100px; height: 100px; }
+      .capture-tab { font-size: 12px; padding: 12px 8px; }
+      .photo-actions { flex-direction: column; }
     }
   </style>
 </head>
@@ -489,7 +789,7 @@
   <!-- Header -->
   <header class="app-header">
     <div class="app-logo">PRAY.COM<sub>BOOTH</sub></div>
-    <span class="app-badge">Audio Lead Capture</span>
+    <span class="app-badge">Lead Capture</span>
   </header>
 
   <main class="app-main">
@@ -498,47 +798,149 @@
       <label for="aeSelect">Your Name (AE)</label>
       <select id="aeSelect" class="ae-select">
         <option value="" disabled selected>Select your name</option>
-        <option value="ae_1">AE 1</option>
-        <option value="ae_2">AE 2</option>
-        <option value="ae_3">AE 3</option>
-        <option value="ae_4">AE 4</option>
-        <option value="ae_5">AE 5</option>
-        <option value="booth_manager">Booth Manager</option>
+        <option value="matt_potter">Matt Potter</option>
+        <option value="rick_killingsworth">Rick Killingsworth</option>
+        <option value="russ_kirkpatrick">Russ Kirkpatrick</option>
+        <option value="robby_schwartz">Robby Schwartz</option>
+        <option value="kyle_kuehn">Kyle Kuehn</option>
+        <option value="brian_davi">Brian Davi</option>
+        <option value="richard_sylvester">Richard Sylvester</option>
+        <option value="aaron_magnuson">Aaron Magnuson</option>
+        <option value="jason_rosoff">Jason Rosoff</option>
+        <option value="jamie_peplinkski">Jamie Peplinkski</option>
+        <option value="nate_roemer">Nate Roemer</option>
+        <option value="harley_hayes">Harley Hayes</option>
+        <option value="max_bard">Max Bard</option>
+        <option value="dustin_sisney">Dustin Sisney</option>
+        <option value="andi_laurent">Andi Laurent</option>
       </select>
     </div>
 
-    <!-- Recording Prompt -->
-    <div class="prompt-guide">
-      <h3>What to Say in Your Recording</h3>
-      <ul class="prompt-list">
-        <li><span class="prompt-num">1</span><span><strong>Person's name and title</strong> &mdash; "I just spoke with John Smith, he's the Senior Pastor at..."</span></li>
-        <li><span class="prompt-num">2</span><span><strong>Company/Ministry name</strong> &mdash; "...Grace Community Church..."</span></li>
-        <li><span class="prompt-num">3</span><span><strong>What you discussed</strong> &mdash; "He was very interested in SuperFunnel and asked about pricing..."</span></li>
-        <li><span class="prompt-num">4</span><span><strong>Their pain points/goals</strong> &mdash; "They're struggling with donor acquisition and want to grow their media presence..."</span></li>
-        <li><span class="prompt-num">5</span><span><strong>Next steps agreed</strong> &mdash; "He wants a follow-up demo next week. I told him I'd send the ROI calculator..."</span></li>
-        <li><span class="prompt-num">6</span><span><strong>Your gut feeling</strong> &mdash; "This is a hot lead, I'd rate it a 4 out of 5..."</span></li>
-      </ul>
-    </div>
-
-    <!-- Record Button -->
-    <div class="record-section" id="recordSection">
-      <p class="record-instruction">
-        Tap to <strong>start recording</strong>. Tap again to <strong>stop</strong>.<br>
-        Speak naturally. The AI will extract and structure the data.
-      </p>
-      <button class="record-btn" id="recordBtn" type="button">
-        <span class="mic-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" fill="#E3AF4A"/>
-            <path d="M17 12C17 14.76 14.76 17 12 17C9.24 17 7 14.76 7 12H5C5 15.53 7.61 18.43 11 18.93V22H13V18.93C16.39 18.43 19 15.53 19 12H17Z" fill="#E3AF4A"/>
-          </svg>
-        </span>
+    <!-- Capture Mode Tabs -->
+    <div class="capture-tabs">
+      <button class="capture-tab active" data-panel="audio" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" fill="currentColor"/><path d="M17 12C17 14.76 14.76 17 12 17C9.24 17 7 14.76 7 12H5C5 15.53 7.61 18.43 11 18.93V22H13V18.93C16.39 18.43 19 15.53 19 12H17Z" fill="currentColor"/></svg>
+        Audio Note
       </button>
-      <p class="record-status status-ready" id="recordStatus">Tap to Record</p>
-      <p class="record-timer" id="recordTimer">0:00</p>
+      <button class="capture-tab" data-panel="photo" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M23 19C23 20.1 22.1 21 21 21H3C1.9 21 1 20.1 1 19V8C1 6.9 1.9 6 3 6H7L9 3H15L17 6H21C22.1 6 23 6.9 23 8V19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" stroke="currentColor" stroke-width="2"/></svg>
+        Photo Capture
+      </button>
     </div>
 
-    <!-- Transcript -->
+    <!-- ====== PANEL: AUDIO ====== -->
+    <div class="capture-panel active" id="panelAudio">
+      <!-- Recording Prompt -->
+      <div class="prompt-guide">
+        <h3>What to Say in Your Recording</h3>
+        <ul class="prompt-list">
+          <li><span class="prompt-num">1</span><span><strong>Person's name and title</strong> &mdash; "I just spoke with John Smith, he's the Senior Pastor at..."</span></li>
+          <li><span class="prompt-num">2</span><span><strong>Company/Ministry name</strong> &mdash; "...Grace Community Church..."</span></li>
+          <li><span class="prompt-num">3</span><span><strong>What you discussed</strong> &mdash; "He was very interested in SuperFunnel and asked about pricing..."</span></li>
+          <li><span class="prompt-num">4</span><span><strong>Their pain points/goals</strong> &mdash; "They're struggling with donor acquisition and want to grow their media presence..."</span></li>
+          <li><span class="prompt-num">5</span><span><strong>Next steps agreed</strong> &mdash; "He wants a follow-up demo next week. I told him I'd send the ROI calculator..."</span></li>
+          <li><span class="prompt-num">6</span><span><strong>Your gut feeling</strong> &mdash; "This is a hot lead, I'd rate it a 4 out of 5..."</span></li>
+        </ul>
+      </div>
+
+      <!-- Record Button -->
+      <div class="record-section" id="recordSection">
+        <p class="record-instruction">
+          Tap to <strong>start recording</strong>. Tap again to <strong>stop</strong>.<br>
+          Speak naturally. The AI will extract and structure the data.
+        </p>
+        <button class="record-btn" id="recordBtn" type="button">
+          <span class="mic-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" fill="#E3AF4A"/>
+              <path d="M17 12C17 14.76 14.76 17 12 17C9.24 17 7 14.76 7 12H5C5 15.53 7.61 18.43 11 18.93V22H13V18.93C16.39 18.43 19 15.53 19 12H17Z" fill="#E3AF4A"/>
+            </svg>
+          </span>
+        </button>
+        <p class="record-status status-ready" id="recordStatus">Tap to Record</p>
+        <p class="record-timer" id="recordTimer">0:00</p>
+      </div>
+
+      <!-- Also attach photos after recording -->
+      <div class="prompt-guide" style="margin-top: 4px;">
+        <h3>Also Capture Their Badge or Card</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 12px;">After recording your audio note, you can also attach a photo of their business card or NRB badge for backup data.</p>
+        <div class="photo-actions" id="audioPhotoActions">
+          <button class="photo-action-btn" type="button">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M2 7H22M8 3V7M16 3V7" stroke="currentColor" stroke-width="2"/><text x="12" y="14" text-anchor="middle" fill="currentColor" font-size="5" font-weight="700">CARD</text></svg>
+            Business Card
+            <input type="file" accept="image/*" capture="environment" id="audioCardInput">
+          </button>
+          <button class="photo-action-btn" type="button">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="18" height="20" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 6H17M7 10H17M7 14H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="14" y="14" width="5" height="5" rx="1" fill="currentColor" opacity="0.3"/></svg>
+            NRB Badge
+            <input type="file" accept="image/*" capture="environment" id="audioBadgeInput">
+          </button>
+        </div>
+        <div id="audioPhotoThumbs" class="attachments-bar" style="margin-top: 12px;"></div>
+      </div>
+    </div>
+
+    <!-- ====== PANEL: PHOTO ====== -->
+    <div class="capture-panel" id="panelPhoto">
+      <div class="photo-section">
+        <p class="section-hint">
+          <strong>Snap a photo</strong> of their business card or NRB badge.<br>
+          You can capture both &mdash; card for contact details, badge for NRB data.
+        </p>
+
+        <!-- Business Card Photo -->
+        <div class="photo-capture-group">
+          <div class="photo-capture-label">
+            Business Card
+            <span class="badge-tag">Contact Info</span>
+          </div>
+          <div class="photo-drop-zone" id="cardDropZone">
+            <input type="file" accept="image/*" capture="environment" id="cardFileInput">
+            <div class="photo-placeholder">
+              <svg viewBox="0 0 48 48" fill="none"><rect x="4" y="10" width="40" height="28" rx="4" stroke="white" stroke-width="2.5"/><path d="M4 18H44" stroke="white" stroke-width="2.5"/><path d="M14 26H28" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M14 32H22" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+              <p>Tap to photograph business card</p>
+              <span>Camera will open automatically on mobile</span>
+            </div>
+            <div class="photo-preview-wrapper" id="cardPreview">
+              <img id="cardPreviewImg" src="" alt="Business card photo">
+              <button class="photo-remove-btn" id="cardRemoveBtn" type="button">&times;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NRB Badge Photo -->
+        <div class="photo-capture-group">
+          <div class="photo-capture-label">
+            NRB Attendee Badge
+            <span class="badge-tag">QR + Name</span>
+          </div>
+          <div class="photo-drop-zone" id="badgeDropZone">
+            <input type="file" accept="image/*" capture="environment" id="badgeFileInput">
+            <div class="photo-placeholder">
+              <svg viewBox="0 0 48 48" fill="none"><rect x="10" y="4" width="28" height="40" rx="4" stroke="white" stroke-width="2.5"/><rect x="16" y="12" width="16" height="16" rx="2" stroke="white" stroke-width="2"/><path d="M20 16H28M20 20H28M20 24H24" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M18 34H30" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+              <p>Tap to photograph NRB badge</p>
+              <span>Capture the QR code side for best results</span>
+            </div>
+            <div class="photo-preview-wrapper" id="badgePreview">
+              <img id="badgePreviewImg" src="" alt="NRB badge photo">
+              <button class="photo-remove-btn" id="badgeRemoveBtn" type="button">&times;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Notes for Photo-Only Capture -->
+        <div class="photo-capture-group">
+          <div class="photo-capture-label">Quick Notes (Optional)</div>
+          <textarea id="photoQuickNotes" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 16px; font-size: 14px; color: #FFFFFF; font-family: inherit; resize: vertical; min-height: 70px;" placeholder="E.g., Interested in SuperFunnel, runs a $3M ministry, wants a demo next week..."></textarea>
+        </div>
+
+        <button class="photo-skip-btn" id="photoSubmitBtn" type="button" style="background: #E3AF4A; color: #0B0C0D; font-weight: 700; border-color: #E3AF4A;">Continue to Lead Form</button>
+        <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px;">Photos will be attached to the HubSpot contact record</p>
+      </div>
+    </div>
+
+    <!-- Transcript (for audio mode) -->
     <div class="transcript-section" id="transcriptSection">
       <p class="transcript-label">Transcript</p>
       <div class="transcript-box" id="transcriptBox"></div>
@@ -547,8 +949,11 @@
     <!-- Structured Data Form -->
     <div class="structured-section" id="structuredSection">
       <div class="structured-card">
-        <h3>Extracted Lead Data</h3>
-        <p style="font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 20px;">Review and correct the AI-extracted fields below before submitting to HubSpot.</p>
+        <h3>Lead Data</h3>
+        <p class="card-sub">Review and correct the fields below before submitting to HubSpot.</p>
+
+        <!-- Photo Attachments Bar -->
+        <div id="formAttachments" class="attachments-bar" style="display: none;"></div>
 
         <div class="field-grid">
           <div class="field-item">
@@ -568,11 +973,11 @@
             <div class="field-value"><input type="text" id="leadCompany" placeholder="Grace Community Church"></div>
           </div>
           <div class="field-item">
-            <div class="field-label">Email (if mentioned)</div>
+            <div class="field-label">Email (if known)</div>
             <div class="field-value"><input type="email" id="leadEmail" placeholder="john@church.org"></div>
           </div>
           <div class="field-item">
-            <div class="field-label">Phone (if mentioned)</div>
+            <div class="field-label">Phone (if known)</div>
             <div class="field-value"><input type="tel" id="leadPhone" placeholder="(555) 123-4567"></div>
           </div>
           <div class="field-item">
@@ -632,14 +1037,14 @@
     <!-- Submit -->
     <div class="submit-section" id="submitSection">
       <button class="submit-btn" id="submitBtn" type="button">Send to HubSpot</button>
-      <p class="submit-note">Data will be created/updated as a contact in HubSpot with all NRB properties.</p>
+      <p class="submit-note">Contact + photos will be created/updated in HubSpot with all NRB properties.</p>
     </div>
 
     <!-- Success -->
     <div class="success-state" id="successState">
       <div class="success-check">&#10003;</div>
       <h2>Lead Captured!</h2>
-      <p>Contact has been sent to HubSpot with all NRB 2026 properties. The follow-up sequence will be triggered automatically.</p>
+      <p>Contact has been sent to HubSpot with all NRB 2026 properties and photo attachments. The follow-up sequence will be triggered automatically.</p>
       <button class="new-capture-btn" id="newCaptureBtn" type="button">Capture Next Lead</button>
     </div>
 
@@ -652,7 +1057,7 @@
 
   <script>
     // =============================================
-    // AUDIO RECORDING + SPEECH RECOGNITION
+    // STATE
     // =============================================
     var isRecording = false;
     var mediaRecorder = null;
@@ -663,7 +1068,15 @@
     var transcript = '';
     var currentRating = 0;
     var recentCaptures = [];
+    var captureMode = 'audio'; // 'audio' or 'photo'
 
+    // Photo state
+    var photos = {
+      card: null,    // { dataUrl: string, file: File }
+      badge: null    // { dataUrl: string, file: File }
+    };
+
+    // DOM refs
     var recordBtn = document.getElementById('recordBtn');
     var recordStatus = document.getElementById('recordStatus');
     var recordTimer = document.getElementById('recordTimer');
@@ -673,7 +1086,135 @@
     var submitSection = document.getElementById('submitSection');
     var successState = document.getElementById('successState');
 
-    // Initialize Speech Recognition
+    // =============================================
+    // CAPTURE MODE TABS
+    // =============================================
+    document.querySelectorAll('.capture-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var panel = this.dataset.panel;
+        captureMode = panel;
+        document.querySelectorAll('.capture-tab').forEach(function(t) { t.classList.remove('active'); });
+        this.classList.add('active');
+        document.querySelectorAll('.capture-panel').forEach(function(p) { p.classList.remove('active'); });
+        document.getElementById('panel' + capitalize(panel)).classList.add('active');
+      });
+    });
+
+    // =============================================
+    // PHOTO CAPTURE (both panels)
+    // =============================================
+    function setupPhotoInput(inputId, type, dropZoneId, previewImgId, removeBtnId) {
+      var input = document.getElementById(inputId);
+      if (!input) return;
+
+      input.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          photos[type] = { dataUrl: ev.target.result, file: file };
+
+          // Update drop zone preview if exists
+          if (dropZoneId) {
+            var zone = document.getElementById(dropZoneId);
+            var img = document.getElementById(previewImgId);
+            if (zone && img) {
+              img.src = ev.target.result;
+              zone.classList.add('has-photo');
+            }
+          }
+
+          // Update inline thumbnails (audio panel)
+          updateAudioPhotoThumbs();
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Remove button
+      if (removeBtnId) {
+        var removeBtn = document.getElementById(removeBtnId);
+        if (removeBtn) {
+          removeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            photos[type] = null;
+            var zone = document.getElementById(dropZoneId);
+            if (zone) zone.classList.remove('has-photo');
+            var inp = document.getElementById(inputId);
+            if (inp) inp.value = '';
+            updateAudioPhotoThumbs();
+          });
+        }
+      }
+    }
+
+    // Photo panel drop zones
+    setupPhotoInput('cardFileInput', 'card', 'cardDropZone', 'cardPreviewImg', 'cardRemoveBtn');
+    setupPhotoInput('badgeFileInput', 'badge', 'badgeDropZone', 'badgePreviewImg', 'badgeRemoveBtn');
+
+    // Audio panel inline photo buttons
+    setupPhotoInput('audioCardInput', 'card', null, null, null);
+    setupPhotoInput('audioBadgeInput', 'badge', null, null, null);
+
+    function updateAudioPhotoThumbs() {
+      var container = document.getElementById('audioPhotoThumbs');
+      container.innerHTML = '';
+      var hasAny = false;
+      ['card', 'badge'].forEach(function(type) {
+        if (photos[type]) {
+          hasAny = true;
+          var div = document.createElement('div');
+          div.className = 'attachment-thumb';
+          div.innerHTML = '<img src="' + photos[type].dataUrl + '" alt="' + type + '">' +
+            '<span class="att-label">' + (type === 'card' ? 'Card' : 'Badge') + '</span>';
+          container.appendChild(div);
+        }
+      });
+      container.style.display = hasAny ? 'flex' : 'none';
+
+      // Also sync to photo panel previews
+      if (photos.card) {
+        var cardZone = document.getElementById('cardDropZone');
+        var cardImg = document.getElementById('cardPreviewImg');
+        if (cardZone && cardImg) {
+          cardImg.src = photos.card.dataUrl;
+          cardZone.classList.add('has-photo');
+        }
+      }
+      if (photos.badge) {
+        var badgeZone = document.getElementById('badgeDropZone');
+        var badgeImg = document.getElementById('badgePreviewImg');
+        if (badgeZone && badgeImg) {
+          badgeImg.src = photos.badge.dataUrl;
+          badgeZone.classList.add('has-photo');
+        }
+      }
+    }
+
+    // Photo panel "Continue" button
+    document.getElementById('photoSubmitBtn').addEventListener('click', function() {
+      if (!document.getElementById('aeSelect').value) {
+        document.getElementById('aeSelect').style.borderColor = '#e74c3c';
+        document.getElementById('aeSelect').focus();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      document.getElementById('aeSelect').style.borderColor = 'rgba(255,255,255,0.1)';
+
+      // Copy quick notes to summary
+      var quickNotes = document.getElementById('photoQuickNotes').value.trim();
+      if (quickNotes) {
+        document.getElementById('leadSummary').value = quickNotes;
+      }
+
+      // Show structured form
+      showStructuredForm();
+    });
+
+    // =============================================
+    // AUDIO RECORDING + SPEECH RECOGNITION
+    // =============================================
     function initSpeechRecognition() {
       var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
@@ -705,7 +1246,6 @@
       recog.onerror = function(event) {
         console.error('Speech recognition error:', event.error);
         if (event.error === 'no-speech') {
-          // Restart if still recording
           if (isRecording) {
             try { recog.start(); } catch(e) {}
           }
@@ -721,7 +1261,7 @@
       return recog;
     }
 
-    // Timer functions
+    // Timer
     function startTimer() {
       seconds = 0;
       updateTimerDisplay();
@@ -730,28 +1270,20 @@
         updateTimerDisplay();
       }, 1000);
     }
-
-    function stopTimer() {
-      clearInterval(timerInterval);
-    }
-
+    function stopTimer() { clearInterval(timerInterval); }
     function updateTimerDisplay() {
       var mins = Math.floor(seconds / 60);
       var secs = seconds % 60;
       recordTimer.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
     }
 
-    // Record button handler
+    // Record button
     recordBtn.addEventListener('click', function() {
-      if (!isRecording) {
-        startRecording();
-      } else {
-        stopRecording();
-      }
+      if (!isRecording) { startRecording(); }
+      else { stopRecording(); }
     });
 
     function startRecording() {
-      // Check AE selection
       if (!document.getElementById('aeSelect').value) {
         document.getElementById('aeSelect').style.borderColor = '#e74c3c';
         document.getElementById('aeSelect').focus();
@@ -768,30 +1300,22 @@
       recordStatus.className = 'record-status status-recording';
       startTimer();
 
-      // Start speech recognition
       recognition = initSpeechRecognition();
       if (recognition) {
-        try {
-          recognition.start();
-        } catch(e) {
+        try { recognition.start(); } catch(e) {
           console.error('Failed to start speech recognition:', e);
         }
       }
 
-      // Start audio recording for backup
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ audio: true })
           .then(function(stream) {
             mediaRecorder = new MediaRecorder(stream);
             audioChunks = [];
-            mediaRecorder.ondataavailable = function(e) {
-              audioChunks.push(e.data);
-            };
+            mediaRecorder.ondataavailable = function(e) { audioChunks.push(e.data); };
             mediaRecorder.start();
           })
-          .catch(function(err) {
-            console.error('Microphone access denied:', err);
-          });
+          .catch(function(err) { console.error('Microphone access denied:', err); });
       }
     }
 
@@ -802,18 +1326,12 @@
       recordStatus.className = 'record-status status-processing';
       stopTimer();
 
-      // Stop speech recognition
-      if (recognition) {
-        recognition.stop();
-      }
-
-      // Stop audio recording
+      if (recognition) { recognition.stop(); }
       if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
         mediaRecorder.stream.getTracks().forEach(function(t) { t.stop(); });
       }
 
-      // Process transcript and show structured form
       setTimeout(function() {
         processTranscript();
         recordStatus.textContent = 'Recording complete';
@@ -822,20 +1340,17 @@
     }
 
     // =============================================
-    // TRANSCRIPT PROCESSING (AI-powered extraction)
+    // TRANSCRIPT PROCESSING
     // =============================================
     function processTranscript() {
       var text = transcript.toLowerCase();
 
-      // Simple keyword extraction (in production, this would call Claude API)
-      // Extract name patterns
       var nameMatch = text.match(/(?:spoke with|talked to|met|name is|this is)\s+([a-z]+)\s+([a-z]+)/i);
       if (nameMatch) {
         document.getElementById('leadFirstName').value = capitalize(nameMatch[1]);
         document.getElementById('leadLastName').value = capitalize(nameMatch[2]);
       }
 
-      // Extract title
       var titles = ['senior pastor', 'executive pastor', 'pastor', 'ceo', 'founder', 'president', 'director', 'vp', 'vice president', 'media director', 'marketing director', 'executive director', 'campus pastor'];
       for (var i = 0; i < titles.length; i++) {
         if (text.indexOf(titles[i]) !== -1) {
@@ -844,13 +1359,11 @@
         }
       }
 
-      // Extract company
       var companyMatch = text.match(/(?:at|from|with|church|ministry|organization)\s+([a-z\s]+?)(?:\.|,|he|she|they|was|is|and)/i);
       if (companyMatch) {
         document.getElementById('leadCompany').value = capitalizeWords(companyMatch[1].trim());
       }
 
-      // Detect products
       if (text.indexOf('superfunnel') !== -1 || text.indexOf('super funnel') !== -1 || text.indexOf('donor') !== -1) {
         document.getElementById('leadProducts').value = 'superfunnel';
       } else if (text.indexOf('studio') !== -1 || text.indexOf('ai') !== -1 || text.indexOf('content') !== -1) {
@@ -861,23 +1374,43 @@
         document.getElementById('leadProducts').value = 'america_prays';
       }
 
-      // Detect demo
       if (text.indexOf('demo') !== -1 || text.indexOf('showed') !== -1 || text.indexOf('walked through') !== -1) {
         document.getElementById('leadDemo').value = 'yes';
       }
 
-      // Set conversation summary as the full transcript
       document.getElementById('leadSummary').value = transcript.trim();
 
-      // Show the structured form
+      showStructuredForm();
+    }
+
+    function showStructuredForm() {
+      // Build attachments bar
+      var attachBar = document.getElementById('formAttachments');
+      attachBar.innerHTML = '';
+      var hasPhotos = false;
+      ['card', 'badge'].forEach(function(type) {
+        if (photos[type]) {
+          hasPhotos = true;
+          var div = document.createElement('div');
+          div.className = 'attachment-thumb';
+          div.innerHTML = '<img src="' + photos[type].dataUrl + '" alt="' + type + '">' +
+            '<span class="att-label">' + (type === 'card' ? 'Card' : 'Badge') + '</span>';
+          attachBar.appendChild(div);
+        }
+      });
+      if (!hasPhotos) {
+        attachBar.innerHTML = '<span class="attachment-none">No photos attached</span>';
+      }
+      attachBar.style.display = 'flex';
+
       structuredSection.classList.add('visible');
       submitSection.classList.add('visible');
+      structuredSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
-
     function capitalizeWords(str) {
       return str.replace(/\b\w/g, function(c) { return c.toUpperCase(); });
     }
@@ -902,6 +1435,11 @@
       btn.disabled = true;
       btn.textContent = 'Sending...';
 
+      var captureMethod = captureMode === 'audio' ? 'audio_note' : 'photo_capture';
+      if (photos.card || photos.badge) {
+        captureMethod = captureMode === 'audio' ? 'audio_note_with_photo' : 'photo_capture';
+      }
+
       var leadData = {
         ae_owner: document.getElementById('aeSelect').value,
         first_name: document.getElementById('leadFirstName').value,
@@ -916,40 +1454,99 @@
         pain_points: document.getElementById('leadPainPoints').value,
         next_steps: document.getElementById('leadNextSteps').value,
         meeting_quality: currentRating,
-        full_transcript: transcript,
+        full_transcript: transcript || '',
+        // Photo attachments (base64 for HubSpot note/attachment)
+        has_business_card_photo: !!photos.card,
+        has_badge_photo: !!photos.badge,
+        business_card_photo: photos.card ? photos.card.dataUrl : null,
+        badge_photo: photos.badge ? photos.badge.dataUrl : null,
         // HubSpot properties
         lead_source: 'nrb_2026',
-        nrb_capture_method: 'audio_note',
-        nrb_intent_level: 'high',
-        nrb_scenario: 'demo_conversation',
-        nrb_conversation: true,
+        nrb_capture_method: captureMethod,
+        nrb_intent_level: captureMode === 'audio' ? 'high' : 'medium',
+        nrb_scenario: captureMode === 'audio' ? 'demo_conversation' : 'ae_conversation',
+        nrb_conversation: captureMode === 'audio',
+        lifecycle_stage: captureMode === 'audio' ? 'sql' : 'mql',
         capture_timestamp: new Date().toISOString()
       };
 
       console.log('=== HUBSPOT LEAD DATA ===');
-      console.log(JSON.stringify(leadData, null, 2));
+      console.log(JSON.stringify({
+        ...leadData,
+        business_card_photo: leadData.business_card_photo ? '[BASE64_IMAGE]' : null,
+        badge_photo: leadData.badge_photo ? '[BASE64_IMAGE]' : null
+      }, null, 2));
 
-      // In production, this would POST to HubSpot API:
-      // POST https://api.hubapi.com/crm/v3/objects/contacts
-      // with properties mapped from leadData
+      // ============================================
+      // HubSpot API Integration
+      // ============================================
+      // When hosted on HubSpot, replace the setTimeout below with:
+      //
+      // 1. CREATE/UPDATE CONTACT:
+      //    POST https://api.hubapi.com/crm/v3/objects/contacts
+      //    Headers: { Authorization: 'Bearer YOUR_PRIVATE_APP_TOKEN' }
+      //    Body: { properties: {
+      //      firstname: leadData.first_name,
+      //      lastname: leadData.last_name,
+      //      email: leadData.email,
+      //      phone: leadData.phone,
+      //      company: leadData.company,
+      //      jobtitle: leadData.title,
+      //      lead_source: leadData.lead_source,
+      //      nrb_capture_method: leadData.nrb_capture_method,
+      //      nrb_intent_level: leadData.nrb_intent_level,
+      //      nrb_scenario: leadData.nrb_scenario,
+      //      nrb_conversation: leadData.nrb_conversation,
+      //      nrb_ae_owner: leadData.ae_owner,
+      //      nrb_meeting_quality: leadData.meeting_quality,
+      //      nrb_conversation_notes: leadData.conversation_summary,
+      //      nrb_products_discussed: leadData.products_discussed,
+      //      nrb_next_steps: leadData.next_steps,
+      //      nrb_demo_given: leadData.demo_given,
+      //      nrb_has_card_photo: leadData.has_business_card_photo,
+      //      nrb_has_badge_photo: leadData.has_badge_photo,
+      //      lifecyclestage: leadData.lifecycle_stage
+      //    }}
+      //
+      // 2. UPLOAD PHOTOS AS ENGAGEMENT/NOTE:
+      //    If photos exist, upload as file via HubSpot Files API:
+      //    POST https://api.hubapi.com/files/v3/files
+      //    Then attach to contact via Engagement Note:
+      //    POST https://api.hubapi.com/crm/v3/objects/notes
+      //    Body: { properties: { hs_note_body: 'NRB 2026 - Business card / Badge photo', hs_attachment_ids: fileId } }
+      //    Then associate note to contact:
+      //    PUT https://api.hubapi.com/crm/v4/objects/notes/{noteId}/associations/contacts/{contactId}
+      //
+      // 3. For HubSpot-hosted pages, use serverless functions:
+      //    /_hcms/api/nrb-lead-capture (serverless endpoint)
+      //    This endpoint handles auth server-side so the API key is never exposed.
+      // ============================================
 
-      // Simulate API call
+      // Simulate API call (replace with real HubSpot integration)
       setTimeout(function() {
-        // Add to recent captures
+        // Track capture types for recent list
+        var captureBadges = [];
+        if (transcript) captureBadges.push('audio');
+        if (photos.card) captureBadges.push('card');
+        if (photos.badge) captureBadges.push('badge');
+
         recentCaptures.unshift({
           name: leadData.first_name + ' ' + leadData.last_name,
           company: leadData.company,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          rating: currentRating
+          rating: currentRating,
+          badges: captureBadges
         });
         updateRecentList();
 
         // Show success
-        document.getElementById('recordSection').style.display = 'none';
+        document.querySelectorAll('.capture-panel').forEach(function(p) { p.style.display = 'none'; });
+        document.querySelector('.capture-tabs').style.display = 'none';
         transcriptSection.classList.remove('visible');
         structuredSection.classList.remove('visible');
         submitSection.classList.remove('visible');
         successState.classList.add('visible');
+        successState.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 1000);
     });
 
@@ -957,12 +1554,20 @@
     // NEW CAPTURE / RESET
     // =============================================
     document.getElementById('newCaptureBtn').addEventListener('click', function() {
-      // Reset everything
+      // Reset state
       transcript = '';
       currentRating = 0;
       seconds = 0;
+      photos = { card: null, badge: null };
+      captureMode = 'audio';
 
+      // Reset audio UI
       transcriptBox.textContent = '';
+      recordStatus.textContent = 'Tap to Record';
+      recordStatus.className = 'record-status status-ready';
+      recordTimer.textContent = '0:00';
+
+      // Reset form fields
       document.getElementById('leadFirstName').value = '';
       document.getElementById('leadLastName').value = '';
       document.getElementById('leadTitle').value = '';
@@ -974,17 +1579,35 @@
       document.getElementById('leadSummary').value = '';
       document.getElementById('leadPainPoints').value = '';
       document.getElementById('leadNextSteps').value = '';
+      document.getElementById('photoQuickNotes').value = '';
       document.querySelectorAll('.star-btn').forEach(function(s) { s.classList.remove('active'); });
 
-      recordStatus.textContent = 'Tap to Record';
-      recordStatus.className = 'record-status status-ready';
-      recordTimer.textContent = '0:00';
+      // Reset photo UI
+      ['card', 'badge'].forEach(function(type) {
+        var zoneId = type + 'DropZone';
+        var zone = document.getElementById(zoneId);
+        if (zone) zone.classList.remove('has-photo');
+      });
+      document.querySelectorAll('input[type="file"]').forEach(function(inp) { inp.value = ''; });
+      document.getElementById('audioPhotoThumbs').innerHTML = '';
+      document.getElementById('audioPhotoThumbs').style.display = 'none';
 
+      // Reset submit
       var submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send to HubSpot';
 
-      // Show/hide sections
+      // Reset tabs to audio
+      document.querySelectorAll('.capture-tab').forEach(function(t) {
+        t.classList.toggle('active', t.dataset.panel === 'audio');
+      });
+
+      // Show/hide panels
+      document.querySelectorAll('.capture-panel').forEach(function(p) {
+        p.style.display = '';
+        p.classList.toggle('active', p.id === 'panelAudio');
+      });
+      document.querySelector('.capture-tabs').style.display = '';
       document.getElementById('recordSection').style.display = '';
       transcriptSection.classList.remove('visible');
       structuredSection.classList.remove('visible');
@@ -999,25 +1622,29 @@
       var list = document.getElementById('recentList');
       list.innerHTML = '';
       recentCaptures.forEach(function(capture) {
-        var initials = (capture.name.split(' ').map(function(n) { return n[0]; }).join('') || '?').toUpperCase();
+        var initials = (capture.name.split(' ').map(function(n) { return n ? n[0] : ''; }).join('') || '?').toUpperCase();
+        var badgesHtml = '';
+        if (capture.badges && capture.badges.length > 0) {
+          badgesHtml = '<div class="recent-badges">' + capture.badges.map(function(b) {
+            var cls = b === 'audio' ? 'rbadge-audio' : b === 'card' ? 'rbadge-card' : 'rbadge-badge';
+            return '<span class="' + cls + '">' + b + '</span>';
+          }).join('') + '</div>';
+        }
         var li = document.createElement('li');
         li.className = 'recent-item';
         li.innerHTML = '<div class="recent-avatar">' + initials + '</div>' +
           '<div class="recent-info"><div class="recent-name">' + capture.name + '</div>' +
-          '<div class="recent-company">' + (capture.company || 'Unknown company') + ' &bull; Rating: ' + (capture.rating || '-') + '/5</div></div>' +
+          '<div class="recent-company">' + (capture.company || 'Unknown') + ' &bull; ' + (capture.rating || '-') + '/5</div>' +
+          badgesHtml + '</div>' +
           '<span class="recent-time">' + capture.time + '</span>';
         list.appendChild(li);
       });
 
-      if (recentCaptures.length > 0) {
-        document.getElementById('recentSection').style.display = '';
-      }
+      document.getElementById('recentSection').style.display = recentCaptures.length > 0 ? '' : 'none';
     }
 
-    // Hide recent section if empty
-    if (recentCaptures.length === 0) {
-      document.getElementById('recentSection').style.display = 'none';
-    }
+    // Init
+    document.getElementById('recentSection').style.display = 'none';
   </script>
 
 </body>
