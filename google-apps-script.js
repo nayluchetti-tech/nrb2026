@@ -16,20 +16,21 @@
 //    D1: Last Name
 //    E1: Title
 //    F1: Company
-//    G1: Email
-//    H1: Phone
-//    I1: Products Discussed
-//    J1: Demo Given
-//    K1: Meeting Quality (1-5)
-//    L1: Conversation Summary
-//    M1: Pain Points
-//    N1: Next Steps
-//    O1: Capture Method
-//    P1: Intent Level
-//    Q1: Scenario
-//    R1: Lifecycle Stage
-//    S1: Card Photo Link
-//    T1: Badge Photo Link
+//    G1: Website
+//    H1: Email
+//    I1: Phone
+//    J1: Products Discussed
+//    K1: Demo Given
+//    L1: Meeting Quality (1-5)
+//    M1: Conversation Summary
+//    N1: Pain Points
+//    O1: Next Steps
+//    P1: Capture Method
+//    Q1: Intent Level
+//    R1: Scenario
+//    S1: Lifecycle Stage
+//    T1: Card Photo Link
+//    U1: Badge Photo Link
 //
 // 3. Open Apps Script:
 //    - In Google Sheets, go to Extensions > Apps Script
@@ -84,7 +85,7 @@ function doPost(e) {
       badgePhotoUrl = savePhotoToDrive(data.badge_photo, data.first_name, data.last_name, 'badge');
     }
 
-    // Append row to sheet (columns A through T)
+    // Append row to sheet (columns A through U)
     sheet.appendRow([
       data.timestamp || new Date().toISOString(),   // A: Timestamp
       data.ae_owner || '',                           // B: AE Owner
@@ -92,20 +93,21 @@ function doPost(e) {
       data.last_name || '',                          // D: Last Name
       data.title || '',                              // E: Title
       data.company || '',                            // F: Company
-      data.email || '',                              // G: Email
-      data.phone || '',                              // H: Phone
-      data.products_discussed || '',                 // I: Products Discussed
-      data.demo_given || '',                         // J: Demo Given
-      data.meeting_quality || '',                    // K: Meeting Quality
-      data.conversation_summary || '',               // L: Conversation Summary
-      data.pain_points || '',                        // M: Pain Points
-      data.next_steps || '',                         // N: Next Steps
-      data.capture_method || '',                     // O: Capture Method
-      data.intent_level || '',                       // P: Intent Level
-      data.scenario || '',                           // Q: Scenario
-      data.lifecycle_stage || '',                    // R: Lifecycle Stage
-      cardPhotoUrl,                                  // S: Card Photo Link
-      badgePhotoUrl                                  // T: Badge Photo Link
+      data.website || '',                            // G: Website
+      data.email || '',                              // H: Email
+      data.phone || '',                              // I: Phone
+      data.products_discussed || '',                 // J: Products Discussed
+      data.demo_given || '',                         // K: Demo Given
+      data.meeting_quality || '',                    // L: Meeting Quality
+      data.conversation_summary || '',               // M: Conversation Summary
+      data.pain_points || '',                        // N: Pain Points
+      data.next_steps || '',                         // O: Next Steps
+      data.capture_method || '',                     // P: Capture Method
+      data.intent_level || '',                       // Q: Intent Level
+      data.scenario || '',                           // R: Scenario
+      data.lifecycle_stage || '',                    // S: Lifecycle Stage
+      cardPhotoUrl,                                  // T: Card Photo Link
+      badgePhotoUrl                                  // U: Badge Photo Link
     ]);
 
     return ContentService

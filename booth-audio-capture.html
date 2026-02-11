@@ -973,6 +973,10 @@
             <div class="field-value"><input type="text" id="leadCompany" placeholder="Grace Community Church"></div>
           </div>
           <div class="field-item">
+            <div class="field-label">Company Website</div>
+            <div class="field-value"><input type="url" id="leadWebsite" placeholder="https://www.gracechurch.org"></div>
+          </div>
+          <div class="field-item">
             <div class="field-label">Email (if known)</div>
             <div class="field-value"><input type="email" id="leadEmail" placeholder="john@church.org"></div>
           </div>
@@ -1460,6 +1464,7 @@
         last_name: document.getElementById('leadLastName').value,
         title: document.getElementById('leadTitle').value,
         company: document.getElementById('leadCompany').value,
+        website: document.getElementById('leadWebsite').value,
         email: document.getElementById('leadEmail').value,
         phone: document.getElementById('leadPhone').value,
         products_discussed: document.getElementById('leadProducts').value,
@@ -1535,6 +1540,7 @@
           last_name: leadData.last_name,
           title: leadData.title,
           company: leadData.company,
+          website: leadData.website,
           email: leadData.email,
           phone: leadData.phone,
           products_discussed: leadData.products_discussed,
@@ -1597,6 +1603,7 @@
       document.getElementById('leadLastName').value = '';
       document.getElementById('leadTitle').value = '';
       document.getElementById('leadCompany').value = '';
+      document.getElementById('leadWebsite').value = '';
       document.getElementById('leadEmail').value = '';
       document.getElementById('leadPhone').value = '';
       document.getElementById('leadProducts').selectedIndex = 0;
