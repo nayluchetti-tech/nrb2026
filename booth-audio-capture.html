@@ -947,7 +947,15 @@
           <textarea id="photoQuickNotes" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 16px; font-size: 14px; color: #FFFFFF; font-family: inherit; resize: vertical; min-height: 70px;" placeholder="E.g., Interested in SuperFunnel, runs a $3M ministry, wants a demo next week..."></textarea>
         </div>
 
-        <button class="photo-skip-btn" id="photoSubmitBtn" type="button" style="background: #E3AF4A; color: #0B0C0D; font-weight: 700; border-color: #E3AF4A;">Continue to Lead Form</button>
+        <!-- Quick Send (appears after photo is uploaded) -->
+        <div id="photoQuickSend" style="display: none;">
+          <button class="submit-btn" id="photoSendNowBtn" type="button" style="margin-bottom: 10px;">Send to Google Sheets</button>
+          <button class="photo-skip-btn" id="photoSubmitBtn" type="button">Add More Details</button>
+        </div>
+        <!-- Before any photo is uploaded -->
+        <div id="photoNoPhoto">
+          <button class="photo-skip-btn" id="photoSkipToForm" type="button" style="background: #E3AF4A; color: #0B0C0D; font-weight: 700; border-color: #E3AF4A;">Continue to Lead Form</button>
+        </div>
         <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px;">Photos will be saved to Google Drive and linked in the spreadsheet</p>
       </div>
     </div>
@@ -1273,6 +1281,7 @@
             var inp = document.getElementById(inputId);
             if (inp) inp.value = '';
             updateAudioPhotoThumbs();
+            updatePhotoSendButtons();
           });
         }
       }
@@ -1327,17 +1336,22 @@
           badgeZone.classList.add('has-photo');
         }
       }
+
+      // Toggle quick-send vs no-photo buttons in Photo panel
+      updatePhotoSendButtons();
     }
 
-    // Photo panel "Continue" button
+    function updatePhotoSendButtons() {
+      var hasAnyPhoto = !!(photos.card || photos.badge);
+      var quickSend = document.getElementById('photoQuickSend');
+      var noPhoto = document.getElementById('photoNoPhoto');
+      if (quickSend) quickSend.style.display = hasAnyPhoto ? 'block' : 'none';
+      if (noPhoto) noPhoto.style.display = hasAnyPhoto ? 'none' : 'block';
+    }
+
+    // Photo panel "Add More Details" button — opens full form
     document.getElementById('photoSubmitBtn').addEventListener('click', function() {
-      if (!document.getElementById('aeSelect').value) {
-        document.getElementById('aeSelect').style.borderColor = '#e74c3c';
-        document.getElementById('aeSelect').focus();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-      document.getElementById('aeSelect').style.borderColor = 'rgba(255,255,255,0.1)';
+      if (!validateAeSelected()) return;
 
       // Copy quick notes to summary
       var quickNotes = document.getElementById('photoQuickNotes').value.trim();
@@ -1349,17 +1363,47 @@
       showStructuredForm();
     });
 
-    // Manual panel "Continue" button
-    document.getElementById('manualSubmitBtn').addEventListener('click', function() {
+    // Photo panel "Skip to Form" button (when no photo yet)
+    document.getElementById('photoSkipToForm').addEventListener('click', function() {
+      if (!validateAeSelected()) return;
+
+      var quickNotes = document.getElementById('photoQuickNotes').value.trim();
+      if (quickNotes) {
+        document.getElementById('leadSummary').value = quickNotes;
+      }
+
+      showStructuredForm();
+    });
+
+    // Photo panel "Send Now" — submit directly with just AE + email + photo
+    document.getElementById('photoSendNowBtn').addEventListener('click', function() {
+      if (!validateAeSelected()) return;
+
+      // Copy quick notes to summary field before submit
+      var quickNotes = document.getElementById('photoQuickNotes').value.trim();
+      if (quickNotes) {
+        document.getElementById('leadSummary').value = quickNotes;
+      }
+
+      // Trigger the main submit flow
+      showStructuredForm();
+      document.getElementById('submitBtn').click();
+    });
+
+    function validateAeSelected() {
       if (!document.getElementById('aeSelect').value) {
         document.getElementById('aeSelect').style.borderColor = '#e74c3c';
         document.getElementById('aeSelect').focus();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
+        return false;
       }
       document.getElementById('aeSelect').style.borderColor = 'rgba(255,255,255,0.1)';
+      return true;
+    }
 
-      // Show structured form directly for manual entry
+    // Manual panel "Continue" button
+    document.getElementById('manualSubmitBtn').addEventListener('click', function() {
+      if (!validateAeSelected()) return;
       showStructuredForm();
     });
 
@@ -1783,6 +1827,7 @@
       document.getElementById('audioPhotoThumbs').style.display = 'none';
       document.getElementById('manualPhotoThumbs').innerHTML = '';
       document.getElementById('manualPhotoThumbs').style.display = 'none';
+      updatePhotoSendButtons();
 
       // Reset submit
       var submitBtn = document.getElementById('submitBtn');
