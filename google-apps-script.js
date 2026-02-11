@@ -8,7 +8,7 @@
 //    Name it: "NRB 2026 Lead Tracker"
 //
 // 2. Rename the first tab to: "Leads"
-//    Add these headers in Row 1 (A1 through T1):
+//    Add these headers in Row 1 (A1 through U1):
 //
 //    A1: Timestamp
 //    B1: AE Owner
@@ -38,21 +38,38 @@
 //    - Paste ALL the code below into Code.gs
 //    - Click Save (Ctrl+S)
 //
-// 4. Deploy as Web App:
+// 4. *** IMPORTANT: Authorize Drive Access ***
+//    - In the Apps Script editor, select "authorizeScript" from the
+//      function dropdown (top toolbar, next to "Run")
+//    - Click "Run"
+//    - A permissions popup will appear — click "Review Permissions"
+//    - Select your Google account
+//    - Click "Advanced" > "Go to NRB 2026 Lead Capture (unsafe)"
+//    - Click "Allow"
+//    - This grants BOTH Spreadsheet AND Google Drive permissions
+//      (needed to save business card / badge photos)
+//
+// 5. Deploy as Web App:
 //    - Click "Deploy" > "New deployment"
 //    - Click the gear icon next to "Select type" > choose "Web app"
 //    - Set "Execute as" to: Me
 //    - Set "Who has access" to: Anyone
 //    - Click "Deploy"
-//    - Authorize the app when prompted (click through the "unsafe" warning)
 //    - COPY the Web App URL that appears
 //
-// 5. Paste the Web App URL into booth-audio-capture.html:
+//    *** If you already deployed before and are updating: ***
+//    - Click "Deploy" > "Manage deployments"
+//    - Click the pencil icon on your existing deployment
+//    - Set "Version" to: New version
+//    - Click "Deploy"
+//    - This keeps the same URL so you don't need to update the tool
+//
+// 6. Paste the Web App URL into booth-audio-capture.html:
 //    Find this line near the top of the <script>:
 //      var GOOGLE_SHEETS_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
 //    Replace the placeholder with your URL.
 //
-// 6. Test it! Open booth-audio-capture.html, fill in some data, and submit.
+// 7. Test it! Open booth-audio-capture.html, fill in some data, and submit.
 //    The row should appear in your Google Sheet within seconds.
 //
 // NOTES:
@@ -60,7 +77,36 @@
 // - Each photo is linked from the spreadsheet so you can click to view
 // - If you redeploy the script, use "Manage deployments" > edit the
 //   existing deployment (don't create a new one) to keep the same URL
+//
+// FIXING "Access denied: DriveApp" ERROR:
+// - This means the script wasn't authorized for Google Drive
+// - Go to Extensions > Apps Script
+// - Select "authorizeScript" from the function dropdown
+// - Click "Run" and approve the permissions when prompted
+// - Then go to Deploy > Manage deployments > edit > set Version
+//   to "New version" > Deploy
 // =============================================================
+
+
+// ----- Run this ONCE from the editor to authorize all permissions -----
+function authorizeScript() {
+  // This function triggers the OAuth consent screen for ALL scopes.
+  // It doesn't do anything else — just forces Google to ask for permissions.
+
+  // Touch SpreadsheetApp (Sheets permission)
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  Logger.log('Spreadsheet access OK: ' + ss.getName());
+
+  // Touch DriveApp (Drive permission — needed for saving photos)
+  var files = DriveApp.getRootFolder();
+  Logger.log('Drive access OK: ' + files.getName());
+
+  // Touch Utilities (already included, but just in case)
+  var encoded = Utilities.base64Encode('test');
+  Logger.log('Utilities OK');
+
+  Logger.log('All permissions authorized! You can now deploy or re-deploy the web app.');
+}
 
 
 // ----- Main handler: receives POST from the capture tool -----
@@ -172,6 +218,10 @@ function savePhotoToDrive(base64Data, firstName, lastName, photoType) {
 
   } catch (error) {
     Logger.log('Photo save error: ' + error.toString());
+    // If it's a Drive permission issue, return a clear message
+    if (error.toString().indexOf('DriveApp') !== -1 || error.toString().indexOf('Access denied') !== -1) {
+      return 'NEEDS_AUTH: Run authorizeScript() in Apps Script editor to enable photo saving';
+    }
     return 'ERROR: ' + error.toString();
   }
 }
