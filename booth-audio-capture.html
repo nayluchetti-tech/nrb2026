@@ -1231,30 +1231,56 @@
 
         // --- Extract email ---
         if (!leadEmailTop.value.trim()) {
-          // Standard email match
-          var emailMatch = text.match(/[a-zA-Z0-9._%+\-]+\s*@\s*[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
-          if (emailMatch) {
-            var email = emailMatch[0].replace(/\s/g, '').toLowerCase();
-            leadEmailTop.value = email;
-            document.getElementById('leadEmail').value = email;
-            found.push('Email');
+          // Try multiple email patterns — OCR often garbles @ or adds spaces
+          var emailPatterns = [
+            /[a-zA-Z0-9._%+\-]+\s*@\s*[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/,           // standard with optional spaces
+            /[a-zA-Z0-9._%+\-]+\s*[\(@]\s*[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/,        // OCR reads @ as (
+            /[a-zA-Z0-9._%+\-]+\s+at\s+[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/i          // OCR reads @ as "at"
+          ];
+          for (var ep = 0; ep < emailPatterns.length; ep++) {
+            var emailMatch = text.match(emailPatterns[ep]);
+            if (emailMatch) {
+              var email = emailMatch[0].replace(/\s+/g, '').replace(/\(/, '@').replace(/\bat\b/i, '@').toLowerCase();
+              // Sanity check: must have exactly one @, domain with dot
+              if (email.split('@').length === 2 && email.split('@')[1].indexOf('.') > 0) {
+                leadEmailTop.value = email;
+                document.getElementById('leadEmail').value = email;
+                found.push('Email');
+                break;
+              }
+            }
           }
         }
 
         // --- Extract website ---
         if (!document.getElementById('leadWebsite').value.trim()) {
-          var wwwMatch = text.match(/(?:https?:\/\/)?www\.[a-zA-Z0-9][a-zA-Z0-9\-]{1,}[a-zA-Z0-9]\.[a-zA-Z]{2,}/i);
-          if (!wwwMatch) {
-            wwwMatch = text.match(/[a-zA-Z0-9][a-zA-Z0-9\-]{3,}\.(com|org|net|church|tv|io|co|us|info|media)\b/i);
-          }
-          if (wwwMatch) {
-            var domain = wwwMatch[0].toLowerCase().replace(/^https?:\/\//, '');
+          // Social media domains to skip — we want the company website, not profiles
+          var socialDomains = /linkedin|facebook|twitter|instagram|tiktok|youtube|snapchat|pinterest|threads|x\.com/i;
+
+          // Find all www. URLs in the text
+          var urlRegex = /(?:https?:\/\/)?www\.[a-zA-Z0-9][a-zA-Z0-9\-]{1,}[a-zA-Z0-9]\.[a-zA-Z]{2,}/gi;
+          var allUrls = text.match(urlRegex) || [];
+          // Also try domain.tld patterns
+          var domainRegex = /[a-zA-Z0-9][a-zA-Z0-9\-]{3,}\.(com|org|net|church|tv|io|co|us|info|media)\b/gi;
+          var allDomains = text.match(domainRegex) || [];
+          var candidates = allUrls.concat(allDomains);
+
+          for (var u = 0; u < candidates.length; u++) {
+            var rawDomain = candidates[u].toLowerCase().replace(/^https?:\/\//, '');
+            // Clean trailing OCR garbage (non-alphanumeric at end)
+            rawDomain = rawDomain.replace(/[^a-z0-9\.]+$/, '');
+            // Skip social media
+            if (socialDomains.test(rawDomain)) continue;
+            // Skip email domains we already captured
             var emailDomain = leadEmailTop.value.split('@')[1] || '';
-            if (domain.indexOf(emailDomain) === -1 || !emailDomain) {
-              document.getElementById('leadWebsite').value = 'https://' + domain;
-              found.push('Website');
-            }
+            if (emailDomain && rawDomain.indexOf(emailDomain) !== -1) continue;
+            // Must end with a valid TLD
+            if (!/\.[a-z]{2,}$/.test(rawDomain)) continue;
+            document.getElementById('leadWebsite').value = 'https://' + rawDomain;
+            found.push('Website');
+            break;
           }
+          // Fallback: derive website from email domain (if not generic)
           if (!document.getElementById('leadWebsite').value.trim() && leadEmailTop.value.includes('@')) {
             var eDomain = leadEmailTop.value.split('@')[1];
             var genericDomains = ['gmail.com','yahoo.com','hotmail.com','outlook.com','aol.com','icloud.com','me.com','live.com'];
