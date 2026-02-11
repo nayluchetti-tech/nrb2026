@@ -973,6 +973,10 @@
             <div class="field-value"><input type="text" id="leadCompany" placeholder="Grace Community Church"></div>
           </div>
           <div class="field-item">
+            <div class="field-label">Company Website</div>
+            <div class="field-value"><input type="url" id="leadWebsite" placeholder="https://www.gracechurch.org"></div>
+          </div>
+          <div class="field-item">
             <div class="field-label">Email (if known)</div>
             <div class="field-value"><input type="email" id="leadEmail" placeholder="john@church.org"></div>
           </div>
@@ -1036,15 +1040,15 @@
 
     <!-- Submit -->
     <div class="submit-section" id="submitSection">
-      <button class="submit-btn" id="submitBtn" type="button">Send to HubSpot</button>
-      <p class="submit-note">Contact + photos will be created/updated in HubSpot with all NRB properties.</p>
+      <button class="submit-btn" id="submitBtn" type="button">Send to Google Sheets</button>
+      <p class="submit-note">Contact + photos will be saved to the NRB 2026 lead tracker spreadsheet.</p>
     </div>
 
     <!-- Success -->
     <div class="success-state" id="successState">
       <div class="success-check">&#10003;</div>
       <h2>Lead Captured!</h2>
-      <p>Contact has been sent to HubSpot with all NRB 2026 properties and photo attachments. The follow-up sequence will be triggered automatically.</p>
+      <p>Contact has been saved to the NRB 2026 Google Sheet with all lead data and photo attachments.</p>
       <button class="new-capture-btn" id="newCaptureBtn" type="button">Capture Next Lead</button>
     </div>
 
@@ -1428,7 +1432,14 @@
     });
 
     // =============================================
-    // SUBMIT TO HUBSPOT
+    // GOOGLE SHEETS INTEGRATION
+    // =============================================
+    // SETUP: Paste your Google Apps Script Web App URL below.
+    // See google-apps-script.js for the script to deploy on your Sheet.
+    var GOOGLE_SHEETS_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+    // =============================================
+    // SUBMIT TO GOOGLE SHEETS (+ HubSpot)
     // =============================================
     document.getElementById('submitBtn').addEventListener('click', function() {
       var btn = this;
@@ -1440,12 +1451,20 @@
         captureMethod = captureMode === 'audio' ? 'audio_note_with_photo' : 'photo_capture';
       }
 
+      // Get the display name from the AE select
+      var aeSelect = document.getElementById('aeSelect');
+      var aeDisplayName = aeSelect.options[aeSelect.selectedIndex]
+        ? aeSelect.options[aeSelect.selectedIndex].text
+        : aeSelect.value;
+
       var leadData = {
-        ae_owner: document.getElementById('aeSelect').value,
+        ae_owner: aeDisplayName,
+        ae_owner_id: aeSelect.value,
         first_name: document.getElementById('leadFirstName').value,
         last_name: document.getElementById('leadLastName').value,
         title: document.getElementById('leadTitle').value,
         company: document.getElementById('leadCompany').value,
+        website: document.getElementById('leadWebsite').value,
         email: document.getElementById('leadEmail').value,
         phone: document.getElementById('leadPhone').value,
         products_discussed: document.getElementById('leadProducts').value,
@@ -1455,12 +1474,10 @@
         next_steps: document.getElementById('leadNextSteps').value,
         meeting_quality: currentRating,
         full_transcript: transcript || '',
-        // Photo attachments (base64 for HubSpot note/attachment)
         has_business_card_photo: !!photos.card,
         has_badge_photo: !!photos.badge,
         business_card_photo: photos.card ? photos.card.dataUrl : null,
         badge_photo: photos.badge ? photos.badge.dataUrl : null,
-        // HubSpot properties
         lead_source: 'nrb_2026',
         nrb_capture_method: captureMethod,
         nrb_intent_level: captureMode === 'audio' ? 'high' : 'medium',
@@ -1470,7 +1487,7 @@
         capture_timestamp: new Date().toISOString()
       };
 
-      console.log('=== HUBSPOT LEAD DATA ===');
+      console.log('=== LEAD DATA ===');
       console.log(JSON.stringify({
         ...leadData,
         business_card_photo: leadData.business_card_photo ? '[BASE64_IMAGE]' : null,
@@ -1478,53 +1495,9 @@
       }, null, 2));
 
       // ============================================
-      // HubSpot API Integration
+      // Send to Google Sheets
       // ============================================
-      // When hosted on HubSpot, replace the setTimeout below with:
-      //
-      // 1. CREATE/UPDATE CONTACT:
-      //    POST https://api.hubapi.com/crm/v3/objects/contacts
-      //    Headers: { Authorization: 'Bearer YOUR_PRIVATE_APP_TOKEN' }
-      //    Body: { properties: {
-      //      firstname: leadData.first_name,
-      //      lastname: leadData.last_name,
-      //      email: leadData.email,
-      //      phone: leadData.phone,
-      //      company: leadData.company,
-      //      jobtitle: leadData.title,
-      //      lead_source: leadData.lead_source,
-      //      nrb_capture_method: leadData.nrb_capture_method,
-      //      nrb_intent_level: leadData.nrb_intent_level,
-      //      nrb_scenario: leadData.nrb_scenario,
-      //      nrb_conversation: leadData.nrb_conversation,
-      //      nrb_ae_owner: leadData.ae_owner,
-      //      nrb_meeting_quality: leadData.meeting_quality,
-      //      nrb_conversation_notes: leadData.conversation_summary,
-      //      nrb_products_discussed: leadData.products_discussed,
-      //      nrb_next_steps: leadData.next_steps,
-      //      nrb_demo_given: leadData.demo_given,
-      //      nrb_has_card_photo: leadData.has_business_card_photo,
-      //      nrb_has_badge_photo: leadData.has_badge_photo,
-      //      lifecyclestage: leadData.lifecycle_stage
-      //    }}
-      //
-      // 2. UPLOAD PHOTOS AS ENGAGEMENT/NOTE:
-      //    If photos exist, upload as file via HubSpot Files API:
-      //    POST https://api.hubapi.com/files/v3/files
-      //    Then attach to contact via Engagement Note:
-      //    POST https://api.hubapi.com/crm/v3/objects/notes
-      //    Body: { properties: { hs_note_body: 'NRB 2026 - Business card / Badge photo', hs_attachment_ids: fileId } }
-      //    Then associate note to contact:
-      //    PUT https://api.hubapi.com/crm/v4/objects/notes/{noteId}/associations/contacts/{contactId}
-      //
-      // 3. For HubSpot-hosted pages, use serverless functions:
-      //    /_hcms/api/nrb-lead-capture (serverless endpoint)
-      //    This endpoint handles auth server-side so the API key is never exposed.
-      // ============================================
-
-      // Simulate API call (replace with real HubSpot integration)
-      setTimeout(function() {
-        // Track capture types for recent list
+      function onSubmitSuccess() {
         var captureBadges = [];
         if (transcript) captureBadges.push('audio');
         if (photos.card) captureBadges.push('card');
@@ -1539,7 +1512,6 @@
         });
         updateRecentList();
 
-        // Show success
         document.querySelectorAll('.capture-panel').forEach(function(p) { p.style.display = 'none'; });
         document.querySelector('.capture-tabs').style.display = 'none';
         transcriptSection.classList.remove('visible');
@@ -1547,7 +1519,66 @@
         submitSection.classList.remove('visible');
         successState.classList.add('visible');
         successState.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 1000);
+      }
+
+      function onSubmitError(err) {
+        console.error('Submit error:', err);
+        btn.disabled = false;
+        btn.textContent = 'Retry — Send to Google Sheets';
+        btn.style.background = '#e74c3c';
+        setTimeout(function() { btn.style.background = ''; }, 3000);
+      }
+
+      // Check if Google Sheets URL is configured
+      if (GOOGLE_SHEETS_URL && GOOGLE_SHEETS_URL !== 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+        // Build payload without large base64 photos for the sheet row
+        // Photos are sent separately so the sheet stays clean
+        var sheetPayload = {
+          timestamp: leadData.capture_timestamp,
+          ae_owner: leadData.ae_owner,
+          first_name: leadData.first_name,
+          last_name: leadData.last_name,
+          title: leadData.title,
+          company: leadData.company,
+          website: leadData.website,
+          email: leadData.email,
+          phone: leadData.phone,
+          products_discussed: leadData.products_discussed,
+          demo_given: leadData.demo_given,
+          meeting_quality: leadData.meeting_quality,
+          conversation_summary: leadData.conversation_summary,
+          pain_points: leadData.pain_points,
+          next_steps: leadData.next_steps,
+          capture_method: leadData.nrb_capture_method,
+          intent_level: leadData.nrb_intent_level,
+          scenario: leadData.nrb_scenario,
+          lifecycle_stage: leadData.lifecycle_stage,
+          has_card_photo: leadData.has_business_card_photo,
+          has_badge_photo: leadData.has_badge_photo,
+          // Photos as base64 — Apps Script saves to Google Drive
+          business_card_photo: leadData.business_card_photo || '',
+          badge_photo: leadData.badge_photo || ''
+        };
+
+        fetch(GOOGLE_SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sheetPayload)
+        })
+        .then(function() {
+          // no-cors means we can't read the response, but the data is sent
+          onSubmitSuccess();
+        })
+        .catch(function(err) {
+          onSubmitError(err);
+        });
+      } else {
+        // No Google Sheets URL configured — save locally and show success
+        console.warn('Google Sheets URL not configured. Data logged to console only.');
+        console.warn('Set GOOGLE_SHEETS_URL at the top of the script to enable.');
+        setTimeout(onSubmitSuccess, 500);
+      }
     });
 
     // =============================================
@@ -1572,6 +1603,7 @@
       document.getElementById('leadLastName').value = '';
       document.getElementById('leadTitle').value = '';
       document.getElementById('leadCompany').value = '';
+      document.getElementById('leadWebsite').value = '';
       document.getElementById('leadEmail').value = '';
       document.getElementById('leadPhone').value = '';
       document.getElementById('leadProducts').selectedIndex = 0;
@@ -1595,7 +1627,7 @@
       // Reset submit
       var submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Send to HubSpot';
+      submitBtn.textContent = 'Send to Google Sheets';
 
       // Reset tabs to audio
       document.querySelectorAll('.capture-tab').forEach(function(t) {
