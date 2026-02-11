@@ -270,10 +270,6 @@ function savePhotoToDrive(base64Data, firstName, lastName, photoType) {
 
   } catch (error) {
     Logger.log('Photo save error: ' + error.toString());
-    // If it's a Drive permission issue, return a clear message
-    if (error.toString().indexOf('DriveApp') !== -1 || error.toString().indexOf('Access denied') !== -1) {
-      return 'NEEDS_AUTH: Run authorizeScript() in Apps Script editor to enable photo saving';
-    }
-    return 'ERROR: ' + error.toString();
+    return 'PHOTO_ERROR: ' + error.toString();
   }
 }
