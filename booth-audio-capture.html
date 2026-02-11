@@ -796,7 +796,7 @@
   <main class="app-main">
     <!-- AE Selector -->
     <div class="ae-section">
-      <label for="aeSelect">Your Name (AE)</label>
+      <label for="aeSelect">Your Name</label>
       <select id="aeSelect" class="ae-select">
         <option value="" disabled selected>Select your name</option>
         <option value="matt_potter">Matt Potter</option>
@@ -815,6 +815,12 @@
         <option value="dustin_sisney">Dustin Sisney</option>
         <option value="andi_laurent">Andi Laurent</option>
       </select>
+    </div>
+
+    <!-- Lead Email (first field after AE name) -->
+    <div class="ae-section">
+      <label for="leadEmailTop">Lead's Email</label>
+      <input type="email" id="leadEmailTop" class="ae-select" placeholder="john@church.org" style="background-image: none; padding-right: 16px;">
     </div>
 
     <!-- Capture Mode Tabs -->
@@ -1137,6 +1143,15 @@
     var structuredSection = document.getElementById('structuredSection');
     var submitSection = document.getElementById('submitSection');
     var successState = document.getElementById('successState');
+    var leadEmailTop = document.getElementById('leadEmailTop');
+
+    // Sync top email field with structured form email field
+    leadEmailTop.addEventListener('input', function() {
+      document.getElementById('leadEmail').value = this.value;
+    });
+    document.getElementById('leadEmail').addEventListener('input', function() {
+      leadEmailTop.value = this.value;
+    });
 
     // =============================================
     // CAPTURE MODE TABS
@@ -1458,6 +1473,11 @@
     }
 
     function showStructuredForm() {
+      // Sync top email into form if filled
+      if (leadEmailTop.value && !document.getElementById('leadEmail').value) {
+        document.getElementById('leadEmail').value = leadEmailTop.value;
+      }
+
       // Build attachments bar
       var attachBar = document.getElementById('formAttachments');
       attachBar.innerHTML = '';
@@ -1674,6 +1694,7 @@
       recordTimer.textContent = '0:00';
 
       // Reset form fields
+      leadEmailTop.value = '';
       document.getElementById('leadFirstName').value = '';
       document.getElementById('leadLastName').value = '';
       document.getElementById('leadTitle').value = '';
