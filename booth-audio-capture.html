@@ -1216,10 +1216,18 @@
         logger: function() {} // silent
       }).then(function(result) {
         var text = result.data.text || '';
+        var confidence = result.data.confidence || 0;
         var lines = text.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 1; });
         var found = [];
 
-        // --- Extract email ---
+        // Skip if OCR confidence is very low (bad photo, blurry, etc.)
+        if (confidence < 30) {
+          showOcrStatus('Photo too blurry to read — type details manually', 'notfound');
+          setTimeout(hideOcrStatus, 3000);
+          return;
+        }
+
+        // --- Extract email (high confidence — email patterns are very distinct) ---
         if (!leadEmailTop.value.trim()) {
           var emailMatch = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
           if (emailMatch) {
@@ -1230,24 +1238,25 @@
           }
         }
 
-        // --- Extract domain / website ---
+        // --- Extract website (require www. or known TLD with real domain) ---
         if (!document.getElementById('leadWebsite').value.trim()) {
-          // Match www.something.com or domain.com/org/net/church/tv/io etc.
-          var urlMatch = text.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][a-zA-Z0-9\-]*\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?)/i);
-          if (urlMatch) {
-            var domain = urlMatch[0].toLowerCase().replace(/^https?:\/\//, '');
-            // Skip if it's just the email domain we already captured
+          // Must have www. prefix OR a domain with 4+ chars before a known TLD
+          var wwwMatch = text.match(/(?:https?:\/\/)?www\.[a-zA-Z0-9][a-zA-Z0-9\-]{1,}[a-zA-Z0-9]\.[a-zA-Z]{2,}/i);
+          if (!wwwMatch) {
+            // Try matching domain.tld where domain is 4+ chars and TLD is common
+            wwwMatch = text.match(/[a-zA-Z0-9][a-zA-Z0-9\-]{3,}\.(com|org|net|church|tv|io|co|us|info|media)\b/i);
+          }
+          if (wwwMatch) {
+            var domain = wwwMatch[0].toLowerCase().replace(/^https?:\/\//, '');
+            // Don't use email domain if it's the same
             var emailDomain = leadEmailTop.value.split('@')[1] || '';
-            if (domain !== emailDomain && domain.indexOf(emailDomain) === -1) {
+            if (domain.indexOf(emailDomain) === -1 || !emailDomain) {
               document.getElementById('leadWebsite').value = 'https://' + domain;
               found.push('Website');
-            } else if (!document.getElementById('leadWebsite').value.trim()) {
-              // Use email domain as website fallback
-              document.getElementById('leadWebsite').value = 'https://' + emailDomain;
-              found.push('Website');
             }
-          } else if (leadEmailTop.value.includes('@')) {
-            // Fallback: derive domain from email
+          }
+          // Fallback: derive website from email domain (if not generic)
+          if (!document.getElementById('leadWebsite').value.trim() && leadEmailTop.value.includes('@')) {
             var eDomain = leadEmailTop.value.split('@')[1];
             var genericDomains = ['gmail.com','yahoo.com','hotmail.com','outlook.com','aol.com','icloud.com','me.com','live.com'];
             if (eDomain && genericDomains.indexOf(eDomain) === -1) {
@@ -1259,7 +1268,7 @@
 
         // --- Extract company name ---
         if (!document.getElementById('leadCompany').value.trim()) {
-          var company = extractCompanyFromLines(lines, text);
+          var company = extractCompanyFromLines(lines);
           if (company) {
             document.getElementById('leadCompany').value = company;
             found.push('Company');
@@ -1268,7 +1277,7 @@
 
         // --- Extract first and last name ---
         if (!document.getElementById('leadFirstName').value.trim() && !document.getElementById('leadLastName').value.trim()) {
-          var name = extractNameFromLines(lines, text, photoType);
+          var name = extractNameFromLines(lines, photoType);
           if (name.first) {
             document.getElementById('leadFirstName').value = name.first;
             found.push('First Name');
@@ -1292,80 +1301,92 @@
       });
     }
 
-    function extractNameFromLines(lines, fullText, photoType) {
+    function extractNameFromLines(lines, photoType) {
       var result = { first: '', last: '' };
-      // Skip lines that look like titles, companies, addresses, phones, emails, urls
-      var skipPatterns = [
-        /^[\d\(\+]/, // starts with number or phone
-        /@/, // email
-        /www\.|\.com|\.org|\.net|\.church|\.tv|\.io/i, // urls/domains
-        /\d{3}[\-\.\s]?\d{3}/, // phone patterns
-        /street|ave|blvd|suite|floor|po box|address/i, // addresses
-        /church|ministr|media|broadcast|network|inc\.|llc|corp|assoc|foundation|org\b/i, // company words
-        /president|pastor|director|manager|vp |ceo|cto|coo|cfo|chairman|founder|executive|coordinator|associate|assistant|lead\b|head\b|chief/i, // titles
-        /nrb|national religious|convention|conference|booth/i, // badge/conference noise
-        /^\W+$/, // only special chars
-        /^[A-Z\s]{15,}$/ // very long all-caps (likely org name)
-      ];
 
-      var candidateLines = [];
-      for (var i = 0; i < Math.min(lines.length, 8); i++) {
-        var line = lines[i];
-        if (line.length < 2 || line.length > 40) continue;
-        var skip = false;
-        for (var j = 0; j < skipPatterns.length; j++) {
-          if (skipPatterns[j].test(line)) { skip = true; break; }
-        }
-        if (!skip) candidateLines.push(line);
+      // Lines that are clearly NOT names
+      function isNotName(line) {
+        if (/\d/.test(line)) return true;           // contains any digit (phone, address, zip)
+        if (/@/.test(line)) return true;             // email
+        if (/www\.|\.com|\.org|\.net/i.test(line)) return true; // url
+        if (/[#\$%\^&\*\+=]/.test(line)) return true; // special chars
+        if (line.length < 3 || line.length > 35) return true; // too short or too long
+        // Only letters, spaces, hyphens, apostrophes, and periods allowed in names
+        if (!/^[a-zA-Z\s\-'\.]+$/.test(line)) return true;
+        return false;
       }
 
-      // For badges, the name is typically the largest/first prominent text
-      // For cards, the name is usually one of the first lines
-      if (candidateLines.length > 0) {
-        // Pick the first candidate that looks like a name (2-3 words, mostly alpha)
-        for (var k = 0; k < candidateLines.length; k++) {
-          var cleaned = candidateLines[k].replace(/[^a-zA-Z\s\-'\.]/g, '').trim();
-          var words = cleaned.split(/\s+/).filter(function(w) { return w.length > 1; });
-          if (words.length >= 2 && words.length <= 4) {
-            // Remove common prefixes like Dr., Rev., Pastor, etc.
-            var prefixes = ['dr', 'rev', 'pastor', 'mr', 'mrs', 'ms', 'miss', 'prof'];
-            if (prefixes.indexOf(words[0].toLowerCase().replace(/\./g, '')) > -1) {
-              words.shift();
-            }
-            if (words.length >= 2) {
-              result.first = words[0].charAt(0).toUpperCase() + words[0].slice(1).toLowerCase();
-              result.last = words.slice(1).map(function(w) {
-                return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-              }).join(' ');
-              break;
-            }
+      var candidateLines = [];
+      for (var i = 0; i < Math.min(lines.length, 10); i++) {
+        var line = lines[i].trim();
+        if (!isNotName(line)) candidateLines.push(line);
+      }
+
+      for (var k = 0; k < candidateLines.length; k++) {
+        var cleaned = candidateLines[k].trim();
+        var words = cleaned.split(/\s+/).filter(function(w) { return w.length >= 2; });
+
+        // Remove common honorifics
+        var prefixes = ['dr', 'rev', 'pastor', 'mr', 'mrs', 'ms', 'miss', 'prof', 'rabbi', 'bishop'];
+        if (words.length > 0 && prefixes.indexOf(words[0].toLowerCase().replace(/\./g, '')) > -1) {
+          words.shift();
+        }
+
+        // Accept 1 word (first name only) or 2-3 words (first + last)
+        // But each word must be 2+ real letters and look like a name (capitalized or all-caps)
+        if (words.length >= 1 && words.length <= 3) {
+          var allLookLikeNames = true;
+          for (var w = 0; w < words.length; w++) {
+            var word = words[w].replace(/\./g, '');
+            // Each word should be 2-15 letters, and either Title Case or ALL CAPS
+            if (word.length < 2 || word.length > 15) { allLookLikeNames = false; break; }
+            var isCapitalized = /^[A-Z][a-z]+$/.test(word);
+            var isAllCaps = /^[A-Z]{2,}$/.test(word);
+            if (!isCapitalized && !isAllCaps) { allLookLikeNames = false; break; }
           }
+          if (!allLookLikeNames) continue;
+
+          // Skip words that are clearly company/title words, not names
+          var skipWords = /^(lawn|property|enhancement|church|media|network|pastor|director|manager|president|executive|senior|junior|vice|chief|national|international|global|digital|services|service|solutions|consulting|group|inc|llc|corp|the|and|for)$/i;
+          var hasSkipWord = false;
+          for (var s = 0; s < words.length; s++) {
+            if (skipWords.test(words[s])) { hasSkipWord = true; break; }
+          }
+          if (hasSkipWord) continue;
+
+          // Format: Title Case
+          var formatted = words.map(function(w) {
+            return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+          });
+
+          result.first = formatted[0];
+          if (formatted.length >= 2) {
+            result.last = formatted.slice(1).join(' ');
+          }
+          break;
         }
       }
       return result;
     }
 
-    function extractCompanyFromLines(lines, fullText) {
-      // Look for lines containing typical org/company indicators
-      var companyKeywords = /church|ministr|media|broadcast|network|inc\.|llc|corp|assoc|foundation|entertainment|group|studios|productions|publishing|records|international|worldwide|global|digital|tech|solutions/i;
+    function extractCompanyFromLines(lines) {
+      var companyKeywords = /church|ministr|media|broadcast|network|inc\.?|llc|corp|assoc|foundation|entertainment|group|studios|productions|publishing|records|international|worldwide|global|digital|tech|solutions|lawn|property|enhancement|service|consulting|partners|capital|academy|school|university|seminary|fellowship|chapel|temple|mosque|synagogue|cathedral|parish|diocese|archdiocese|convention|assembly|council|alliance|coalition|missions?|outreach|relief|charity|trust|fund|institut/i;
 
-      for (var i = 0; i < Math.min(lines.length, 10); i++) {
-        var line = lines[i];
-        if (line.length < 3 || line.length > 60) continue;
+      for (var i = 0; i < Math.min(lines.length, 12); i++) {
+        var line = lines[i].trim();
+        if (line.length < 3 || line.length > 65) continue;
         // Skip lines that are clearly not company names
-        if (/@/.test(line)) continue; // email
-        if (/\d{3}[\-\.\s]?\d{3}/.test(line)) continue; // phone
-        if (/www\.|https?:/i.test(line)) continue; // url
+        if (/@/.test(line)) continue;                    // email
+        if (/\d{3}[\-\.\s\u00B7]?\d{3}/.test(line)) continue; // phone
+        if (/www\.|https?:/i.test(line)) continue;       // url
+        if (/\d{4,}/.test(line)) continue;               // zip code or address number
 
         if (companyKeywords.test(line)) {
-          // Clean up the company name
-          var company = line.replace(/[^\w\s\-\.\&\',]/g, '').trim();
-          if (company.length > 2) return company;
+          // Clean up: keep letters, numbers, spaces, and common punctuation
+          var company = line.replace(/[^\w\s\-\.\&\+\',]/g, '').trim();
+          if (company.length > 2 && company.length < 65) return company;
         }
       }
-
-      // Fallback: if we found an email with a non-generic domain, try to use the domain as a hint
-      // but don't set it — leave company blank rather than guess wrong
       return '';
     }
 
