@@ -774,6 +774,7 @@
     .rbadge-audio { background: rgba(227,175,74,0.12); color: #E3AF4A; }
     .rbadge-card { background: rgba(100,180,255,0.12); color: #64B4FF; }
     .rbadge-badge { background: rgba(156,39,176,0.12); color: #CE93D8; }
+    .rbadge-typed { background: rgba(76,175,80,0.12); color: #4CAF50; }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 600px) {
@@ -825,6 +826,10 @@
       <button class="capture-tab" data-panel="photo" type="button">
         <svg viewBox="0 0 24 24" fill="none"><path d="M23 19C23 20.1 22.1 21 21 21H3C1.9 21 1 20.1 1 19V8C1 6.9 1.9 6 3 6H7L9 3H15L17 6H21C22.1 6 23 6.9 23 8V19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" stroke="currentColor" stroke-width="2"/></svg>
         Photo Capture
+      </button>
+      <button class="capture-tab" data-panel="manual" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 7V4H20V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 20H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 4V20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Type It In
       </button>
     </div>
 
@@ -936,7 +941,50 @@
         </div>
 
         <button class="photo-skip-btn" id="photoSubmitBtn" type="button" style="background: #E3AF4A; color: #0B0C0D; font-weight: 700; border-color: #E3AF4A;">Continue to Lead Form</button>
-        <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px;">Photos will be attached to the HubSpot contact record</p>
+        <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px;">Photos will be saved to Google Drive and linked in the spreadsheet</p>
+      </div>
+    </div>
+
+    <!-- ====== PANEL: MANUAL ENTRY ====== -->
+    <div class="capture-panel" id="panelManual">
+      <div class="photo-section">
+        <p class="section-hint">
+          <strong>Type in the lead's details</strong> directly.<br>
+          Use this when you have their info from a conversation, email, or written note.
+        </p>
+
+        <div class="prompt-guide">
+          <h3>Quick Tips</h3>
+          <ul class="prompt-list">
+            <li><span class="prompt-num">1</span><span>Get their <strong>email address</strong> if possible &mdash; it's the most important field for follow-up</span></li>
+            <li><span class="prompt-num">2</span><span>Add a <strong>short note</strong> about the conversation so the follow-up email can be personalized</span></li>
+            <li><span class="prompt-num">3</span><span>You can also <strong>attach a photo</strong> of their card or badge below for backup</span></li>
+          </ul>
+        </div>
+
+        <!-- Optional photo attachments in manual mode -->
+        <div class="photo-capture-group">
+          <div class="photo-capture-label">
+            Attach Photos (Optional)
+            <span class="badge-tag">Backup</span>
+          </div>
+          <div class="photo-actions" id="manualPhotoActions">
+            <button class="photo-action-btn" type="button">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M2 7H22M8 3V7M16 3V7" stroke="currentColor" stroke-width="2"/><text x="12" y="14" text-anchor="middle" fill="currentColor" font-size="5" font-weight="700">CARD</text></svg>
+              Business Card
+              <input type="file" accept="image/*" capture="environment" id="manualCardInput">
+            </button>
+            <button class="photo-action-btn" type="button">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="18" height="20" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 6H17M7 10H17M7 14H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="14" y="14" width="5" height="5" rx="1" fill="currentColor" opacity="0.3"/></svg>
+              NRB Badge
+              <input type="file" accept="image/*" capture="environment" id="manualBadgeInput">
+            </button>
+          </div>
+          <div id="manualPhotoThumbs" class="attachments-bar" style="margin-top: 12px;"></div>
+        </div>
+
+        <button class="photo-skip-btn" id="manualSubmitBtn" type="button" style="background: #E3AF4A; color: #0B0C0D; font-weight: 700; border-color: #E3AF4A;">Continue to Lead Form</button>
+        <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px;">Fill in everything you know &mdash; you can leave fields blank</p>
       </div>
     </div>
 
@@ -950,7 +998,7 @@
     <div class="structured-section" id="structuredSection">
       <div class="structured-card">
         <h3>Lead Data</h3>
-        <p class="card-sub">Review and correct the fields below before submitting to HubSpot.</p>
+        <p class="card-sub">Review and correct the fields below before submitting.</p>
 
         <!-- Photo Attachments Bar -->
         <div id="formAttachments" class="attachments-bar" style="display: none;"></div>
@@ -1072,7 +1120,7 @@
     var transcript = '';
     var currentRating = 0;
     var recentCaptures = [];
-    var captureMode = 'audio'; // 'audio' or 'photo'
+    var captureMode = 'audio'; // 'audio', 'photo', or 'manual'
 
     // Photo state
     var photos = {
@@ -1161,21 +1209,29 @@
     setupPhotoInput('audioCardInput', 'card', null, null, null);
     setupPhotoInput('audioBadgeInput', 'badge', null, null, null);
 
+    // Manual panel inline photo buttons
+    setupPhotoInput('manualCardInput', 'card', null, null, null);
+    setupPhotoInput('manualBadgeInput', 'badge', null, null, null);
+
     function updateAudioPhotoThumbs() {
-      var container = document.getElementById('audioPhotoThumbs');
-      container.innerHTML = '';
-      var hasAny = false;
-      ['card', 'badge'].forEach(function(type) {
-        if (photos[type]) {
-          hasAny = true;
-          var div = document.createElement('div');
-          div.className = 'attachment-thumb';
-          div.innerHTML = '<img src="' + photos[type].dataUrl + '" alt="' + type + '">' +
-            '<span class="att-label">' + (type === 'card' ? 'Card' : 'Badge') + '</span>';
-          container.appendChild(div);
-        }
+      // Update thumbnails on both audio and manual panels
+      ['audioPhotoThumbs', 'manualPhotoThumbs'].forEach(function(containerId) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        var hasAny = false;
+        ['card', 'badge'].forEach(function(type) {
+          if (photos[type]) {
+            hasAny = true;
+            var div = document.createElement('div');
+            div.className = 'attachment-thumb';
+            div.innerHTML = '<img src="' + photos[type].dataUrl + '" alt="' + type + '">' +
+              '<span class="att-label">' + (type === 'card' ? 'Card' : 'Badge') + '</span>';
+            container.appendChild(div);
+          }
+        });
+        container.style.display = hasAny ? 'flex' : 'none';
       });
-      container.style.display = hasAny ? 'flex' : 'none';
 
       // Also sync to photo panel previews
       if (photos.card) {
@@ -1213,6 +1269,20 @@
       }
 
       // Show structured form
+      showStructuredForm();
+    });
+
+    // Manual panel "Continue" button
+    document.getElementById('manualSubmitBtn').addEventListener('click', function() {
+      if (!document.getElementById('aeSelect').value) {
+        document.getElementById('aeSelect').style.borderColor = '#e74c3c';
+        document.getElementById('aeSelect').focus();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      document.getElementById('aeSelect').style.borderColor = 'rgba(255,255,255,0.1)';
+
+      // Show structured form directly for manual entry
       showStructuredForm();
     });
 
@@ -1446,9 +1516,13 @@
       btn.disabled = true;
       btn.textContent = 'Sending...';
 
-      var captureMethod = captureMode === 'audio' ? 'audio_note' : 'photo_capture';
-      if (photos.card || photos.badge) {
-        captureMethod = captureMode === 'audio' ? 'audio_note_with_photo' : 'photo_capture';
+      var captureMethod = 'manual_entry';
+      if (captureMode === 'audio') {
+        captureMethod = (photos.card || photos.badge) ? 'audio_note_with_photo' : 'audio_note';
+      } else if (captureMode === 'photo') {
+        captureMethod = 'photo_capture';
+      } else if (captureMode === 'manual') {
+        captureMethod = (photos.card || photos.badge) ? 'manual_entry_with_photo' : 'manual_entry';
       }
 
       // Get the display name from the AE select
@@ -1482,7 +1556,7 @@
         nrb_capture_method: captureMethod,
         nrb_intent_level: captureMode === 'audio' ? 'high' : 'medium',
         nrb_scenario: captureMode === 'audio' ? 'demo_conversation' : 'ae_conversation',
-        nrb_conversation: captureMode === 'audio',
+        nrb_conversation: captureMode === 'audio' || captureMode === 'manual',
         lifecycle_stage: captureMode === 'audio' ? 'sql' : 'mql',
         capture_timestamp: new Date().toISOString()
       };
@@ -1500,6 +1574,7 @@
       function onSubmitSuccess() {
         var captureBadges = [];
         if (transcript) captureBadges.push('audio');
+        if (captureMode === 'manual' && !transcript) captureBadges.push('typed');
         if (photos.card) captureBadges.push('card');
         if (photos.badge) captureBadges.push('badge');
 
@@ -1623,6 +1698,8 @@
       document.querySelectorAll('input[type="file"]').forEach(function(inp) { inp.value = ''; });
       document.getElementById('audioPhotoThumbs').innerHTML = '';
       document.getElementById('audioPhotoThumbs').style.display = 'none';
+      document.getElementById('manualPhotoThumbs').innerHTML = '';
+      document.getElementById('manualPhotoThumbs').style.display = 'none';
 
       // Reset submit
       var submitBtn = document.getElementById('submitBtn');
@@ -1658,7 +1735,7 @@
         var badgesHtml = '';
         if (capture.badges && capture.badges.length > 0) {
           badgesHtml = '<div class="recent-badges">' + capture.badges.map(function(b) {
-            var cls = b === 'audio' ? 'rbadge-audio' : b === 'card' ? 'rbadge-card' : 'rbadge-badge';
+            var cls = b === 'audio' ? 'rbadge-audio' : b === 'card' ? 'rbadge-card' : b === 'typed' ? 'rbadge-typed' : 'rbadge-badge';
             return '<span class="' + cls + '">' + b + '</span>';
           }).join('') + '</div>';
         }

@@ -346,10 +346,10 @@
     }
     .enrichment-table tr:last-child td { border-bottom: none; }
 
-    /* HubSpot Properties */
+    /* Data Properties (Google Sheets + HubSpot) */
     .hs-props {
-      background: rgba(255,107,0,0.05);
-      border: 1px solid rgba(255,107,0,0.15);
+      background: rgba(52,168,83,0.05);
+      border: 1px solid rgba(52,168,83,0.15);
       border-radius: 12px;
       padding: 20px;
       margin-top: 24px;
@@ -357,7 +357,7 @@
     .hs-props h4 {
       font-size: 13px;
       font-weight: 700;
-      color: #FF6B00;
+      color: #34A853;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -372,9 +372,9 @@
     .hs-prop-list li {
       font-size: 12px;
       font-family: 'Courier New', monospace;
-      color: rgba(255,107,0,0.7);
+      color: rgba(52,168,83,0.85);
       padding: 4px 8px;
-      background: rgba(255,107,0,0.05);
+      background: rgba(52,168,83,0.05);
       border-radius: 4px;
     }
 
@@ -512,7 +512,7 @@
         <div class="pipeline-step">
           <span class="pipeline-num">1</span>
           <h3>Capture</h3>
-          <p>Badge scan, QR code, business card photo, audio note, or form submission. Get into HubSpot within minutes.</p>
+          <p>Badge scan, QR code, business card photo, badge photo, audio note, or form submission. Get into Google Sheets within minutes.</p>
         </div>
         <div class="pipeline-step">
           <span class="pipeline-num">2</span>
@@ -565,7 +565,7 @@
             </li>
             <li>
               <span class="step-num">4</span>
-              <span>CSV is bulk-uploaded to <strong>HubSpot</strong> via import, mapped to contact properties</span>
+              <span>CSV is bulk-uploaded to the <strong>NRB 2026 Lead Tracker</strong> Google Sheet and to <strong>HubSpot</strong>, mapped to contact properties</span>
             </li>
           </ul>
           <div class="callout">
@@ -577,10 +577,10 @@
         <div class="scenario-col">
           <div class="col-label"><span class="icon">2</span> Data Captured</div>
           <ul class="data-list">
-            <li><span class="data-label">From NRB Badge</span><div class="data-value">First Name, Last Name, Email, Title, Company Name, Company Domain</div></li>
+            <li><span class="data-label">From NRB Badge</span><div class="data-value">First Name, Last Name, Email, Title, Company Name, Company Website, Company Domain</div></li>
             <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_badge_scan</div></li>
             <li><span class="data-label">Intent Level</span><div class="data-value">Low (passive walk-by, no conversation)</div></li>
-            <li><span class="data-label">HubSpot Lifecycle</span><div class="data-value">Lead</div></li>
+            <li><span class="data-label">Lifecycle Stage</span><div class="data-value">Lead</div></li>
             <li><span class="data-label">Scan Timestamp</span><div class="data-value">Auto-captured by NRB system</div></li>
           </ul>
         </div>
@@ -616,12 +616,12 @@
       </div>
 
       <div class="hs-props">
-        <h4>HubSpot Properties to Set</h4>
+        <h4>Google Sheets Columns &amp; HubSpot Properties</h4>
         <ul class="hs-prop-list">
           <li>lead_source = nrb_2026</li>
-          <li>nrb_capture_method = badge_scan</li>
-          <li>nrb_intent_level = low</li>
-          <li>nrb_scenario = walk_by_scan</li>
+          <li>capture_method = badge_scan</li>
+          <li>intent_level = low</li>
+          <li>scenario = walk_by_scan</li>
           <li>nrb_conversation = false</li>
           <li>nrb_demo_interest = false</li>
           <li>lifecycle_stage = lead</li>
@@ -647,35 +647,31 @@
       <div class="scenario-columns">
         <!-- CAPTURE -->
         <div class="scenario-col">
-          <div class="col-label"><span class="icon">1</span> Capture Methods (Choose One)</div>
+          <div class="col-label"><span class="icon">1</span> Capture Methods (via Lead Capture Tool)</div>
           <ul class="step-list">
             <li>
               <span class="step-num">A</span>
-              <span><strong>Option A: Badge Photo</strong> &mdash; AE photographs the attendee's NRB badge QR code with their personal phone</span>
+              <span><strong>Option A: Photo Capture</strong> &mdash; AE opens the <a href="booth-audio-capture.html" style="color:#E3AF4A;">Lead Capture Tool</a>, selects "Photo Capture" tab, and photographs the attendee's business card or NRB badge</span>
             </li>
             <li>
               <span class="step-num">></span>
-              <span>AE sends the photo to <strong>nrb-leads@pray.com</strong> with subject line "Badge: [Name]"</span>
-            </li>
-            <li>
-              <span class="step-num">></span>
-              <span>Marketing scans the QR code from the photo and manually enters the data into HubSpot</span>
+              <span>Photos are saved to <strong>Google Drive</strong> with shareable links automatically added to the Google Sheet</span>
             </li>
             <li>
               <span class="step-num">B</span>
-              <span><strong>Option B: Business Card</strong> &mdash; AE photographs the business card</span>
+              <span><strong>Option B: Type It In</strong> &mdash; AE selects "Type It In" tab and manually enters the lead's name, email, company, website, and conversation notes</span>
             </li>
             <li>
               <span class="step-num">></span>
-              <span>AE sends the photo to <strong>nrb-leads@pray.com</strong> with subject line "Card: [Name]"</span>
+              <span>Data goes directly to the <strong>NRB 2026 Lead Tracker</strong> Google Sheet in real time</span>
             </li>
             <li>
-              <span class="step-num">></span>
-              <span>Marketing manually transcribes card info into HubSpot contact</span>
+              <span class="step-num">C</span>
+              <span><strong>Option C: Audio Note</strong> &mdash; AE selects "Audio Note" tab to dictate the lead's details; AI extracts and structures the data</span>
             </li>
           </ul>
           <div class="callout">
-            <strong>AE Protocol:</strong> Always include a 1-sentence note in the email body describing the conversation topic. E.g., "Interested in SuperFunnel, runs a $3M ministry, wants demo."
+            <strong>AE Protocol:</strong> Always add a note about the conversation topic when submitting. E.g., "Interested in SuperFunnel, runs a $3M ministry, wants demo." You can attach photos in any capture mode.
           </div>
         </div>
 
@@ -683,12 +679,13 @@
         <div class="scenario-col">
           <div class="col-label"><span class="icon">2</span> Data Captured</div>
           <ul class="data-list">
-            <li><span class="data-label">From Badge/Card</span><div class="data-value">Name, Email, Title, Company, Domain, Phone (if card)</div></li>
+            <li><span class="data-label">From Badge/Card/Form</span><div class="data-value">Name, Email, Title, Company, Website, Domain, Phone (if available)</div></li>
             <li><span class="data-label">From AE Note</span><div class="data-value">Conversation topic, interest area, budget signals, fit indicators</div></li>
+            <li><span class="data-label">Photo Attachments</span><div class="data-value">Business card photo and/or NRB badge photo (saved to Google Drive)</div></li>
             <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_ae_conversation</div></li>
             <li><span class="data-label">Intent Level</span><div class="data-value">Medium (engaged in conversation)</div></li>
-            <li><span class="data-label">HubSpot Lifecycle</span><div class="data-value">MQL (Marketing Qualified Lead)</div></li>
-            <li><span class="data-label">AE Owner</span><div class="data-value">[AE Name who captured]</div></li>
+            <li><span class="data-label">Lifecycle Stage</span><div class="data-value">MQL (Marketing Qualified Lead)</div></li>
+            <li><span class="data-label">AE Owner</span><div class="data-value">[AE Name from tool dropdown]</div></li>
           </ul>
         </div>
 
@@ -723,15 +720,15 @@
       </div>
 
       <div class="hs-props">
-        <h4>HubSpot Properties to Set</h4>
+        <h4>Google Sheets Columns &amp; HubSpot Properties</h4>
         <ul class="hs-prop-list">
           <li>lead_source = nrb_2026</li>
-          <li>nrb_capture_method = ae_manual</li>
-          <li>nrb_intent_level = medium</li>
-          <li>nrb_scenario = ae_conversation</li>
-          <li>nrb_conversation = true</li>
-          <li>nrb_conversation_notes = [text]</li>
-          <li>nrb_ae_owner = [AE name]</li>
+          <li>capture_method = photo_capture / manual_entry / audio_note</li>
+          <li>intent_level = medium</li>
+          <li>scenario = ae_conversation</li>
+          <li>conversation_summary = [text]</li>
+          <li>ae_owner = [AE name]</li>
+          <li>website = [company URL]</li>
           <li>lifecycle_stage = mql</li>
         </ul>
       </div>
@@ -766,11 +763,11 @@
             </li>
             <li>
               <span class="step-num">3</span>
-              <span>Attendee fills in: name, email, phone, organization, role, budget, interest, preferred time</span>
+              <span>Attendee fills in: name, email, phone, organization, company website, role, budget, interest, preferred time</span>
             </li>
             <li>
               <span class="step-num">4</span>
-              <span>Form is <strong>natively integrated with HubSpot</strong> &mdash; contact is created/updated instantly with all properties</span>
+              <span>Form data flows to the <strong>NRB 2026 Lead Tracker</strong> Google Sheet and <strong>HubSpot</strong> &mdash; contact is created/updated instantly with all properties</span>
             </li>
             <li>
               <span class="step-num">5</span>
@@ -786,10 +783,10 @@
         <div class="scenario-col">
           <div class="col-label"><span class="icon">2</span> Data Captured</div>
           <ul class="data-list">
-            <li><span class="data-label">From Form</span><div class="data-value">First Name, Last Name, Email, Phone, Organization, Role, Budget Range, Interest Area, Preferred Meeting Time, Notes</div></li>
+            <li><span class="data-label">From Form</span><div class="data-value">First Name, Last Name, Email, Phone, Organization, Company Website, Role, Budget Range, Interest Area, Preferred Meeting Time, Notes</div></li>
             <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_qr_scan</div></li>
             <li><span class="data-label">Intent Level</span><div class="data-value">Medium-High (proactive action)</div></li>
-            <li><span class="data-label">HubSpot Lifecycle</span><div class="data-value">MQL</div></li>
+            <li><span class="data-label">Lifecycle Stage</span><div class="data-value">MQL</div></li>
             <li><span class="data-label">UTM Params</span><div class="data-value">utm_source=nrb2026&utm_medium=qr&utm_campaign=booth</div></li>
           </ul>
         </div>
@@ -825,15 +822,15 @@
       </div>
 
       <div class="hs-props">
-        <h4>HubSpot Properties to Set</h4>
+        <h4>Google Sheets Columns &amp; HubSpot Properties</h4>
         <ul class="hs-prop-list">
           <li>lead_source = nrb_2026</li>
-          <li>nrb_capture_method = qr_form</li>
-          <li>nrb_intent_level = medium_high</li>
-          <li>nrb_scenario = qr_self_service</li>
-          <li>nrb_meeting_requested = true</li>
-          <li>nrb_preferred_time = [value]</li>
-          <li>nrb_interest_area = [value]</li>
+          <li>capture_method = qr_form</li>
+          <li>intent_level = medium_high</li>
+          <li>scenario = qr_self_service</li>
+          <li>meeting_requested = true</li>
+          <li>preferred_time = [value]</li>
+          <li>website = [company URL]</li>
           <li>lifecycle_stage = mql</li>
         </ul>
       </div>
@@ -856,27 +853,31 @@
       <div class="scenario-columns">
         <!-- CAPTURE -->
         <div class="scenario-col">
-          <div class="col-label"><span class="icon">1</span> Capture Methods (Multiple)</div>
+          <div class="col-label"><span class="icon">1</span> Capture Methods (via Lead Capture Tool)</div>
           <ul class="step-list">
             <li>
               <span class="step-num">A</span>
-              <span><strong>Primary: Audio Capture Tool</strong> &mdash; After the conversation, AE opens <a href="booth-audio-capture.html" style="color:#E3AF4A;">booth-audio-capture.html</a> and records a voice note with the person's name, company, and conversation details</span>
+              <span><strong>Primary: Audio Note</strong> &mdash; AE opens the <a href="booth-audio-capture.html" style="color:#E3AF4A;">Lead Capture Tool</a>, selects "Audio Note" tab, and records a voice note with the person's name, company, website, and conversation details</span>
             </li>
             <li>
               <span class="step-num">></span>
-              <span>The audio tool transcribes and structures the data, then pushes it to HubSpot via API</span>
+              <span>AI transcribes and structures the data, then sends it to the <strong>NRB 2026 Lead Tracker</strong> Google Sheet automatically</span>
             </li>
             <li>
               <span class="step-num">B</span>
-              <span><strong>Plus: Badge/Card Capture</strong> &mdash; Also photograph the badge QR or business card and email to <strong>nrb-leads@pray.com</strong> as backup</span>
+              <span><strong>Plus: Badge/Card Photos</strong> &mdash; In the same tool, AE also attaches a photo of the badge QR or business card (built-in camera capture). Photos are saved to <strong>Google Drive</strong> with links in the spreadsheet</span>
             </li>
             <li>
               <span class="step-num">C</span>
-              <span><strong>Meeting Notes:</strong> AE adds post-meeting notes via the audio tool or directly in HubSpot describing how the conversation went, key objections, next steps discussed</span>
+              <span><strong>Meeting Notes:</strong> AE fills in pain points, next steps, products discussed, demo status, and meeting quality rating (1-5) in the structured form</span>
+            </li>
+            <li>
+              <span class="step-num">D</span>
+              <span><strong>Alternative: Type It In</strong> &mdash; AE can also use the "Type It In" tab to manually enter all lead details directly if audio isn't convenient</span>
             </li>
           </ul>
           <div class="callout">
-            <strong>Critical:</strong> This is our highest-value scenario. Double-capture (audio + badge/card) is mandatory. AEs must record notes within 15 minutes of the conversation ending.
+            <strong>Critical:</strong> This is our highest-value scenario. Double-capture (audio/typed + badge/card photo) is mandatory. AEs must record notes within 15 minutes of the conversation ending.
           </div>
         </div>
 
@@ -884,12 +885,13 @@
         <div class="scenario-col">
           <div class="col-label"><span class="icon">2</span> Data Captured</div>
           <ul class="data-list">
-            <li><span class="data-label">From Badge/Card</span><div class="data-value">Name, Email, Title, Company, Domain</div></li>
-            <li><span class="data-label">From Audio Note</span><div class="data-value">Conversation summary, products discussed, budget signals, pain points, competitor mentions, decision timeline</div></li>
+            <li><span class="data-label">From Badge/Card/Form</span><div class="data-value">Name, Email, Title, Company, Website, Domain, Phone</div></li>
+            <li><span class="data-label">From Audio/Typed Note</span><div class="data-value">Conversation summary, products discussed, budget signals, pain points, competitor mentions, decision timeline</div></li>
             <li><span class="data-label">AE Meeting Notes</span><div class="data-value">Meeting quality (1-5), next steps agreed, decision maker confirmed (Y/N), demo given (Y/N)</div></li>
+            <li><span class="data-label">Photo Attachments</span><div class="data-value">Business card photo and/or NRB badge photo (saved to Google Drive)</div></li>
             <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_demo_conversation</div></li>
             <li><span class="data-label">Intent Level</span><div class="data-value">High (demo interest, active discussion)</div></li>
-            <li><span class="data-label">HubSpot Lifecycle</span><div class="data-value">SQL (Sales Qualified Lead)</div></li>
+            <li><span class="data-label">Lifecycle Stage</span><div class="data-value">SQL (Sales Qualified Lead)</div></li>
           </ul>
         </div>
 
@@ -930,19 +932,19 @@
       </div>
 
       <div class="hs-props">
-        <h4>HubSpot Properties to Set</h4>
+        <h4>Google Sheets Columns &amp; HubSpot Properties</h4>
         <ul class="hs-prop-list">
           <li>lead_source = nrb_2026</li>
-          <li>nrb_capture_method = audio_note</li>
-          <li>nrb_intent_level = high</li>
-          <li>nrb_scenario = demo_conversation</li>
-          <li>nrb_conversation = true</li>
-          <li>nrb_demo_given = true/false</li>
-          <li>nrb_meeting_quality = [1-5]</li>
-          <li>nrb_conversation_notes = [text]</li>
-          <li>nrb_products_discussed = [list]</li>
-          <li>nrb_next_steps = [text]</li>
-          <li>nrb_ae_owner = [AE name]</li>
+          <li>capture_method = audio_note / manual_entry</li>
+          <li>intent_level = high</li>
+          <li>scenario = demo_conversation</li>
+          <li>demo_given = true/false</li>
+          <li>meeting_quality = [1-5]</li>
+          <li>conversation_summary = [text]</li>
+          <li>products_discussed = [list]</li>
+          <li>next_steps = [text]</li>
+          <li>website = [company URL]</li>
+          <li>ae_owner = [AE name]</li>
           <li>lifecycle_stage = sql</li>
         </ul>
       </div>
@@ -969,7 +971,7 @@
           <ul class="step-list">
             <li>
               <span class="step-num">1</span>
-              <span><strong>Pre-event:</strong> Contact already in HubSpot from form submission or Calendly booking with meeting time confirmed</span>
+              <span><strong>Pre-event:</strong> Contact already in the Google Sheet and HubSpot from form submission or Calendly booking with meeting time confirmed</span>
             </li>
             <li>
               <span class="step-num">2</span>
@@ -977,19 +979,19 @@
             </li>
             <li>
               <span class="step-num">3</span>
-              <span><strong>Showed:</strong> Mark <code>nrb_meeting_status = completed</code> in HubSpot. AE records meeting notes via audio tool or direct entry.</span>
+              <span><strong>Showed:</strong> Mark <code>meeting_status = completed</code> in the Google Sheet. AE records meeting notes via the <a href="booth-audio-capture.html" style="color:#E3AF4A;">Lead Capture Tool</a> (Audio, Photo, or Type It In).</span>
             </li>
             <li>
               <span class="step-num">4</span>
-              <span><strong>No-Show:</strong> Mark <code>nrb_meeting_status = no_show</code>. Trigger no-show follow-up sequence.</span>
+              <span><strong>No-Show:</strong> Mark <code>meeting_status = no_show</code>. Trigger no-show follow-up sequence.</span>
             </li>
             <li>
               <span class="step-num">5</span>
-              <span>AE adds meeting notes: how it went, what was discussed, follow-up actions, deal potential rating (1-5)</span>
+              <span>AE adds meeting notes via the Lead Capture Tool: how it went, what was discussed, follow-up actions, deal potential rating (1-5)</span>
             </li>
           </ul>
           <div class="callout">
-            <strong>Booth Manager Role:</strong> Print the daily meeting roster each morning. Check off arrivals in real-time. At end of day, bulk-update HubSpot statuses.
+            <strong>Booth Manager Role:</strong> Print the daily meeting roster each morning. Check off arrivals in real-time. At end of day, bulk-update Google Sheet and HubSpot statuses.
           </div>
         </div>
 
@@ -1053,17 +1055,17 @@
       </div>
 
       <div class="hs-props">
-        <h4>HubSpot Properties to Set</h4>
+        <h4>Google Sheets Columns &amp; HubSpot Properties</h4>
         <ul class="hs-prop-list">
           <li>lead_source = nrb_2026</li>
-          <li>nrb_capture_method = prebooked</li>
-          <li>nrb_intent_level = high</li>
-          <li>nrb_scenario = prebooked_meeting</li>
-          <li>nrb_meeting_status = completed/no_show</li>
-          <li>nrb_meeting_notes = [text]</li>
-          <li>nrb_deal_potential = [1-5]</li>
-          <li>nrb_follow_up_type = [value]</li>
-          <li>nrb_decision_timeline = [value]</li>
+          <li>capture_method = prebooked</li>
+          <li>intent_level = high</li>
+          <li>scenario = prebooked_meeting</li>
+          <li>meeting_status = completed/no_show</li>
+          <li>meeting_notes = [text]</li>
+          <li>deal_potential = [1-5]</li>
+          <li>follow_up_type = [value]</li>
+          <li>website = [company URL]</li>
           <li>lifecycle_stage = sql</li>
         </ul>
       </div>
@@ -1088,11 +1090,17 @@
           <tr>
             <th>Data Point</th>
             <th>Source</th>
-            <th>HubSpot Property</th>
+            <th>Sheet Column / Property</th>
             <th>Used For</th>
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td>Company Website</td>
+            <td>Lead Capture Tool form field, business card, or form submission</td>
+            <td><code>website</code></td>
+            <td>Domain lookup for enrichment, company research, competitor analysis</td>
+          </tr>
           <tr>
             <td>Company Type</td>
             <td>Domain lookup + manual research</td>
@@ -1113,7 +1121,7 @@
           </tr>
           <tr>
             <td>Previous PRAY.COM Interactions</td>
-            <td>HubSpot CRM history, email engagement, past deals</td>
+            <td>HubSpot CRM history, Google Sheet records, email engagement, past deals</td>
             <td><code>previous_interaction</code></td>
             <td>None, Inbound Lead, Past Demo, Current Customer, Churned</td>
           </tr>
@@ -1234,7 +1242,7 @@
   <!-- ===== FOOTER ===== -->
   <div class="doc-footer">
     <p><strong style="color: rgba(255,255,255,0.4);">PRAY.COM</strong> | NRB 2026 Sales Communication Flow | Internal Use Only</p>
-    <p style="margin-top: 4px;">Last updated: February 2026 | Questions? Contact the Marketing Ops team</p>
+    <p style="margin-top: 4px;">Last updated: February 11, 2026 | Questions? Contact the Marketing Ops team</p>
   </div>
 
 </body>
