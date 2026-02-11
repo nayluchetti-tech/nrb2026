@@ -1204,11 +1204,8 @@
       ocrStatusEl.style.display = 'none';
     }
 
-    function extractEmailFromPhoto(dataUrl) {
-      // Don't overwrite if AE already typed an email
-      if (leadEmailTop.value.trim()) return;
-
-      showOcrStatus('Scanning card for email...', 'scanning');
+    function extractInfoFromPhoto(dataUrl, photoType) {
+      showOcrStatus('Scanning ' + (photoType === 'badge' ? 'badge' : 'card') + ' for details...', 'scanning');
 
       if (typeof Tesseract === 'undefined') {
         hideOcrStatus();
@@ -1219,21 +1216,157 @@
         logger: function() {} // silent
       }).then(function(result) {
         var text = result.data.text || '';
-        // Match email addresses
-        var emailMatch = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
-        if (emailMatch) {
-          var email = emailMatch[0].toLowerCase();
-          leadEmailTop.value = email;
-          document.getElementById('leadEmail').value = email;
-          showOcrStatus('Email found: ' + email, 'found');
-          setTimeout(hideOcrStatus, 4000);
+        var lines = text.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 1; });
+        var found = [];
+
+        // --- Extract email ---
+        if (!leadEmailTop.value.trim()) {
+          var emailMatch = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
+          if (emailMatch) {
+            var email = emailMatch[0].toLowerCase();
+            leadEmailTop.value = email;
+            document.getElementById('leadEmail').value = email;
+            found.push('Email');
+          }
+        }
+
+        // --- Extract domain / website ---
+        if (!document.getElementById('leadWebsite').value.trim()) {
+          // Match www.something.com or domain.com/org/net/church/tv/io etc.
+          var urlMatch = text.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][a-zA-Z0-9\-]*\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?)/i);
+          if (urlMatch) {
+            var domain = urlMatch[0].toLowerCase().replace(/^https?:\/\//, '');
+            // Skip if it's just the email domain we already captured
+            var emailDomain = leadEmailTop.value.split('@')[1] || '';
+            if (domain !== emailDomain && domain.indexOf(emailDomain) === -1) {
+              document.getElementById('leadWebsite').value = 'https://' + domain;
+              found.push('Website');
+            } else if (!document.getElementById('leadWebsite').value.trim()) {
+              // Use email domain as website fallback
+              document.getElementById('leadWebsite').value = 'https://' + emailDomain;
+              found.push('Website');
+            }
+          } else if (leadEmailTop.value.includes('@')) {
+            // Fallback: derive domain from email
+            var eDomain = leadEmailTop.value.split('@')[1];
+            var genericDomains = ['gmail.com','yahoo.com','hotmail.com','outlook.com','aol.com','icloud.com','me.com','live.com'];
+            if (eDomain && genericDomains.indexOf(eDomain) === -1) {
+              document.getElementById('leadWebsite').value = 'https://' + eDomain;
+              found.push('Website');
+            }
+          }
+        }
+
+        // --- Extract company name ---
+        if (!document.getElementById('leadCompany').value.trim()) {
+          var company = extractCompanyFromLines(lines, text);
+          if (company) {
+            document.getElementById('leadCompany').value = company;
+            found.push('Company');
+          }
+        }
+
+        // --- Extract first and last name ---
+        if (!document.getElementById('leadFirstName').value.trim() && !document.getElementById('leadLastName').value.trim()) {
+          var name = extractNameFromLines(lines, text, photoType);
+          if (name.first) {
+            document.getElementById('leadFirstName').value = name.first;
+            found.push('First Name');
+          }
+          if (name.last) {
+            document.getElementById('leadLastName').value = name.last;
+            if (found.indexOf('First Name') === -1) found.push('Name');
+          }
+        }
+
+        // --- Show status ---
+        if (found.length > 0) {
+          showOcrStatus('Found: ' + found.join(', '), 'found');
+          setTimeout(hideOcrStatus, 5000);
         } else {
-          showOcrStatus('No email detected — type it in manually', 'notfound');
+          showOcrStatus('No details detected — type them in manually', 'notfound');
           setTimeout(hideOcrStatus, 3000);
         }
       }).catch(function() {
         hideOcrStatus();
       });
+    }
+
+    function extractNameFromLines(lines, fullText, photoType) {
+      var result = { first: '', last: '' };
+      // Skip lines that look like titles, companies, addresses, phones, emails, urls
+      var skipPatterns = [
+        /^[\d\(\+]/, // starts with number or phone
+        /@/, // email
+        /www\.|\.com|\.org|\.net|\.church|\.tv|\.io/i, // urls/domains
+        /\d{3}[\-\.\s]?\d{3}/, // phone patterns
+        /street|ave|blvd|suite|floor|po box|address/i, // addresses
+        /church|ministr|media|broadcast|network|inc\.|llc|corp|assoc|foundation|org\b/i, // company words
+        /president|pastor|director|manager|vp |ceo|cto|coo|cfo|chairman|founder|executive|coordinator|associate|assistant|lead\b|head\b|chief/i, // titles
+        /nrb|national religious|convention|conference|booth/i, // badge/conference noise
+        /^\W+$/, // only special chars
+        /^[A-Z\s]{15,}$/ // very long all-caps (likely org name)
+      ];
+
+      var candidateLines = [];
+      for (var i = 0; i < Math.min(lines.length, 8); i++) {
+        var line = lines[i];
+        if (line.length < 2 || line.length > 40) continue;
+        var skip = false;
+        for (var j = 0; j < skipPatterns.length; j++) {
+          if (skipPatterns[j].test(line)) { skip = true; break; }
+        }
+        if (!skip) candidateLines.push(line);
+      }
+
+      // For badges, the name is typically the largest/first prominent text
+      // For cards, the name is usually one of the first lines
+      if (candidateLines.length > 0) {
+        // Pick the first candidate that looks like a name (2-3 words, mostly alpha)
+        for (var k = 0; k < candidateLines.length; k++) {
+          var cleaned = candidateLines[k].replace(/[^a-zA-Z\s\-'\.]/g, '').trim();
+          var words = cleaned.split(/\s+/).filter(function(w) { return w.length > 1; });
+          if (words.length >= 2 && words.length <= 4) {
+            // Remove common prefixes like Dr., Rev., Pastor, etc.
+            var prefixes = ['dr', 'rev', 'pastor', 'mr', 'mrs', 'ms', 'miss', 'prof'];
+            if (prefixes.indexOf(words[0].toLowerCase().replace(/\./g, '')) > -1) {
+              words.shift();
+            }
+            if (words.length >= 2) {
+              result.first = words[0].charAt(0).toUpperCase() + words[0].slice(1).toLowerCase();
+              result.last = words.slice(1).map(function(w) {
+                return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+              }).join(' ');
+              break;
+            }
+          }
+        }
+      }
+      return result;
+    }
+
+    function extractCompanyFromLines(lines, fullText) {
+      // Look for lines containing typical org/company indicators
+      var companyKeywords = /church|ministr|media|broadcast|network|inc\.|llc|corp|assoc|foundation|entertainment|group|studios|productions|publishing|records|international|worldwide|global|digital|tech|solutions/i;
+
+      for (var i = 0; i < Math.min(lines.length, 10); i++) {
+        var line = lines[i];
+        if (line.length < 3 || line.length > 60) continue;
+        // Skip lines that are clearly not company names
+        if (/@/.test(line)) continue; // email
+        if (/\d{3}[\-\.\s]?\d{3}/.test(line)) continue; // phone
+        if (/www\.|https?:/i.test(line)) continue; // url
+
+        if (companyKeywords.test(line)) {
+          // Clean up the company name
+          var company = line.replace(/[^\w\s\-\.\&\',]/g, '').trim();
+          if (company.length > 2) return company;
+        }
+      }
+
+      // Fallback: if we found an email with a non-generic domain, try to use the domain as a hint
+      // but don't set it — leave company blank rather than guess wrong
+      return '';
     }
 
     function setupPhotoInput(inputId, type, dropZoneId, previewImgId, removeBtnId) {
@@ -1261,9 +1394,9 @@
           // Update inline thumbnails (audio panel)
           updateAudioPhotoThumbs();
 
-          // Auto-extract email from business card photos
-          if (type === 'card') {
-            extractEmailFromPhoto(ev.target.result);
+          // Auto-extract info from business card and badge photos
+          if (type === 'card' || type === 'badge') {
+            extractInfoFromPhoto(ev.target.result, type);
           }
         };
         reader.readAsDataURL(file);
