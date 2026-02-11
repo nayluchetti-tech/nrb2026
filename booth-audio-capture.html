@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- HubSpot Tracking Code (replace XXXXXXX with your portal ID) -->
   <!-- <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/XXXXXXX.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -821,6 +822,7 @@
     <div class="ae-section">
       <label for="leadEmailTop">Lead's Email</label>
       <input type="email" id="leadEmailTop" class="ae-select" placeholder="john@church.org" style="background-image: none; padding-right: 16px;">
+      <div id="ocrStatus" style="display: none; margin-top: 8px; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 8px; text-align: center;"></div>
     </div>
 
     <!-- Capture Mode Tabs -->
@@ -1170,6 +1172,62 @@
     // =============================================
     // PHOTO CAPTURE (both panels)
     // =============================================
+    // =============================================
+    // OCR EMAIL EXTRACTION FROM BUSINESS CARD
+    // =============================================
+    var ocrStatusEl = document.getElementById('ocrStatus');
+
+    function showOcrStatus(message, type) {
+      ocrStatusEl.textContent = message;
+      ocrStatusEl.style.display = 'block';
+      if (type === 'scanning') {
+        ocrStatusEl.style.background = 'rgba(227,175,74,0.1)';
+        ocrStatusEl.style.color = '#E3AF4A';
+      } else if (type === 'found') {
+        ocrStatusEl.style.background = 'rgba(76,175,80,0.1)';
+        ocrStatusEl.style.color = '#4CAF50';
+      } else if (type === 'notfound') {
+        ocrStatusEl.style.background = 'rgba(255,255,255,0.05)';
+        ocrStatusEl.style.color = 'rgba(255,255,255,0.4)';
+      }
+    }
+
+    function hideOcrStatus() {
+      ocrStatusEl.style.display = 'none';
+    }
+
+    function extractEmailFromPhoto(dataUrl) {
+      // Don't overwrite if AE already typed an email
+      if (leadEmailTop.value.trim()) return;
+
+      showOcrStatus('Scanning card for email...', 'scanning');
+
+      if (typeof Tesseract === 'undefined') {
+        hideOcrStatus();
+        return;
+      }
+
+      Tesseract.recognize(dataUrl, 'eng', {
+        logger: function() {} // silent
+      }).then(function(result) {
+        var text = result.data.text || '';
+        // Match email addresses
+        var emailMatch = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
+        if (emailMatch) {
+          var email = emailMatch[0].toLowerCase();
+          leadEmailTop.value = email;
+          document.getElementById('leadEmail').value = email;
+          showOcrStatus('Email found: ' + email, 'found');
+          setTimeout(hideOcrStatus, 4000);
+        } else {
+          showOcrStatus('No email detected — type it in manually', 'notfound');
+          setTimeout(hideOcrStatus, 3000);
+        }
+      }).catch(function() {
+        hideOcrStatus();
+      });
+    }
+
     function setupPhotoInput(inputId, type, dropZoneId, previewImgId, removeBtnId) {
       var input = document.getElementById(inputId);
       if (!input) return;
@@ -1194,6 +1252,11 @@
 
           // Update inline thumbnails (audio panel)
           updateAudioPhotoThumbs();
+
+          // Auto-extract email from business card photos
+          if (type === 'card') {
+            extractEmailFromPhoto(ev.target.result);
+          }
         };
         reader.readAsDataURL(file);
       });
