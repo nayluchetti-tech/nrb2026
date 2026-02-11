@@ -1217,45 +1217,44 @@
       }).then(function(result) {
         var text = result.data.text || '';
         var confidence = result.data.confidence || 0;
+        // Clean OCR text: normalize whitespace, strip non-printable chars
+        text = text.replace(/[^\x20-\x7E\n]/g, ' ').replace(/[ \t]+/g, ' ');
         var lines = text.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 1; });
         var found = [];
 
-        // Skip if OCR confidence is very low (bad photo, blurry, etc.)
-        if (confidence < 30) {
+        // Skip if OCR confidence is very low
+        if (confidence < 20) {
           showOcrStatus('Photo too blurry to read — type details manually', 'notfound');
           setTimeout(hideOcrStatus, 3000);
           return;
         }
 
-        // --- Extract email (high confidence — email patterns are very distinct) ---
+        // --- Extract email ---
         if (!leadEmailTop.value.trim()) {
-          var emailMatch = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
+          // Standard email match
+          var emailMatch = text.match(/[a-zA-Z0-9._%+\-]+\s*@\s*[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
           if (emailMatch) {
-            var email = emailMatch[0].toLowerCase();
+            var email = emailMatch[0].replace(/\s/g, '').toLowerCase();
             leadEmailTop.value = email;
             document.getElementById('leadEmail').value = email;
             found.push('Email');
           }
         }
 
-        // --- Extract website (require www. or known TLD with real domain) ---
+        // --- Extract website ---
         if (!document.getElementById('leadWebsite').value.trim()) {
-          // Must have www. prefix OR a domain with 4+ chars before a known TLD
           var wwwMatch = text.match(/(?:https?:\/\/)?www\.[a-zA-Z0-9][a-zA-Z0-9\-]{1,}[a-zA-Z0-9]\.[a-zA-Z]{2,}/i);
           if (!wwwMatch) {
-            // Try matching domain.tld where domain is 4+ chars and TLD is common
             wwwMatch = text.match(/[a-zA-Z0-9][a-zA-Z0-9\-]{3,}\.(com|org|net|church|tv|io|co|us|info|media)\b/i);
           }
           if (wwwMatch) {
             var domain = wwwMatch[0].toLowerCase().replace(/^https?:\/\//, '');
-            // Don't use email domain if it's the same
             var emailDomain = leadEmailTop.value.split('@')[1] || '';
             if (domain.indexOf(emailDomain) === -1 || !emailDomain) {
               document.getElementById('leadWebsite').value = 'https://' + domain;
               found.push('Website');
             }
           }
-          // Fallback: derive website from email domain (if not generic)
           if (!document.getElementById('leadWebsite').value.trim() && leadEmailTop.value.includes('@')) {
             var eDomain = leadEmailTop.value.split('@')[1];
             var genericDomains = ['gmail.com','yahoo.com','hotmail.com','outlook.com','aol.com','icloud.com','me.com','live.com'];
@@ -1304,64 +1303,80 @@
     function extractNameFromLines(lines, photoType) {
       var result = { first: '', last: '' };
 
-      // Lines that are clearly NOT names
-      function isNotName(line) {
-        if (/\d/.test(line)) return true;           // contains any digit (phone, address, zip)
-        if (/@/.test(line)) return true;             // email
-        if (/www\.|\.com|\.org|\.net/i.test(line)) return true; // url
-        if (/[#\$%\^&\*\+=]/.test(line)) return true; // special chars
-        if (line.length < 3 || line.length > 35) return true; // too short or too long
-        // Only letters, spaces, hyphens, apostrophes, and periods allowed in names
-        if (!/^[a-zA-Z\s\-'\.]+$/.test(line)) return true;
-        return false;
-      }
+      // Title/role words to skip
+      var titleWords = /^(founder|ceo|cto|coo|cfo|cmo|cpo|vp|svp|evp|president|pastor|director|manager|executive|senior|junior|chief|officer|chairman|chairwoman|coordinator|associate|assistant|administrator|supervisor|agent|broker|owner|partner|attorney|counsel|deacon|elder|reverend|minister|bishop|rabbi|imam|dean|provost|chancellor|superintendent|head|lead|principal|consultant|advisor|analyst|specialist|architect|engineer|designer|developer|editor|producer|host|anchor|correspondent|reporter|writer|author|photographer|videographer|realtor|real|estate)$/i;
+      var companyWords = /^(lawn|property|enhancement|church|ministry|media|broadcast|network|inc|llc|corp|assoc|foundation|entertainment|group|studios|productions|publishing|records|international|worldwide|global|digital|tech|solutions|service|services|consulting|design|creative|communications|marketing|partners|capital|academy|school|university|seminary|fellowship|the|and|for|of|at|certified|corporation|company|enterprises|ventures|industries|agency|firm|office|web|mobile|email|phone|fax|tel|address)$/i;
 
-      var candidateLines = [];
-      for (var i = 0; i < Math.min(lines.length, 10); i++) {
-        var line = lines[i].trim();
-        if (!isNotName(line)) candidateLines.push(line);
-      }
+      for (var i = 0; i < Math.min(lines.length, 12); i++) {
+        var line = lines[i];
 
-      for (var k = 0; k < candidateLines.length; k++) {
-        var cleaned = candidateLines[k].trim();
-        var words = cleaned.split(/\s+/).filter(function(w) { return w.length >= 2; });
+        // Skip lines with clear non-name content
+        if (/@/.test(line)) continue;                              // email
+        if (/www\.|\.com|\.org|\.net/i.test(line)) continue;      // url
+        if (/\d{3,}/.test(line)) continue;                        // phone/address/zip (3+ consecutive digits)
+        if (/street|ave\b|blvd|suite|floor|road|drive|lane|way\b|city|state/i.test(line)) continue; // address
 
-        // Remove common honorifics
-        var prefixes = ['dr', 'rev', 'pastor', 'mr', 'mrs', 'ms', 'miss', 'prof', 'rabbi', 'bishop'];
-        if (words.length > 0 && prefixes.indexOf(words[0].toLowerCase().replace(/\./g, '')) > -1) {
+        // Clean the line: keep only letters, spaces, hyphens, apostrophes, periods
+        var cleaned = line.replace(/[^a-zA-Z\s\-'\.]/g, ' ').replace(/\s+/g, ' ').trim();
+        if (cleaned.length < 3 || cleaned.length > 40) continue;
+
+        // Split into words
+        var words = cleaned.split(/\s+/);
+
+        // Remove trailing title words (e.g., "Nathan Stuck Founder" → "Nathan Stuck")
+        while (words.length > 0 && titleWords.test(words[words.length - 1])) {
+          words.pop();
+        }
+        // Remove leading title words / honorifics
+        var prefixes = /^(dr|rev|pastor|mr|mrs|ms|miss|prof|rabbi|bishop|sr|jr)\.?$/i;
+        while (words.length > 0 && prefixes.test(words[0])) {
           words.shift();
         }
 
-        // Accept 1 word (first name only) or 2-3 words (first + last)
-        // But each word must be 2+ real letters and look like a name (capitalized or all-caps)
-        if (words.length >= 1 && words.length <= 3) {
-          var allLookLikeNames = true;
-          for (var w = 0; w < words.length; w++) {
-            var word = words[w].replace(/\./g, '');
-            // Each word should be 2-15 letters, and either Title Case or ALL CAPS
-            if (word.length < 2 || word.length > 15) { allLookLikeNames = false; break; }
-            var isCapitalized = /^[A-Z][a-z]+$/.test(word);
-            var isAllCaps = /^[A-Z]{2,}$/.test(word);
-            if (!isCapitalized && !isAllCaps) { allLookLikeNames = false; break; }
+        if (words.length < 1 || words.length > 4) continue;
+
+        // Check each word looks like a name part
+        var allValid = true;
+        var hasRealName = false;
+        for (var w = 0; w < words.length; w++) {
+          var word = words[w].replace(/\./g, '');
+
+          // Allow single-letter middle initials (A, J, etc.)
+          if (word.length === 1 && /^[A-Z]$/.test(word)) continue;
+
+          // Regular name word: 2+ letters
+          if (word.length < 2 || word.length > 15) { allValid = false; break; }
+
+          // Must be Title Case (John), ALL CAPS (JOHN), or all lower after OCR (john)
+          var isTitle = /^[A-Z][a-z]+$/.test(word);
+          var isAllCaps = /^[A-Z]{2,}$/.test(word);
+          var isLower = /^[a-z]{2,}$/.test(word);
+          if (!isTitle && !isAllCaps && !isLower) { allValid = false; break; }
+
+          // Skip if it's a company or title word
+          if (companyWords.test(word) || titleWords.test(word)) { allValid = false; break; }
+
+          hasRealName = true;
+        }
+
+        if (!allValid || !hasRealName) continue;
+
+        // Filter out middle initials for output, keep first and last
+        var nameWords = [];
+        var middleInitials = [];
+        for (var m = 0; m < words.length; m++) {
+          var wd = words[m].replace(/\./g, '');
+          if (wd.length === 1) {
+            middleInitials.push(wd.toUpperCase() + '.');
+          } else {
+            nameWords.push(wd.charAt(0).toUpperCase() + wd.slice(1).toLowerCase());
           }
-          if (!allLookLikeNames) continue;
+        }
 
-          // Skip words that are clearly company/title words, not names
-          var skipWords = /^(lawn|property|enhancement|church|media|network|pastor|director|manager|president|executive|senior|junior|vice|chief|national|international|global|digital|services|service|solutions|consulting|group|inc|llc|corp|the|and|for)$/i;
-          var hasSkipWord = false;
-          for (var s = 0; s < words.length; s++) {
-            if (skipWords.test(words[s])) { hasSkipWord = true; break; }
-          }
-          if (hasSkipWord) continue;
-
-          // Format: Title Case
-          var formatted = words.map(function(w) {
-            return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-          });
-
-          result.first = formatted[0];
-          if (formatted.length >= 2) {
-            result.last = formatted.slice(1).join(' ');
+        if (nameWords.length >= 1) {
+          result.first = nameWords[0];
+          if (nameWords.length >= 2) {
+            result.last = nameWords.slice(1).join(' ');
           }
           break;
         }
@@ -1370,19 +1385,16 @@
     }
 
     function extractCompanyFromLines(lines) {
-      var companyKeywords = /church|ministr|media|broadcast|network|inc\.?|llc|corp|assoc|foundation|entertainment|group|studios|productions|publishing|records|international|worldwide|global|digital|tech|solutions|lawn|property|enhancement|service|consulting|partners|capital|academy|school|university|seminary|fellowship|chapel|temple|mosque|synagogue|cathedral|parish|diocese|archdiocese|convention|assembly|council|alliance|coalition|missions?|outreach|relief|charity|trust|fund|institut/i;
+      var companyKeywords = /church|ministr|media|broadcast|network|inc\.?|llc|corp|assoc|foundation|entertainment|group|studios|productions|publishing|records|international|worldwide|global|digital|tech|solutions|lawn|property|enhancement|service|consulting|partners|capital|academy|school|university|seminary|fellowship|chapel|temple|mosque|synagogue|cathedral|parish|diocese|archdiocese|convention|assembly|council|alliance|coalition|missions?|outreach|relief|charity|trust|fund|institut|design|creative|communications|marketing|agency|enterprises|ventures|industries|purpose|profit/i;
 
       for (var i = 0; i < Math.min(lines.length, 12); i++) {
         var line = lines[i].trim();
         if (line.length < 3 || line.length > 65) continue;
-        // Skip lines that are clearly not company names
-        if (/@/.test(line)) continue;                    // email
-        if (/\d{3}[\-\.\s\u00B7]?\d{3}/.test(line)) continue; // phone
-        if (/www\.|https?:/i.test(line)) continue;       // url
-        if (/\d{4,}/.test(line)) continue;               // zip code or address number
+        if (/@/.test(line)) continue;
+        if (/\d{3,}/.test(line)) continue;
+        if (/www\.|https?:/i.test(line)) continue;
 
         if (companyKeywords.test(line)) {
-          // Clean up: keep letters, numbers, spaces, and common punctuation
           var company = line.replace(/[^\w\s\-\.\&\+\',]/g, '').trim();
           if (company.length > 2 && company.length < 65) return company;
         }
