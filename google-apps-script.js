@@ -229,47 +229,107 @@ function doGet(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// ----- Save a base64 photo to Google Drive and return a view link -----
+// ----- Save a base64 photo to Google Drive using REST API -----
+// Uses UrlFetchApp + Drive REST API instead of DriveApp to avoid permission issues
 function savePhotoToDrive(base64Data, firstName, lastName, photoType) {
   try {
-    // Get or create the photos folder
-    var folderName = 'NRB 2026 Photos';
-    var folders = DriveApp.getFoldersByName(folderName);
-    var folder;
+    var token = ScriptApp.getOAuthToken();
 
-    if (folders.hasNext()) {
-      folder = folders.next();
-    } else {
-      folder = DriveApp.createFolder(folderName);
-    }
-
-    // Parse the base64 data URI
-    // Format: data:image/jpeg;base64,/9j/4AAQ...
+    // Parse the base64 data URI (format: data:image/jpeg;base64,/9j/4AAQ...)
     var parts = base64Data.split(',');
     var mimeMatch = parts[0].match(/data:(.*?);/);
     var mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
     var extension = mimeType.split('/')[1] || 'jpg';
     if (extension === 'jpeg') extension = 'jpg';
 
-    var decoded = Utilities.base64Decode(parts[1]);
-    var blob = Utilities.newBlob(decoded, mimeType);
-
-    // Create filename: LastName_FirstName_card_2026-02-18T14-30.jpg
+    // Build filename: LastName_FirstName_card_2026-02-18T14-30.jpg
     var timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     var safeName = (lastName || 'Unknown') + '_' + (firstName || 'Lead');
     safeName = safeName.replace(/[^a-zA-Z0-9_-]/g, '');
     var fileName = safeName + '_' + photoType + '_' + timestamp + '.' + extension;
 
-    blob.setName(fileName);
-    var file = folder.createFile(blob);
+    // Find or create "NRB 2026 Photos" folder
+    var folderId = getOrCreateFolder_('NRB 2026 Photos', token);
 
-    // Make the file viewable by anyone with the link
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    // Upload file to Drive via REST API
+    var decoded = Utilities.base64Decode(parts[1]);
+    var blob = Utilities.newBlob(decoded, mimeType, fileName);
 
-    return file.getUrl();
+    var metadata = {
+      name: fileName,
+      parents: [folderId]
+    };
+
+    var boundary = 'nrb2026boundary';
+    var requestBody =
+      '--' + boundary + '\r\n' +
+      'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+      JSON.stringify(metadata) + '\r\n' +
+      '--' + boundary + '\r\n' +
+      'Content-Type: ' + mimeType + '\r\n' +
+      'Content-Transfer-Encoding: base64\r\n\r\n' +
+      parts[1] + '\r\n' +
+      '--' + boundary + '--';
+
+    var uploadResponse = UrlFetchApp.fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      contentType: 'multipart/related; boundary=' + boundary,
+      payload: requestBody,
+      muteHttpExceptions: true
+    });
+
+    var uploadResult = JSON.parse(uploadResponse.getContentText());
+    if (!uploadResult.id) {
+      Logger.log('Upload failed: ' + uploadResponse.getContentText());
+      return 'UPLOAD_ERROR: ' + uploadResponse.getContentText();
+    }
+
+    var fileId = uploadResult.id;
+
+    // Make file viewable by anyone with the link
+    UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '/permissions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      contentType: 'application/json',
+      payload: JSON.stringify({ role: 'reader', type: 'anyone' }),
+      muteHttpExceptions: true
+    });
+
+    return 'https://drive.google.com/file/d/' + fileId + '/view';
 
   } catch (error) {
     Logger.log('Photo save error: ' + error.toString());
     return 'PHOTO_ERROR: ' + error.toString();
   }
+}
+
+// ----- Helper: find or create a folder by name via Drive REST API -----
+function getOrCreateFolder_(folderName, token) {
+  // Search for existing folder
+  var query = "name='" + folderName + "' and mimeType='application/vnd.google-apps.folder' and trashed=false";
+  var searchResponse = UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/files?q=' + encodeURIComponent(query), {
+    headers: { 'Authorization': 'Bearer ' + token },
+    muteHttpExceptions: true
+  });
+  var searchResult = JSON.parse(searchResponse.getContentText());
+
+  if (searchResult.files && searchResult.files.length > 0) {
+    return searchResult.files[0].id;
+  }
+
+  // Create new folder
+  var createResponse = UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/files', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    contentType: 'application/json',
+    payload: JSON.stringify({
+      name: folderName,
+      mimeType: 'application/vnd.google-apps.folder'
+    }),
+    muteHttpExceptions: true
+  });
+
+  var createResult = JSON.parse(createResponse.getContentText());
+  return createResult.id;
 }
