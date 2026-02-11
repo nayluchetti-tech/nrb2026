@@ -8,7 +8,7 @@
 //    Name it: "NRB 2026 Lead Tracker"
 //
 // 2. Rename the first tab to: "Leads"
-//    Add these headers in Row 1 (A1 through U1):
+//    Add these headers in Row 1 (A1 through AE1):
 //
 //    A1: Timestamp
 //    B1: AE Owner
@@ -29,8 +29,18 @@
 //    Q1: Intent Level
 //    R1: Scenario
 //    S1: Lifecycle Stage
-//    T1: Card Photo Link
-//    U1: Badge Photo Link
+//    T1: Previous PRAY.COM Interactions
+//    U1: Organization Description
+//    V1: NRB Role
+//    W1: Estimated Revenue Range
+//    X1: NRB Exhibitor Booth
+//    Y1: Distribution Channels
+//    Z1: Competitor Signals
+//    AA1: Donation Tools in Use
+//    AB1: Podcast Link
+//    AC1: NRB Speaking Sessions
+//    AD1: Card Photo Link
+//    AE1: Badge Photo Link
 //
 // 3. Open Apps Script:
 //    - In Google Sheets, go to Extensions > Apps Script
@@ -183,7 +193,7 @@ function doPost(e) {
       badgePhotoUrl = savePhotoToDrive(data.badge_photo, data.first_name, data.last_name, 'badge');
     }
 
-    // Append row to sheet (columns A through U)
+    // Append row to sheet (columns A through AI)
     sheet.appendRow([
       data.timestamp || new Date().toISOString(),   // A: Timestamp
       data.ae_owner || '',                           // B: AE Owner
@@ -196,7 +206,7 @@ function doPost(e) {
       data.phone || '',                              // I: Phone
       data.products_discussed || '',                 // J: Products Discussed
       data.demo_given || '',                         // K: Demo Given
-      data.meeting_quality || '',                    // L: Meeting Quality
+      data.meeting_quality || '',                    // L: Meeting Quality (1-5)
       data.conversation_summary || '',               // M: Conversation Summary
       data.pain_points || '',                        // N: Pain Points
       data.next_steps || '',                         // O: Next Steps
@@ -204,8 +214,18 @@ function doPost(e) {
       data.intent_level || '',                       // Q: Intent Level
       data.scenario || '',                           // R: Scenario
       data.lifecycle_stage || '',                    // S: Lifecycle Stage
-      cardPhotoUrl,                                  // T: Card Photo Link
-      badgePhotoUrl                                  // U: Badge Photo Link
+      data.previous_interactions || '',              // T: Previous PRAY.COM Interactions
+      data.org_description || '',                    // U: Organization Description
+      data.nrb_role || '',                           // V: NRB Role
+      data.revenue_range || '',                      // W: Estimated Revenue Range
+      data.nrb_booth || '',                          // X: NRB Exhibitor Booth
+      data.distribution_channels || '',              // Y: Distribution Channels
+      data.competitor_signals || '',                 // Z: Competitor Signals
+      data.donation_tools || '',                     // AA: Donation Tools in Use
+      data.podcast_link || '',                       // AB: Podcast Link
+      data.nrb_sessions || '',                       // AC: NRB Speaking Sessions
+      cardPhotoUrl,                                  // AD: Card Photo Link
+      badgePhotoUrl                                  // AE: Badge Photo Link
     ]);
 
     return ContentService
