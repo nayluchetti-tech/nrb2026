@@ -38,18 +38,42 @@
 //    - Paste ALL the code below into Code.gs
 //    - Click Save (Ctrl+S)
 //
-// 4. *** IMPORTANT: Authorize Drive Access ***
-//    - In the Apps Script editor, select "authorizeScript" from the
-//      function dropdown (top toolbar, next to "Run")
+// 4. *** CRITICAL: Fix the manifest for Drive access ***
+//    - In the Apps Script editor, click the gear icon (Project Settings)
+//      on the left sidebar
+//    - Check the box: "Show 'appsscript.json' manifest file in editor"
+//    - Go back to the Editor (< > icon on left sidebar)
+//    - Click on "appsscript.json" in the file list
+//    - Replace its ENTIRE contents with:
+//
+//      {
+//        "timeZone": "America/Chicago",
+//        "dependencies": {},
+//        "exceptionLogging": "STACKDRIVER",
+//        "runtimeVersion": "V8",
+//        "oauthScopes": [
+//          "https://www.googleapis.com/auth/spreadsheets",
+//          "https://www.googleapis.com/auth/drive",
+//          "https://www.googleapis.com/auth/script.external_request"
+//        ],
+//        "webapp": {
+//          "executeAs": "USER_DEPLOYING",
+//          "access": "ANYONE_ANONYMOUS"
+//        }
+//      }
+//
+//    - Click Save (Ctrl+S)
+//
+// 5. Authorize all permissions:
+//    - Select "authorizeScript" from the function dropdown
 //    - Click "Run"
 //    - A permissions popup will appear — click "Review Permissions"
 //    - Select your Google account
 //    - Click "Advanced" > "Go to NRB 2026 Lead Capture (unsafe)"
 //    - Click "Allow"
 //    - This grants BOTH Spreadsheet AND Google Drive permissions
-//      (needed to save business card / badge photos)
 //
-// 5. Deploy as Web App:
+// 6. Deploy as Web App:
 //    - Click "Deploy" > "New deployment"
 //    - Click the gear icon next to "Select type" > choose "Web app"
 //    - Set "Execute as" to: Me
@@ -64,12 +88,12 @@
 //    - Click "Deploy"
 //    - This keeps the same URL so you don't need to update the tool
 //
-// 6. Paste the Web App URL into booth-audio-capture.html:
+// 7. Paste the Web App URL into booth-audio-capture.html:
 //    Find this line near the top of the <script>:
 //      var GOOGLE_SHEETS_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
 //    Replace the placeholder with your URL.
 //
-// 7. Test it! Open booth-audio-capture.html, fill in some data, and submit.
+// 8. Test it! Open booth-audio-capture.html, fill in some data, and submit.
 //    The row should appear in your Google Sheet within seconds.
 //
 // NOTES:
@@ -78,13 +102,11 @@
 // - If you redeploy the script, use "Manage deployments" > edit the
 //   existing deployment (don't create a new one) to keep the same URL
 //
-// FIXING "Access denied: DriveApp" ERROR:
-// - This means the script wasn't authorized for Google Drive
-// - Go to Extensions > Apps Script
-// - Select "authorizeScript" from the function dropdown
-// - Click "Run" and approve the permissions when prompted
-// - Then go to Deploy > Manage deployments > edit > set Version
-//   to "New version" > Deploy
+// FIXING "Access denied: DriveApp" or "NEEDS_AUTH" ERROR:
+// - Go to Project Settings (gear icon) > check "Show appsscript.json"
+// - Edit appsscript.json and add the oauthScopes shown in step 4 above
+// - Save, then select "authorizeScript" > Run > Approve permissions
+// - Deploy > Manage deployments > edit > New version > Deploy
 // =============================================================
 
 
@@ -98,14 +120,44 @@ function authorizeScript() {
   Logger.log('Spreadsheet access OK: ' + ss.getName());
 
   // Touch DriveApp (Drive permission — needed for saving photos)
-  var files = DriveApp.getRootFolder();
-  Logger.log('Drive access OK: ' + files.getName());
+  var root = DriveApp.getRootFolder();
+  Logger.log('Drive access OK: ' + root.getName());
 
   // Touch Utilities (already included, but just in case)
   var encoded = Utilities.base64Encode('test');
   Logger.log('Utilities OK');
 
   Logger.log('All permissions authorized! You can now deploy or re-deploy the web app.');
+}
+
+// ----- Run this to test Drive photo saving works -----
+function testDriveAccess() {
+  try {
+    var folderName = 'NRB 2026 Photos';
+    var folders = DriveApp.getFoldersByName(folderName);
+    var folder;
+    if (folders.hasNext()) {
+      folder = folders.next();
+      Logger.log('Found existing folder: ' + folder.getName());
+    } else {
+      folder = DriveApp.createFolder(folderName);
+      Logger.log('Created new folder: ' + folder.getName());
+    }
+
+    // Create a tiny test file
+    var blob = Utilities.newBlob('test', 'text/plain', 'drive-test.txt');
+    var file = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    Logger.log('Test file created: ' + file.getUrl());
+
+    // Clean up
+    file.setTrashed(true);
+    Logger.log('Test file deleted. Drive access is working!');
+    Logger.log('You can now redeploy: Deploy > Manage deployments > pencil icon > New version > Deploy');
+  } catch (error) {
+    Logger.log('DRIVE ERROR: ' + error.toString());
+    Logger.log('Fix: Go to Project Settings > check "Show appsscript.json" > add Drive scope > Save > re-run authorizeScript');
+  }
 }
 
 
