@@ -552,6 +552,27 @@
     .field-item.full-width {
       grid-column: 1 / -1;
     }
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .checkbox-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+      flex-shrink: 0;
+      accent-color: #E3AF4A;
+    }
     .field-label {
       font-size: 10px;
       font-weight: 700;
@@ -1030,7 +1051,20 @@
           </div>
           <div class="field-item">
             <div class="field-label">Title / Role</div>
-            <div class="field-value"><input type="text" id="leadTitle" placeholder="Senior Pastor"></div>
+            <div class="field-value">
+              <select id="leadTitle">
+                <option value="" disabled selected>Select title</option>
+                <option value="C-Suite Executive">C-Suite Executive</option>
+                <option value="Pastor/Ministry Leader">Pastor/Ministry Leader</option>
+                <option value="Producer/Director">Producer/Director</option>
+                <option value="Marketing/PR Professional">Marketing/PR Professional</option>
+                <option value="Technical Director">Technical Director</option>
+                <option value="Content Creator">Content Creator</option>
+                <option value="Partnership/Business Development">Partnership/Business Development</option>
+                <option value="Media Buyer">Media Buyer</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
           </div>
           <div class="field-item">
             <div class="field-label">Company / Ministry</div>
@@ -1053,12 +1087,15 @@
             <div class="field-value">
               <select id="leadProducts">
                 <option value="" disabled selected>Select product</option>
-                <option value="superfunnel">SuperFunnel</option>
-                <option value="pray_studio">PRAY Studio</option>
-                <option value="reach">Reach</option>
-                <option value="america_prays">America Prays 250</option>
-                <option value="full_platform">Full Platform</option>
-                <option value="general">General Discussion</option>
+                <option value="PRAY Radio">PRAY Radio</option>
+                <option value="PRAY TV">PRAY TV</option>
+                <option value="PRAYStudio Tools">PRAYStudio Tools</option>
+                <option value="PRAY AI Tools">PRAY AI Tools</option>
+                <option value="SuperFunnel">SuperFunnel</option>
+                <option value="PRAY CaaS">PRAY CaaS - Content as a Service</option>
+                <option value="Advertise on PRAY">Advertise on PRAY</option>
+                <option value="Partnership with PRAY">Partnership with PRAY</option>
+                <option value="General Discussion">General Discussion</option>
               </select>
             </div>
           </div>
@@ -1078,8 +1115,26 @@
             <div class="field-value"><textarea id="leadSummary" rows="3" placeholder="Key points from the conversation..."></textarea></div>
           </div>
           <div class="field-item full-width">
-            <div class="field-label">Pain Points / Goals</div>
-            <div class="field-value"><textarea id="leadPainPoints" rows="2" placeholder="What they're struggling with or trying to achieve..."></textarea></div>
+            <div class="field-label">Pain Points / Goals <span style="font-weight:400;color:rgba(255,255,255,0.35);">(select all that apply)</span></div>
+            <div class="field-value checkbox-grid" id="painPointsGrid">
+              <label class="checkbox-item"><input type="checkbox" value="Reaching more people beyond our current audience"> Reaching more people</label>
+              <label class="checkbox-item"><input type="checkbox" value="Expanding to new platforms"> Expanding to new platforms</label>
+              <label class="checkbox-item"><input type="checkbox" value="Going global with translated content"> Going global / translated content</label>
+              <label class="checkbox-item"><input type="checkbox" value="Automating content workflows"> Automating content workflows</label>
+              <label class="checkbox-item"><input type="checkbox" value="Consolidating multiple tools into one platform"> Consolidating tools into one</label>
+              <label class="checkbox-item"><input type="checkbox" value="Getting team out of admin tasks"> Getting team out of admin tasks</label>
+              <label class="checkbox-item"><input type="checkbox" value="Improving member and donor engagement"> Improving donor engagement</label>
+              <label class="checkbox-item"><input type="checkbox" value="Building or improving mobile app"> Building / improving mobile app</label>
+              <label class="checkbox-item"><input type="checkbox" value="Growing donor base and recurring giving"> Growing recurring giving</label>
+              <label class="checkbox-item"><input type="checkbox" value="Proving ROI on content and media spend"> Proving ROI on media spend</label>
+              <label class="checkbox-item"><input type="checkbox" value="Monetizing content or audience"> Monetizing content / audience</label>
+              <label class="checkbox-item"><input type="checkbox" value="Understanding audience engagement analytics"> Audience engagement analytics</label>
+              <label class="checkbox-item"><input type="checkbox" value="Tracking content performance across platforms"> Cross-platform performance tracking</label>
+              <label class="checkbox-item"><input type="checkbox" value="Connecting media exposure to attendance and giving"> Connecting media to giving</label>
+              <label class="checkbox-item"><input type="checkbox" value="Exploring what's possible"> Exploring what's possible</label>
+              <label class="checkbox-item"><input type="checkbox" value="Pricing and partnership options"> Pricing and partnership options</label>
+              <label class="checkbox-item"><input type="checkbox" value="Not actively growing, staying informed"> Just staying informed</label>
+            </div>
           </div>
           <div class="field-item full-width">
             <div class="field-label">Next Steps Agreed</div>
@@ -1098,6 +1153,159 @@
             <button class="star-btn" data-rating="5" type="button">5</button>
           </div>
           <p style="font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 8px;">1 = Long shot &nbsp;|&nbsp; 3 = Warm opportunity &nbsp;|&nbsp; 5 = Ready to close</p>
+        </div>
+
+        <!-- Classification -->
+        <div class="field-grid" style="margin-top: 16px;">
+          <div class="field-item">
+            <div class="field-label">Intent Level</div>
+            <div class="field-value">
+              <select id="leadIntentLevel">
+                <option value="" disabled selected>Select</option>
+                <option value="Hot">Hot — Asked about pricing / specific product</option>
+                <option value="Warm">Warm — Interested, no commitment yet</option>
+                <option value="Cold">Cold — Just browsing / no product interest</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-item">
+            <div class="field-label">Scenario</div>
+            <div class="field-value">
+              <select id="leadScenario">
+                <option value="" disabled selected>Select</option>
+                <option value="Attendee, no meeting, unqualified">Attendee — no meeting, unqualified</option>
+                <option value="Attendee, no meeting, qualified">Attendee — no meeting, qualified</option>
+                <option value="Attendee with interview booked">Attendee — interview booked</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-item">
+            <div class="field-label">Lifecycle Stage</div>
+            <div class="field-value">
+              <select id="leadLifecycle">
+                <option value="" disabled selected>Select</option>
+                <option value="Lead">Lead — no buy intent</option>
+                <option value="MQL">MQL — lead with buy intent</option>
+                <option value="SQL">SQL — complete meeting held</option>
+                <option value="Opportunity">Opportunity — commercial opportunity</option>
+                <option value="Customer">Customer — already a customer</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-item">
+            <div class="field-label">Previous PRAY.COM</div>
+            <div class="field-value">
+              <select id="leadPreviousInteractions">
+                <option value="" disabled selected>Select</option>
+                <option value="New Lead">New Lead</option>
+                <option value="Active Opportunity">Active Opportunity</option>
+                <option value="Lost Opportunity">Lost Opportunity</option>
+                <option value="Active Customer">Active Customer</option>
+                <option value="Churned Customer">Churned Customer</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Qualification Section (collapsible) -->
+        <div class="qualification-section" style="margin-top: 20px;">
+          <button type="button" class="section-toggle" id="qualToggle" style="width:100%; background: rgba(227,175,74,0.1); border: 1px solid rgba(227,175,74,0.3); color: #E3AF4A; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: left;">
+            &#9660; Qualification Details <span style="font-weight:400; opacity:0.6;">(Distribution, Revenue, Competitors...)</span>
+          </button>
+          <div id="qualFields" style="display: none; margin-top: 12px;">
+            <div class="field-grid">
+              <div class="field-item">
+                <div class="field-label">Organization Type</div>
+                <div class="field-value">
+                  <select id="leadOrgDescription">
+                    <option value="" disabled selected>Select type</option>
+                    <option value="Radio Broadcasting">Radio Broadcasting</option>
+                    <option value="Television/Film Production">Television/Film Production</option>
+                    <option value="Church/Ministry">Church/Ministry</option>
+                    <option value="Christian Nonprofit">Christian Nonprofit</option>
+                    <option value="Digital Media/Podcast">Digital Media/Podcast</option>
+                    <option value="Tech/Software">Tech/Software</option>
+                    <option value="Publishing">Publishing</option>
+                    <option value="Marketing/PR/Agency">Marketing/PR/Agency</option>
+                    <option value="Education">Education</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">NRB Role</div>
+                <div class="field-value">
+                  <select id="leadNrbRole">
+                    <option value="" disabled selected>Select</option>
+                    <option value="Attendee">Attendee only</option>
+                    <option value="Exhibitor">Exhibitor (has a booth)</option>
+                    <option value="Speaker">Speaker (on stage)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">Est. Revenue Range</div>
+                <div class="field-value">
+                  <select id="leadRevenue">
+                    <option value="" disabled selected>Select</option>
+                    <option value="$0 - $1M">$0 - $1M</option>
+                    <option value="$1M - $5M">$1M - $5M</option>
+                    <option value="$5M - $10M">$5M - $10M</option>
+                    <option value="$10M - $25M">$10M - $25M</option>
+                    <option value="$25M - $50M">$25M - $50M</option>
+                    <option value="$50M - $100M">$50M - $100M</option>
+                    <option value="$100M - $250M">$100M - $250M</option>
+                    <option value="$250M - $500M">$250M - $500M</option>
+                    <option value="$500M - $1B">$500M - $1B</option>
+                    <option value="$1B+">$1B+</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">NRB Exhibitor Booth #</div>
+                <div class="field-value"><input type="text" id="leadNrbBooth" placeholder="e.g. 423"></div>
+              </div>
+            </div>
+
+            <!-- Distribution Channels (multi-select — KEY for qualification!) -->
+            <div class="field-item full-width" style="margin-top: 12px;">
+              <div class="field-label">Distribution Channels <span style="font-weight:400;color:rgba(255,255,255,0.35);">(select all that apply)</span></div>
+              <div class="field-value checkbox-grid" id="distChannelsGrid">
+                <label class="checkbox-item"><input type="checkbox" value="Broadcast TV"> &#128250; Christian TV (Broadcast)</label>
+                <label class="checkbox-item"><input type="checkbox" value="Broadcast Radio"> &#128251; Christian Radio</label>
+                <label class="checkbox-item"><input type="checkbox" value="Satellite Radio (SiriusXM)"> &#128752; Satellite Radio (SiriusXM)</label>
+                <label class="checkbox-item"><input type="checkbox" value="YouTube channel"> &#128250; YouTube</label>
+                <label class="checkbox-item"><input type="checkbox" value="Podcast platforms"> &#127908; Podcast (Apple, Spotify)</label>
+                <label class="checkbox-item"><input type="checkbox" value="Streaming platforms (Roku, Apple TV)"> &#128187; Streaming TV (Roku, Apple TV)</label>
+                <label class="checkbox-item"><input type="checkbox" value="Mobile app"> &#128241; Custom Mobile App</label>
+                <label class="checkbox-item"><input type="checkbox" value="Website only"> &#128187; Website with video streaming</label>
+                <label class="checkbox-item"><input type="checkbox" value="Email/Newsletter"> &#128231; Email / Newsletter</label>
+                <label class="checkbox-item"><input type="checkbox" value="Free platforms only"> &#128241; Free platforms only</label>
+                <label class="checkbox-item"><input type="checkbox" value="Just getting started"> &#127793; Just getting started</label>
+              </div>
+              <div id="qualifiedBadge" style="display:none; margin-top: 8px; background: rgba(76,175,80,0.15); color: #4CAF50; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center;">QUALIFIED — Paid distribution channel detected (TV/Radio)</div>
+            </div>
+
+            <div class="field-grid" style="margin-top: 12px;">
+              <div class="field-item full-width">
+                <div class="field-label">Competitor Signals</div>
+                <div class="field-value"><input type="text" id="leadCompetitors" placeholder="Currently using: Subsplash, Pushpay, Church Community Builder..."></div>
+              </div>
+              <div class="field-item full-width">
+                <div class="field-label">Donation Tools in Use</div>
+                <div class="field-value"><input type="text" id="leadDonationTools" placeholder="Tithe.ly, Planning Center, Pushpay..."></div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">Podcast Link</div>
+                <div class="field-value"><input type="url" id="leadPodcast" placeholder="https://..."></div>
+              </div>
+              <div class="field-item">
+                <div class="field-label">NRB Speaking Sessions</div>
+                <div class="field-value"><input type="text" id="leadNrbSessions" placeholder="Session title / time"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1492,6 +1700,32 @@
     setupPhotoInput('manualCardInput', 'card', null, null, null);
     setupPhotoInput('manualBadgeInput', 'badge', null, null, null);
 
+    // Qualification section toggle
+    var qualToggle = document.getElementById('qualToggle');
+    var qualFields = document.getElementById('qualFields');
+    if (qualToggle && qualFields) {
+      qualToggle.addEventListener('click', function() {
+        var isOpen = qualFields.style.display !== 'none';
+        qualFields.style.display = isOpen ? 'none' : 'block';
+        qualToggle.innerHTML = (isOpen ? '&#9660;' : '&#9650;') + ' Qualification Details <span style="font-weight:400; opacity:0.6;">(Distribution, Revenue, Competitors...)</span>';
+      });
+    }
+
+    // QUALIFIED badge: show when TV or Radio distribution channel is checked
+    var distCheckboxes = document.querySelectorAll('#distChannelsGrid input[type="checkbox"]');
+    var qualBadge = document.getElementById('qualifiedBadge');
+    function updateQualifiedBadge() {
+      var paidChannels = ['Broadcast TV', 'Broadcast Radio', 'Satellite Radio (SiriusXM)'];
+      var isQualified = false;
+      distCheckboxes.forEach(function(cb) {
+        if (cb.checked && paidChannels.indexOf(cb.value) > -1) isQualified = true;
+      });
+      if (qualBadge) qualBadge.style.display = isQualified ? 'block' : 'none';
+    }
+    distCheckboxes.forEach(function(cb) {
+      cb.addEventListener('change', updateQualifiedBadge);
+    });
+
     function updateAudioPhotoThumbs() {
       // Update thumbnails on both audio and manual panels
       ['audioPhotoThumbs', 'manualPhotoThumbs'].forEach(function(containerId) {
@@ -1739,10 +1973,22 @@
         document.getElementById('leadLastName').value = capitalize(nameMatch[2]);
       }
 
-      var titles = ['senior pastor', 'executive pastor', 'pastor', 'ceo', 'founder', 'president', 'director', 'vp', 'vice president', 'media director', 'marketing director', 'executive director', 'campus pastor'];
-      for (var i = 0; i < titles.length; i++) {
-        if (text.indexOf(titles[i]) !== -1) {
-          document.getElementById('leadTitle').value = capitalizeWords(titles[i]);
+      var titleMap = {
+        'ceo': 'C-Suite Executive', 'cfo': 'C-Suite Executive', 'coo': 'C-Suite Executive', 'cto': 'C-Suite Executive',
+        'founder': 'C-Suite Executive', 'president': 'C-Suite Executive', 'executive director': 'C-Suite Executive',
+        'pastor': 'Pastor/Ministry Leader', 'senior pastor': 'Pastor/Ministry Leader', 'executive pastor': 'Pastor/Ministry Leader',
+        'campus pastor': 'Pastor/Ministry Leader', 'ministry leader': 'Pastor/Ministry Leader',
+        'producer': 'Producer/Director', 'director': 'Producer/Director',
+        'marketing': 'Marketing/PR Professional', 'pr ': 'Marketing/PR Professional', 'communications': 'Marketing/PR Professional',
+        'technical director': 'Technical Director', 'engineer': 'Technical Director',
+        'content creator': 'Content Creator', 'media director': 'Content Creator',
+        'partnership': 'Partnership/Business Development', 'business development': 'Partnership/Business Development',
+        'media buyer': 'Media Buyer'
+      };
+      var titleKeys = Object.keys(titleMap);
+      for (var i = 0; i < titleKeys.length; i++) {
+        if (text.indexOf(titleKeys[i]) !== -1) {
+          document.getElementById('leadTitle').value = titleMap[titleKeys[i]];
           break;
         }
       }
@@ -1863,9 +2109,30 @@
         products_discussed: document.getElementById('leadProducts').value,
         demo_given: document.getElementById('leadDemo').value,
         conversation_summary: document.getElementById('leadSummary').value,
-        pain_points: document.getElementById('leadPainPoints').value,
+        pain_points: (function() {
+          var checked = [];
+          document.querySelectorAll('#painPointsGrid input:checked').forEach(function(cb) { checked.push(cb.value); });
+          return checked.join('; ');
+        })(),
         next_steps: document.getElementById('leadNextSteps').value,
         meeting_quality: currentRating,
+        intent_level: document.getElementById('leadIntentLevel').value || (captureMode === 'audio' ? 'Hot' : 'Warm'),
+        scenario: document.getElementById('leadScenario').value || '',
+        lifecycle_stage: document.getElementById('leadLifecycle').value || (captureMode === 'audio' ? 'SQL' : 'MQL'),
+        previous_interactions: document.getElementById('leadPreviousInteractions').value || 'New Lead',
+        org_description: document.getElementById('leadOrgDescription').value || '',
+        nrb_role: document.getElementById('leadNrbRole').value || '',
+        revenue_range: document.getElementById('leadRevenue').value || '',
+        nrb_booth: document.getElementById('leadNrbBooth').value || '',
+        distribution_channels: (function() {
+          var checked = [];
+          document.querySelectorAll('#distChannelsGrid input:checked').forEach(function(cb) { checked.push(cb.value); });
+          return checked.join('; ');
+        })(),
+        competitor_signals: document.getElementById('leadCompetitors').value || '',
+        donation_tools: document.getElementById('leadDonationTools').value || '',
+        podcast_link: document.getElementById('leadPodcast').value || '',
+        nrb_sessions: document.getElementById('leadNrbSessions').value || '',
         full_transcript: transcript || '',
         has_business_card_photo: !!photos.card,
         has_badge_photo: !!photos.badge,
@@ -1873,10 +2140,6 @@
         badge_photo: photos.badge ? photos.badge.dataUrl : null,
         lead_source: 'nrb_2026',
         nrb_capture_method: captureMethod,
-        nrb_intent_level: captureMode === 'audio' ? 'high' : 'medium',
-        nrb_scenario: captureMode === 'audio' ? 'demo_conversation' : 'ae_conversation',
-        nrb_conversation: captureMode === 'audio' || captureMode === 'manual',
-        lifecycle_stage: captureMode === 'audio' ? 'sql' : 'mql',
         capture_timestamp: new Date().toISOString()
       };
 
@@ -1944,11 +2207,19 @@
           pain_points: leadData.pain_points,
           next_steps: leadData.next_steps,
           capture_method: leadData.nrb_capture_method,
-          intent_level: leadData.nrb_intent_level,
-          scenario: leadData.nrb_scenario,
+          intent_level: leadData.intent_level,
+          scenario: leadData.scenario,
           lifecycle_stage: leadData.lifecycle_stage,
-          has_card_photo: leadData.has_business_card_photo,
-          has_badge_photo: leadData.has_badge_photo,
+          previous_interactions: leadData.previous_interactions,
+          org_description: leadData.org_description,
+          nrb_role: leadData.nrb_role,
+          revenue_range: leadData.revenue_range,
+          nrb_booth: leadData.nrb_booth,
+          distribution_channels: leadData.distribution_channels,
+          competitor_signals: leadData.competitor_signals,
+          donation_tools: leadData.donation_tools,
+          podcast_link: leadData.podcast_link,
+          nrb_sessions: leadData.nrb_sessions,
           // Photos as base64 — Apps Script saves to Google Drive
           business_card_photo: leadData.business_card_photo || '',
           badge_photo: leadData.badge_photo || ''
@@ -1996,16 +2267,31 @@
       leadEmailTop.value = '';
       document.getElementById('leadFirstName').value = '';
       document.getElementById('leadLastName').value = '';
-      document.getElementById('leadTitle').value = '';
       document.getElementById('leadCompany').value = '';
       document.getElementById('leadWebsite').value = '';
       document.getElementById('leadEmail').value = '';
       document.getElementById('leadPhone').value = '';
+      document.getElementById('leadTitle').selectedIndex = 0;
       document.getElementById('leadProducts').selectedIndex = 0;
       document.getElementById('leadDemo').selectedIndex = 0;
       document.getElementById('leadSummary').value = '';
-      document.getElementById('leadPainPoints').value = '';
+      document.querySelectorAll('#painPointsGrid input:checked').forEach(function(cb) { cb.checked = false; });
       document.getElementById('leadNextSteps').value = '';
+      document.getElementById('leadIntentLevel').selectedIndex = 0;
+      document.getElementById('leadScenario').selectedIndex = 0;
+      document.getElementById('leadLifecycle').selectedIndex = 0;
+      document.getElementById('leadPreviousInteractions').selectedIndex = 0;
+      document.getElementById('leadOrgDescription').selectedIndex = 0;
+      document.getElementById('leadNrbRole').selectedIndex = 0;
+      document.getElementById('leadRevenue').selectedIndex = 0;
+      document.getElementById('leadNrbBooth').value = '';
+      document.querySelectorAll('#distChannelsGrid input:checked').forEach(function(cb) { cb.checked = false; });
+      document.getElementById('leadCompetitors').value = '';
+      document.getElementById('leadDonationTools').value = '';
+      document.getElementById('leadPodcast').value = '';
+      document.getElementById('leadNrbSessions').value = '';
+      if (qualBadge) qualBadge.style.display = 'none';
+      if (qualFields) qualFields.style.display = 'none';
       document.getElementById('photoQuickNotes').value = '';
       document.querySelectorAll('.star-btn').forEach(function(s) { s.classList.remove('active'); });
 
