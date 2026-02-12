@@ -297,6 +297,7 @@
       margin-bottom: 10px;
     }
     .timing-immediate { background: rgba(76,175,80,0.15); color: #4CAF50; }
+    .timing-instant { background: rgba(255,107,53,0.15); color: #FF6B35; }
     .timing-same-day { background: rgba(227,175,74,0.15); color: #E3AF4A; }
     .timing-next-day { background: rgba(100,180,255,0.15); color: #64B4FF; }
     .timing-week { background: rgba(156,39,176,0.15); color: #CE93D8; }
@@ -800,6 +801,18 @@
         <!-- COMMUNICATION -->
         <div class="scenario-col">
           <div class="col-label"><span class="icon">3</span> Communication Sequence</div>
+          <div class="comm-card" style="border-color: rgba(255,107,53,0.25); background: rgba(255,107,53,0.04);">
+            <span class="comm-timing timing-instant">Instant (Auto)</span>
+            <h4 style="color: #FF6B35;">Slack/SMS Alert to AE: Meeting Booked</h4>
+            <p>Automated alert to the assigned AE (or booth manager) the moment someone books a meeting via QR. Includes:</p>
+            <ul style="list-style: none; font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; line-height: 1.7;">
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Who:</strong> Name, title, company, organization type</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">When:</strong> Requested meeting time and slot</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Interest:</strong> Products they selected, budget range, notes from form</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Prep items:</strong> "Review their website," "Check if existing HubSpot contact," "Prepare [product] demo"</li>
+            </ul>
+            <span class="comm-channel">Slack DM</span><span class="comm-channel">SMS (backup)</span>
+          </div>
           <div class="comm-card">
             <span class="comm-timing timing-immediate">Immediate (Auto)</span>
             <h4>Email 1: Confirmation + calendar link</h4>
@@ -905,6 +918,19 @@
         <!-- COMMUNICATION -->
         <div class="scenario-col">
           <div class="col-label"><span class="icon">3</span> Communication Sequence</div>
+          <div class="comm-card" style="border-color: rgba(255,107,53,0.25); background: rgba(255,107,53,0.04);">
+            <span class="comm-timing timing-instant">Instant (Auto)</span>
+            <h4 style="color: #FF6B35;">Slack/SMS Alert to AE: Momentum Lead Briefing</h4>
+            <p>Automated alert sent to the AE the moment the lead is captured and enriched. Includes:</p>
+            <ul style="list-style: none; font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; line-height: 1.7;">
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Lead snapshot:</strong> Name, title, company, revenue range, distribution channels</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Qualification badge:</strong> QUALIFIED &mdash; reason (e.g., "Broadcast TV + Radio")</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Conversation recap:</strong> Products discussed, pain points, next steps from the lead form</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Action items:</strong> "Send follow-up email within 30 min," "Visit their booth (#412) today," "Attend their session Wed 2PM"</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Quick links:</strong> Google Sheet row, draft email template, calendar link to share</li>
+            </ul>
+            <span class="comm-channel">Slack DM</span><span class="comm-channel">SMS (backup)</span>
+          </div>
           <div class="comm-card">
             <span class="comm-timing timing-immediate">Within 30 Minutes</span>
             <h4>Email 1: Personalized AE follow-up</h4>
@@ -1019,7 +1045,21 @@
         <div class="scenario-col">
           <div class="col-label"><span class="icon">3</span> Communication Sequence</div>
 
-          <p style="font-size: 12px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">If Attended:</p>
+          <div class="comm-card" style="border-color: rgba(255,107,53,0.25); background: rgba(255,107,53,0.04);">
+            <span class="comm-timing timing-instant">Morning of Meeting (Auto)</span>
+            <h4 style="color: #FF6B35;">Slack/SMS Alert to AE: Meeting Prep Briefing</h4>
+            <p>Automated morning-of alert sent to the AE assigned to the meeting. Includes:</p>
+            <ul style="list-style: none; font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; line-height: 1.7;">
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Meeting time:</strong> Confirmed slot, location (Booth #401)</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Lead snapshot:</strong> Name, title, company, revenue, distribution channels, QUALIFIED status</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Context:</strong> How they booked (QR, landing page, direct), interest areas, form notes</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Prep actions:</strong> "Review their website," "Prepare [product] demo," "Check CRM for prior interactions"</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Quick links:</strong> Google Sheet row, company website, LinkedIn profile</li>
+            </ul>
+            <span class="comm-channel">Slack DM</span><span class="comm-channel">SMS (backup)</span>
+          </div>
+
+          <p style="font-size: 12px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; margin-top: 16px;">If Attended:</p>
           <div class="comm-card">
             <span class="comm-timing timing-same-day">Same Day</span>
             <h4>Email 1: "Great meeting today"</h4>
@@ -1241,6 +1281,7 @@
           <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,107,53,0.2);">
             <p style="font-size: 11px; font-weight: 700; color: #FF6B35; text-transform: uppercase;">Sequence:</p>
             <ul style="list-style: none; font-size: 11.5px; color: rgba(255,255,255,0.55); margin-top: 6px; line-height: 1.7;">
+              <li><strong style="color:#FF6B35;">Instant:</strong> Slack/SMS briefing to AE with enriched data + action items</li>
               <li><strong style="color:rgba(255,255,255,0.75);">Within 30 min:</strong> Personal email from AE + SMS</li>
               <li><strong style="color:rgba(255,255,255,0.75);">Same day:</strong> LinkedIn connect + visit their booth if exhibitor</li>
               <li><strong style="color:rgba(255,255,255,0.75);">Day +1 (during NRB):</strong> Push for 2nd in-person meeting</li>
