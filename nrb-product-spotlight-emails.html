@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRAY @ NRB — 3-Day Product Spotlight Emails</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0B0C0D;
+      color: #FFFFFF;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: #E3AF4A; text-decoration: none; }
+
+    /* Page Header */
+    .page-header {
+      background: linear-gradient(180deg, rgba(227,175,74,0.08) 0%, transparent 100%);
+      padding: 48px 24px 40px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .page-badge {
+      display: inline-block;
+      background: rgba(227,175,74,0.1);
+      border: 1px solid rgba(227,175,74,0.25);
+      color: #E3AF4A;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .page-header p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.55);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .gold { color: #E3AF4A; }
+
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      background: rgba(11,12,13,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 24px;
+      z-index: 100;
+      text-align: center;
+    }
+    .nav a {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+      margin: 0 4px;
+    }
+    .nav a:hover {
+      background: rgba(227,175,74,0.1);
+      border-color: rgba(227,175,74,0.3);
+      color: #E3AF4A;
+    }
+
+    /* Container */
+    .container { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+
+    /* Day Section */
+    .day-section {
+      padding: 56px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .day-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+    .day-num {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .day-1 .day-num { background: linear-gradient(135deg, #E3AF4A, #D4943A); color: #0B0C0D; }
+    .day-2 .day-num { background: linear-gradient(135deg, #64B4FF, #3A8FE0); color: #0B0C0D; }
+    .day-3 .day-num { background: linear-gradient(135deg, #FF6B35, #E05A2A); color: #FFFFFF; }
+    .day-header h2 {
+      font-size: clamp(18px, 3vw, 24px);
+      font-weight: 800;
+    }
+    .day-header h2 span {
+      color: rgba(255,255,255,0.4);
+      font-weight: 500;
+      font-size: 0.6em;
+      display: block;
+      margin-top: 2px;
+    }
+    .day-meta {
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 28px;
+      padding-left: 64px;
+    }
+
+    /* Email Template */
+    .email-template {
+      background: #FFFFFF;
+      color: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .email-banner {
+      padding: 32px 28px 24px;
+      text-align: center;
+    }
+    .day-1 .email-banner { background: linear-gradient(135deg, #1a1a1a 0%, #2a2520 100%); }
+    .day-2 .email-banner { background: linear-gradient(135deg, #1a1a1a 0%, #1a2030 100%); }
+    .day-3 .email-banner { background: linear-gradient(135deg, #1a1a1a 0%, #2a1a15 100%); }
+    .email-banner .series-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .day-1 .series-tag { background: rgba(227,175,74,0.15); color: #E3AF4A; border: 1px solid rgba(227,175,74,0.3); }
+    .day-2 .series-tag { background: rgba(100,180,255,0.15); color: #64B4FF; border: 1px solid rgba(100,180,255,0.3); }
+    .day-3 .series-tag { background: rgba(255,107,53,0.15); color: #FF6B35; border: 1px solid rgba(255,107,53,0.3); }
+    .email-banner h1 {
+      font-size: 24px;
+      font-weight: 900;
+      color: #FFFFFF;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .email-banner p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .email-body {
+      padding: 32px 28px;
+    }
+    .email-body p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #333;
+      margin-bottom: 16px;
+    }
+    .email-body strong { color: #1a1a1a; }
+    .email-body .greeting { font-size: 15px; color: #333; margin-bottom: 16px; }
+
+    .stat-row {
+      display: flex;
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .stat-box {
+      flex: 1;
+      text-align: center;
+      padding: 16px 12px;
+      border-radius: 10px;
+      background: #f8f7f4;
+      border: 1px solid #e8e5de;
+    }
+    .stat-box .stat-number {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+    .day-1 .stat-number { color: #D4943A; }
+    .day-2 .stat-number { color: #3A8FE0; }
+    .day-3 .stat-number { color: #E05A2A; }
+    .stat-box .stat-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .feature-list {
+      margin: 20px 0;
+      padding: 0;
+      list-style: none;
+    }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0ede8;
+      font-size: 14px;
+      color: #444;
+      line-height: 1.6;
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-icon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      margin-top: 2px;
+    }
+    .day-1 .feature-icon { background: rgba(227,175,74,0.12); }
+    .day-2 .feature-icon { background: rgba(100,180,255,0.12); }
+    .day-3 .feature-icon { background: rgba(255,107,53,0.12); }
+
+    .email-cta {
+      display: block;
+      text-align: center;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      margin: 28px 0 16px;
+      color: #0B0C0D !important;
+    }
+    .day-1 .email-cta { background: #E3AF4A; }
+    .day-2 .email-cta { background: #64B4FF; }
+    .day-3 .email-cta { background: #FF6B35; color: #FFFFFF !important; }
+
+    .email-cta-secondary {
+      display: block;
+      text-align: center;
+      font-size: 13px;
+      color: #888 !important;
+      margin-bottom: 24px;
+    }
+
+    .email-quote {
+      margin: 24px 0;
+      padding: 20px;
+      background: #f8f7f4;
+      border-left: 3px solid;
+      border-radius: 0 10px 10px 0;
+    }
+    .day-1 .email-quote { border-color: #E3AF4A; }
+    .day-2 .email-quote { border-color: #64B4FF; }
+    .day-3 .email-quote { border-color: #FF6B35; }
+    .email-quote p {
+      font-size: 14px;
+      font-style: italic;
+      color: #555;
+      margin-bottom: 8px;
+    }
+    .email-quote .quote-source {
+      font-size: 12px;
+      font-weight: 700;
+      font-style: normal;
+      color: #999;
+    }
+
+    .email-sign-off {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #e8e5de;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.7;
+    }
+    .email-sign-off .ae-name { font-weight: 700; color: #1a1a1a; }
+
+    .email-footer {
+      background: #f8f7f4;
+      padding: 20px 28px;
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+      border-top: 1px solid #e8e5de;
+    }
+    .email-footer strong { color: #666; }
+
+    /* Subject line callout */
+    .subject-line {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+    }
+    .subject-line .label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 4px;
+    }
+    .subject-line .text {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* Footer */
+    .doc-footer {
+      text-align: center;
+      padding: 40px 24px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    @media (max-width: 600px) {
+      .stat-row { flex-direction: column; }
+      .email-body { padding: 24px 20px; }
+      .email-banner { padding: 24px 20px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-badge">Email Templates</div>
+    <h1>3-Day <span class="gold">PRAY @ NRB</span> Product Spotlight</h1>
+    <p>Three post-NRB emails showcasing our core products. Send one per day to all HOT and WARM leads starting the day after NRB ends.</p>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="#day-1">Day 1: SuperFunnel</a>
+    <a href="#day-2">Day 2: AI Chat</a>
+    <a href="#day-3">Day 3: PRAYStudio</a>
+  </nav>
+
+  <!-- ======== DAY 1: SUPERFUNNEL ======== -->
+  <section class="day-section day-1" id="day-1">
+    <div class="container">
+      <div class="day-header">
+        <div class="day-num">1</div>
+        <h2>SuperFunnel <span>Revenue-Positive Donor Acquisition</span></h2>
+      </div>
+      <div class="day-meta">Send: Day +1 after NRB (Feb 21) &bull; Audience: HOT + WARM leads</div>
+
+      <div class="subject-line">
+        <div class="label">Subject Line</div>
+        <div class="text">What if your next campaign paid for itself &mdash; and then some?</div>
+      </div>
+
+      <div class="email-template">
+        <div class="email-banner">
+          <div class="series-tag">PRAY @ NRB &bull; Product Spotlight 1 of 3</div>
+          <h1>SuperFunnel</h1>
+          <p>Revenue-positive donor acquisition that turns digital campaigns into measurable ministry growth.</p>
+        </div>
+
+        <div class="email-body">
+          <p class="greeting">Hi [First Name],</p>
+
+          <p>It was great connecting at NRB 2026. Over the next three days, I'm sharing a quick look at three tools that are changing how ministries grow &mdash; starting with the one our partners ask about most.</p>
+
+          <p><strong>The problem most ministries face:</strong> digital ad campaigns that drain budget without a clear return. You spend to reach new people, but the cost-per-donor keeps climbing and the revenue math never works.</p>
+
+          <p><strong>SuperFunnel flips that equation.</strong> It's our proprietary growth system that turns social media engagement into measurable ministry revenue &mdash; so your campaigns don't just acquire donors, they <em>pay for themselves</em>.</p>
+
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="stat-number">4.7x</div>
+              <div class="stat-label">Avg Partner ROI</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">$2.3M</div>
+              <div class="stat-label">Avg Partner Revenue</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">3-5x</div>
+              <div class="stat-label">Industry Conversion Rate</div>
+            </div>
+          </div>
+
+          <p><strong>How it works:</strong></p>
+          <ul class="feature-list">
+            <li>
+              <span class="feature-icon">1</span>
+              <span><strong>Identify &amp; Engage</strong> &mdash; AI-driven targeting finds people already aligned with your mission on social platforms, not cold audiences</span>
+            </li>
+            <li>
+              <span class="feature-icon">2</span>
+              <span><strong>Convert &amp; Cultivate</strong> &mdash; Optimized funnels turn first-time visitors into recurring donors at 3-5x the industry average conversion rate</span>
+            </li>
+            <li>
+              <span class="feature-icon">3</span>
+              <span><strong>Revenue-Positive</strong> &mdash; The system is designed so campaign revenue exceeds campaign cost. Partners typically see 1.5x-2.5x ROI on every dollar spent</span>
+            </li>
+          </ul>
+
+          <div class="email-quote">
+            <p>"We generated $100K in 30 days while simultaneously acquiring new donors. SuperFunnel didn't cost us &mdash; it paid us."</p>
+            <span class="quote-source">&mdash; Dr. Jack Graham, Prestonwood Baptist Church</span>
+          </div>
+
+          <p>If donor acquisition cost or digital campaign ROI is something your team thinks about (and whose team doesn't), this is worth 15 minutes of your time.</p>
+
+          <a class="email-cta" href="#">See Your Ministry's ROI Projection &rarr;</a>
+          <a class="email-cta-secondary" href="#">Or reply to this email &mdash; I'll send a custom calculation for [Company]</a>
+
+          <div class="email-sign-off">
+            <p>Tomorrow: how AI is changing the way ministries connect with seekers, 24/7.</p>
+            <br>
+            <p><span class="ae-name">[AE Name]</span><br>[AE Title]<br>PRAY.COM<br>[AE Phone] &bull; [AE Email]</p>
+          </div>
+        </div>
+
+        <div class="email-footer">
+          <strong>PRAY.COM</strong> &bull; NRB 2026 Nashville &bull; Booth #401, Ryman Exhibit Hall<br>
+          <span style="margin-top: 4px; display: inline-block;">You're receiving this because we connected at NRB 2026. <a href="#" style="color: #999;">Unsubscribe</a></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== DAY 2: AI CHAT ======== -->
+  <section class="day-section day-2" id="day-2">
+    <div class="container">
+      <div class="day-header">
+        <div class="day-num">2</div>
+        <h2>AI Conversations <span>Your Ministry's 24/7 Digital Companion</span></h2>
+      </div>
+      <div class="day-meta">Send: Day +2 after NRB (Feb 22) &bull; Audience: HOT + WARM leads</div>
+
+      <div class="subject-line">
+        <div class="label">Subject Line</div>
+        <div class="text">Your ministry never sleeps. Now your engagement doesn't have to either.</div>
+      </div>
+
+      <div class="email-template">
+        <div class="email-banner">
+          <div class="series-tag">PRAY @ NRB &bull; Product Spotlight 2 of 3</div>
+          <h1>AI Conversations</h1>
+          <p>An AI-powered companion that engages your audience with personalized, faith-based conversations &mdash; any time of day.</p>
+        </div>
+
+        <div class="email-body">
+          <p class="greeting">Hi [First Name],</p>
+
+          <p>Yesterday I shared how SuperFunnel turns digital campaigns into revenue. Today, I want to show you what happens <em>after</em> someone discovers your ministry online.</p>
+
+          <p><strong>Here's the reality:</strong> most ministry websites are digital brochures. Someone lands on your page at 11pm after a hard day, looking for hope &mdash; and gets a static "About Us" page. They leave. You never know they were there.</p>
+
+          <p><strong>AI Conversations changes that.</strong> It's an intelligent, always-on ministry companion that engages every visitor with warm, personalized, scripture-grounded conversations &mdash; whether it's 2pm or 2am.</p>
+
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="stat-number">24/7</div>
+              <div class="stat-label">Always Available</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">100+</div>
+              <div class="stat-label">Languages Supported</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">10x</div>
+              <div class="stat-label">Visitor Engagement</div>
+            </div>
+          </div>
+
+          <p><strong>What AI Conversations can do for your ministry:</strong></p>
+          <ul class="feature-list">
+            <li>
+              <span class="feature-icon">&#128591;</span>
+              <span><strong>Prayer &amp; Pastoral Care</strong> &mdash; Receive prayer requests, offer scripture-based encouragement, and guide seekers through moments of need &mdash; all trained on your ministry's theology and voice</span>
+            </li>
+            <li>
+              <span class="feature-icon">&#128269;</span>
+              <span><strong>Content Discovery</strong> &mdash; Help visitors find the right sermon, devotional, or resource based on their questions and spiritual journey, not just keyword search</span>
+            </li>
+            <li>
+              <span class="feature-icon">&#128176;</span>
+              <span><strong>Donor Engagement</strong> &mdash; Guide supporters through giving options, answer questions about impact, and deepen the relationship between donation moments</span>
+            </li>
+            <li>
+              <span class="feature-icon">&#127758;</span>
+              <span><strong>Multilingual Outreach</strong> &mdash; Engage visitors in 100+ languages instantly, extending your ministry's reach beyond English-speaking audiences</span>
+            </li>
+          </ul>
+
+          <div class="email-quote">
+            <p>"Embracing technology and data can grow your mission and ministry. Storytelling is not what it was 20 years ago. Evangelism needs to advance with the times."</p>
+            <span class="quote-source">&mdash; PRAY.COM NRB 2026 Theme</span>
+          </div>
+
+          <p>Imagine if every person who visited your website or app had a personal, meaningful interaction with your ministry &mdash; without adding a single staff member. That's what AI Conversations delivers.</p>
+
+          <a class="email-cta" href="#">See AI Conversations in Action &rarr;</a>
+          <a class="email-cta-secondary" href="#">Or reply &mdash; I'll set up a live demo tailored to [Company]'s content</a>
+
+          <div class="email-sign-off">
+            <p>Tomorrow: how to turn one sermon into 30 days of broadcast-quality content.</p>
+            <br>
+            <p><span class="ae-name">[AE Name]</span><br>[AE Title]<br>PRAY.COM<br>[AE Phone] &bull; [AE Email]</p>
+          </div>
+        </div>
+
+        <div class="email-footer">
+          <strong>PRAY.COM</strong> &bull; NRB 2026 Nashville &bull; Booth #401, Ryman Exhibit Hall<br>
+          <span style="margin-top: 4px; display: inline-block;">You're receiving this because we connected at NRB 2026. <a href="#" style="color: #999;">Unsubscribe</a></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== DAY 3: PRAYSTUDIO PRODUCTION ======== -->
+  <section class="day-section day-3" id="day-3">
+    <div class="container">
+      <div class="day-header">
+        <div class="day-num">3</div>
+        <h2>PRAYStudio Production <span>AI-Powered Content Creation</span></h2>
+      </div>
+      <div class="day-meta">Send: Day +3 after NRB (Feb 23) &bull; Audience: HOT + WARM leads</div>
+
+      <div class="subject-line">
+        <div class="label">Subject Line</div>
+        <div class="text">One sermon. 30 days of content. Zero extra staff.</div>
+      </div>
+
+      <div class="email-template">
+        <div class="email-banner">
+          <div class="series-tag">PRAY @ NRB &bull; Product Spotlight 3 of 3</div>
+          <h1>PRAYStudio Production</h1>
+          <p>Create broadcast-quality ministry content in minutes &mdash; powered by AI built specifically for faith-based messaging.</p>
+        </div>
+
+        <div class="email-body">
+          <p class="greeting">Hi [First Name],</p>
+
+          <p>This is the final spotlight in our NRB series &mdash; and it's the one that solves the single biggest operational bottleneck we hear from ministry leaders: <strong>content production.</strong></p>
+
+          <p>Your team already creates great sermons, teachings, and messages. But turning that content into social posts, video clips, devotionals, email campaigns, and translated versions for global audiences? That's a full-time production department most ministries can't afford.</p>
+
+          <p><strong>PRAYStudio Production is that department &mdash; powered by AI.</strong></p>
+
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="stat-number">10x</div>
+              <div class="stat-label">Content Output</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">100+</div>
+              <div class="stat-label">Auto-Translated Languages</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">Minutes</div>
+              <div class="stat-label">Not Days to Produce</div>
+            </div>
+          </div>
+
+          <p><strong>What PRAYStudio Production does:</strong></p>
+          <ul class="feature-list">
+            <li>
+              <span class="feature-icon">&#127909;</span>
+              <span><strong>Sermon-to-Content Pipeline</strong> &mdash; Upload one sermon and get 30 days of social media posts, short-form video clips, quote graphics, devotional text, and email content &mdash; automatically generated</span>
+            </li>
+            <li>
+              <span class="feature-icon">&#127912;</span>
+              <span><strong>Broadcast-Quality Output</strong> &mdash; AI-generated content that matches your ministry's brand, voice, and theological standards. Not generic templates &mdash; content trained on faith-based messaging</span>
+            </li>
+            <li>
+              <span class="feature-icon">&#127760;</span>
+              <span><strong>Instant Global Translation</strong> &mdash; One click to translate your content into 100+ languages. "One sermon. 100+ languages. Millions reached." This is what global ministry looks like in 2026</span>
+            </li>
+            <li>
+              <span class="feature-icon">&#128200;</span>
+              <span><strong>Real-Time Analytics</strong> &mdash; Know what's working before Sunday ends. Track engagement across every piece of content and optimize in real time &mdash; not next quarter</span>
+            </li>
+          </ul>
+
+          <div class="email-quote">
+            <p>"Modern storytelling demands modern tools: mobile-first, AI-assisted, globally accessible. PRAYStudio gives ministries the production power of a full media team &mdash; without the overhead."</p>
+            <span class="quote-source">&mdash; PRAY.COM</span>
+          </div>
+
+          <p>If your team spends more time producing content than creating it, PRAYStudio Production gives you that time back &mdash; and multiplies your reach in the process.</p>
+
+          <a class="email-cta" href="#">Book a Live PRAYStudio Demo &rarr;</a>
+          <a class="email-cta-secondary" href="#">Or reply &mdash; I'll show you what [Company]'s content pipeline could look like</a>
+
+          <p style="margin-top: 24px; padding: 18px; background: #f8f7f4; border-radius: 10px; font-size: 13px; color: #666; text-align: center; border: 1px solid #e8e5de;">
+            <strong style="color: #1a1a1a;">That's the 3-day spotlight.</strong><br>
+            SuperFunnel for revenue. AI Conversations for engagement. PRAYStudio for content.<br>
+            <strong style="color: #E05A2A;">Which one should we dig into for [Company]?</strong>
+          </p>
+
+          <div class="email-sign-off">
+            <p>I'd love to continue the conversation we started at NRB. Let me know which product interests you most and I'll tailor a demo &mdash; or we can cover all three in a 30-minute call.</p>
+            <br>
+            <p><span class="ae-name">[AE Name]</span><br>[AE Title]<br>PRAY.COM<br>[AE Phone] &bull; [AE Email]</p>
+          </div>
+        </div>
+
+        <div class="email-footer">
+          <strong>PRAY.COM</strong> &bull; NRB 2026 Nashville &bull; Booth #401, Ryman Exhibit Hall<br>
+          <span style="margin-top: 4px; display: inline-block;">You're receiving this because we connected at NRB 2026. <a href="#" style="color: #999;">Unsubscribe</a></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <p><strong style="color: rgba(255,255,255,0.4);">PRAY.COM</strong> | NRB 2026 &mdash; 3-Day Product Spotlight Campaign | Internal Use Only</p>
+    <p style="margin-top: 4px;">February 2026 | <a href="booth-audio-capture.html">Lead Capture Tool</a> | <a href="nrb-communication-flow.html">Communication Playbook</a> | <a href="lead-capture-tutorial.html">Tutorial</a></p>
+  </div>
+
+</body>
+</html>
