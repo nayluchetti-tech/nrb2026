@@ -42,6 +42,30 @@
 //    AD1: Card Photo Link
 //    AE1: Badge Photo Link
 //
+// 2b. Create a SECOND tab called: "Pre-Booked"
+//     This tab holds attendees who pre-booked meetings before NRB.
+//     Add these headers in Row 1 (A1 through O1):
+//
+//     A1: AE Owner
+//     B1: First Name
+//     C1: Last Name
+//     D1: Title
+//     E1: Company
+//     F1: Email
+//     G1: Phone
+//     H1: Products of Interest
+//     I1: Meeting Date/Time
+//     J1: Meeting Status
+//     K1: Meeting Notes
+//     L1: Deal Potential (1-5)
+//     M1: Distribution Channels
+//     N1: Source
+//     O1: Last Updated
+//
+//     Pre-populate this tab with your scheduled meetings before the
+//     conference. The "Pre-Booked" panel in the capture tool searches
+//     this tab by name, email, or company.
+//
 // 3. Open Apps Script:
 //    - In Google Sheets, go to Extensions > Apps Script
 //    - Delete any existing code in Code.gs
@@ -248,9 +272,11 @@ function doPost(e) {
 function doGet(e) {
   var params = e ? e.parameter : {};
 
-  // Search action: find leads by name or email
+  // Search action: find leads by name, email, or company
+  // Optional &tab=Pre-Booked to search the Pre-Booked tab instead of Leads
   if (params.action === 'search' && params.q) {
-    return searchLeads_(params.q);
+    var tabName = params.tab || 'Leads';
+    return searchLeads_(params.q, tabName);
   }
 
   return ContentService
@@ -261,22 +287,56 @@ function doGet(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// ----- Search leads in the sheet by name or email -----
-function searchLeads_(query) {
+// ----- Search leads by name, email, or company in a given tab -----
+function searchLeads_(query, tabName) {
   try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Leads');
-    if (!sheet) sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(tabName);
+    if (!sheet) {
+      // Fallback to Leads tab if requested tab doesn't exist
+      sheet = ss.getSheetByName('Leads') || ss.getActiveSheet();
+    }
 
     var data = sheet.getDataRange().getValues();
     var results = [];
     var q = query.toLowerCase();
 
-    // Skip header row (row 0), search columns C (first name), D (last name), H (email), F (company)
+    // Column mappings differ by tab
+    var isPreBooked = (tabName === 'Pre-Booked');
+
+    // Pre-Booked columns: A=AE Owner, B=First Name, C=Last Name, D=Title,
+    //   E=Company, F=Email, G=Phone, H=Products, I=Meeting Date/Time,
+    //   J=Meeting Status, K=Meeting Notes, L=Deal Potential, M=Distribution Channels
+    // Leads columns: A=Timestamp, B=AE Owner, C=First Name, D=Last Name,
+    //   E=Title, F=Company, G=Website, H=Email, I=Phone, J=Products...
+
     for (var i = 1; i < data.length; i++) {
-      var firstName = String(data[i][2] || '');  // C
-      var lastName = String(data[i][3] || '');   // D
-      var email = String(data[i][7] || '');      // H
-      var company = String(data[i][5] || '');    // F
+      var firstName, lastName, email, company, title, products, channels, meetingTime, meetingStatus, aeOwner;
+
+      if (isPreBooked) {
+        aeOwner   = String(data[i][0] || '');  // A
+        firstName = String(data[i][1] || '');  // B
+        lastName  = String(data[i][2] || '');  // C
+        title     = String(data[i][3] || '');  // D
+        company   = String(data[i][4] || '');  // E
+        email     = String(data[i][5] || '');  // F
+        products  = String(data[i][7] || '');  // H
+        meetingTime   = String(data[i][8] || '');  // I
+        meetingStatus = String(data[i][9] || '');  // J
+        channels  = String(data[i][12] || ''); // M
+      } else {
+        aeOwner   = String(data[i][1] || '');  // B
+        firstName = String(data[i][2] || '');  // C
+        lastName  = String(data[i][3] || '');  // D
+        title     = String(data[i][4] || '');  // E
+        company   = String(data[i][5] || '');  // F
+        email     = String(data[i][7] || '');  // H
+        products  = String(data[i][9] || '');  // J
+        channels  = String(data[i][24] || ''); // Y
+        meetingTime = '';
+        meetingStatus = '';
+      }
+
       var fullName = firstName + ' ' + lastName;
 
       if (fullName.toLowerCase().indexOf(q) !== -1 ||
@@ -284,23 +344,31 @@ function searchLeads_(query) {
           lastName.toLowerCase().indexOf(q) !== -1 ||
           email.toLowerCase().indexOf(q) !== -1 ||
           company.toLowerCase().indexOf(q) !== -1) {
-        results.push({
-          row_number: i + 1,  // 1-indexed sheet row
+        var result = {
+          row_number: i + 1,
           first_name: firstName,
           last_name: lastName,
-          title: String(data[i][4] || ''),          // E
+          title: title,
           company: company,
           email: email,
-          products: String(data[i][9] || ''),        // J
-          intent_level: String(data[i][16] || ''),   // Q
-          distribution_channels: String(data[i][24] || '')  // Y
-        });
+          products: products,
+          distribution_channels: channels,
+          ae_owner: aeOwner,
+          tab: tabName
+        };
+        if (isPreBooked) {
+          result.meeting_time = meetingTime;
+          result.meeting_status = meetingStatus;
+        } else {
+          result.intent_level = String(data[i][16] || '');  // Q
+        }
+        results.push(result);
       }
-      if (results.length >= 10) break; // Max 10 results
+      if (results.length >= 10) break;
     }
 
     return ContentService
-      .createTextOutput(JSON.stringify({ status: 'success', results: results }))
+      .createTextOutput(JSON.stringify({ status: 'success', results: results, tab: tabName }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -311,36 +379,60 @@ function searchLeads_(query) {
 }
 
 // ----- Update meeting status on an existing row -----
+// Supports both "Leads" tab and "Pre-Booked" tab with different column layouts
 function updateMeetingStatus_(sheet, data) {
   try {
     var row = parseInt(data.row_number);
     if (!row || row < 2) throw new Error('Invalid row number');
 
-    // Update Conversation Summary (col M = 13) — append meeting notes
-    var existingSummary = sheet.getRange(row, 13).getValue() || '';
-    var newNotes = data.meeting_notes || '';
+    var tabName = data.tab || 'Leads';
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var targetSheet = ss.getSheetByName(tabName) || sheet;
+
     var statusLabel = data.meeting_status === 'completed' ? 'SHOWED' :
                       data.meeting_status === 'no_show' ? 'NO-SHOW' : 'RESCHEDULED';
-    var updateNote = '[Meeting ' + statusLabel + ' — ' + data.update_timestamp + ']';
-    if (newNotes) updateNote += ' ' + newNotes;
-    var combinedSummary = existingSummary ? existingSummary + '\n' + updateNote : updateNote;
-    sheet.getRange(row, 13).setValue(combinedSummary);
 
-    // Update Meeting Quality / Deal Potential (col L = 12)
-    if (data.deal_potential) {
-      sheet.getRange(row, 12).setValue(data.deal_potential);
+    if (tabName === 'Pre-Booked') {
+      // Pre-Booked tab columns:
+      // J (10) = Meeting Status, K (11) = Meeting Notes,
+      // L (12) = Deal Potential, O (15) = Last Updated
+      targetSheet.getRange(row, 10).setValue(statusLabel);
+
+      var existingNotes = targetSheet.getRange(row, 11).getValue() || '';
+      var newNotes = data.meeting_notes || '';
+      var updateNote = '[' + data.update_timestamp + ' — ' + (data.updated_by || 'AE') + '] ' + newNotes;
+      targetSheet.getRange(row, 11).setValue(existingNotes ? existingNotes + '\n' + updateNote : updateNote);
+
+      if (data.deal_potential) {
+        targetSheet.getRange(row, 12).setValue(data.deal_potential);
+      }
+
+      targetSheet.getRange(row, 15).setValue(data.update_timestamp || new Date().toISOString());
+
+    } else {
+      // Leads tab columns (original layout):
+      // M (13) = Conversation Summary, L (12) = Meeting Quality,
+      // O (15) = Next Steps, R (18) = Scenario
+      var existingSummary = targetSheet.getRange(row, 13).getValue() || '';
+      var newNotes = data.meeting_notes || '';
+      var updateNote = '[Meeting ' + statusLabel + ' — ' + data.update_timestamp + ']';
+      if (newNotes) updateNote += ' ' + newNotes;
+      var combinedSummary = existingSummary ? existingSummary + '\n' + updateNote : updateNote;
+      targetSheet.getRange(row, 13).setValue(combinedSummary);
+
+      if (data.deal_potential) {
+        targetSheet.getRange(row, 12).setValue(data.deal_potential);
+      }
+
+      var existingSteps = targetSheet.getRange(row, 15).getValue() || '';
+      var statusNote = 'Meeting status: ' + statusLabel + ' (updated by ' + (data.updated_by || 'unknown') + ')';
+      targetSheet.getRange(row, 15).setValue(existingSteps ? existingSteps + '; ' + statusNote : statusNote);
+
+      targetSheet.getRange(row, 18).setValue('Pre-Booked Meeting');
     }
 
-    // Update Next Steps (col O = 15) — append status
-    var existingSteps = sheet.getRange(row, 15).getValue() || '';
-    var statusNote = 'Meeting status: ' + statusLabel + ' (updated by ' + (data.updated_by || 'unknown') + ')';
-    sheet.getRange(row, 15).setValue(existingSteps ? existingSteps + '; ' + statusNote : statusNote);
-
-    // Update Scenario (col R = 18) to reflect prebooked
-    sheet.getRange(row, 18).setValue('Pre-Booked Meeting');
-
     return ContentService
-      .createTextOutput(JSON.stringify({ status: 'success', row: row, meeting_status: data.meeting_status }))
+      .createTextOutput(JSON.stringify({ status: 'success', row: row, meeting_status: data.meeting_status, tab: tabName }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {

@@ -1197,12 +1197,12 @@
       <div class="photo-section">
         <p class="section-hint">
           <strong>Look up a pre-booked attendee</strong> to mark their meeting status.<br>
-          Search by name or email, then record whether they showed up.
+          Search by name, email, or company, then record whether they showed up.
         </p>
 
         <!-- Search -->
         <div class="prebooked-search">
-          <input type="text" id="prebookedSearchInput" placeholder="Search by name or email...">
+          <input type="text" id="prebookedSearchInput" placeholder="Search by name, email, or company...">
           <button type="button" id="prebookedSearchBtn">Search</button>
         </div>
 
@@ -1212,8 +1212,8 @@
         <!-- No results -->
         <div class="prebooked-no-results" id="prebookedNoResults">
           <p style="font-size: 24px; margin-bottom: 8px; opacity: 0.3;">&#128269;</p>
-          <p>No matching leads found in the sheet.</p>
-          <p style="font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 4px;">Check the name or email and try again.</p>
+          <p>No matching attendees found in the Pre-Booked tab.</p>
+          <p style="font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 4px;">Check the name, email, or company and try again.</p>
         </div>
 
         <!-- Selected lead card -->
@@ -1230,20 +1230,20 @@
               <div class="plc-detail-value" id="plcEmail">—</div>
             </div>
             <div class="plc-detail">
-              <div class="plc-detail-label">Products Discussed</div>
-              <div class="plc-detail-value" id="plcProducts">—</div>
+              <div class="plc-detail-label">Meeting Time</div>
+              <div class="plc-detail-value" id="plcMeetingTime">—</div>
             </div>
             <div class="plc-detail">
-              <div class="plc-detail-label">Intent Level</div>
-              <div class="plc-detail-value" id="plcIntent">—</div>
+              <div class="plc-detail-label">AE Owner</div>
+              <div class="plc-detail-value" id="plcAeOwner">—</div>
+            </div>
+            <div class="plc-detail">
+              <div class="plc-detail-label">Products of Interest</div>
+              <div class="plc-detail-value" id="plcProducts">—</div>
             </div>
             <div class="plc-detail">
               <div class="plc-detail-label">Distribution Channels</div>
               <div class="plc-detail-value" id="plcChannels">—</div>
-            </div>
-            <div class="plc-detail">
-              <div class="plc-detail-label">Sheet Row</div>
-              <div class="plc-detail-value" id="plcRow">—</div>
             </div>
           </div>
         </div>
@@ -1277,7 +1277,7 @@
 
           <!-- Submit -->
           <button class="submit-btn" id="prebookedSubmitBtn" type="button">Update Meeting Status</button>
-          <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px;">This updates the existing row in the Google Sheet</p>
+          <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px;">This updates the existing row in the "Pre-Booked" tab of the Google Sheet</p>
         </div>
       </div>
     </div>
@@ -2140,8 +2140,8 @@
       prebookedSelectedRow = null;
       prebookedSelectedData = null;
 
-      // Fetch rows from the Google Sheet via GET with search param
-      var searchUrl = GOOGLE_SHEETS_URL + '?action=search&q=' + encodeURIComponent(query);
+      // Fetch rows from the Pre-Booked tab via GET with search param
+      var searchUrl = GOOGLE_SHEETS_URL + '?action=search&q=' + encodeURIComponent(query) + '&tab=Pre-Booked';
       document.getElementById('prebookedSearchBtn').textContent = 'Searching...';
 
       fetch(searchUrl)
@@ -2157,10 +2157,12 @@
           data.results.forEach(function(row) {
             var item = document.createElement('div');
             item.className = 'prebooked-result-item';
+            var meetingInfo = row.meeting_time ? ' &bull; ' + row.meeting_time : '';
+            var statusBadge = row.meeting_status ? ' <span style="color:#E3AF4A;font-weight:600;">[' + row.meeting_status + ']</span>' : '';
             item.innerHTML = '<div class="pri-info">' +
-              '<div class="pri-name">' + (row.first_name || '') + ' ' + (row.last_name || '') + '</div>' +
+              '<div class="pri-name">' + (row.first_name || '') + ' ' + (row.last_name || '') + statusBadge + '</div>' +
               '<div class="pri-company">' + (row.company || '') + (row.title ? ' &mdash; ' + row.title : '') + '</div>' +
-              '<div class="pri-row">Row ' + row.row_number + ' &bull; ' + (row.email || 'No email') + '</div>' +
+              '<div class="pri-row">' + (row.email || 'No email') + meetingInfo + '</div>' +
               '</div><div class="pri-arrow">&rsaquo;</div>';
             item.addEventListener('click', function() {
               selectPrebookedLead(row);
@@ -2189,10 +2191,10 @@
       document.getElementById('plcCompany').textContent = row.company || '—';
       document.getElementById('plcTitle').textContent = row.title || '—';
       document.getElementById('plcEmail').textContent = row.email || '—';
+      document.getElementById('plcMeetingTime').textContent = row.meeting_time || '—';
+      document.getElementById('plcAeOwner').textContent = row.ae_owner || '—';
       document.getElementById('plcProducts').textContent = row.products || '—';
-      document.getElementById('plcIntent').textContent = row.intent_level || '—';
       document.getElementById('plcChannels').textContent = row.distribution_channels || '—';
-      document.getElementById('plcRow').textContent = 'Row ' + row.row_number;
 
       // Show status section
       document.getElementById('prebookedStatusSection').style.display = 'block';
@@ -2244,6 +2246,7 @@
 
       var payload = {
         action: 'update_meeting',
+        tab: 'Pre-Booked',
         row_number: prebookedSelectedRow,
         meeting_status: prebookedMeetingStatus,
         meeting_notes: document.getElementById('prebookedNotes').value.trim(),
