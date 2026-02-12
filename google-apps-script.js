@@ -181,6 +181,11 @@ function doPost(e) {
       sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     }
 
+    // Handle meeting status update (from Pre-Booked panel)
+    if (data.action === 'update_meeting') {
+      return updateMeetingStatus_(sheet, data);
+    }
+
     // Save photos to Google Drive and get shareable links
     var cardPhotoUrl = '';
     var badgePhotoUrl = '';
@@ -239,14 +244,110 @@ function doPost(e) {
   }
 }
 
-// ----- Also handle GET requests (for testing the URL works) -----
+// ----- Handle GET requests: search and status check -----
 function doGet(e) {
+  var params = e ? e.parameter : {};
+
+  // Search action: find leads by name or email
+  if (params.action === 'search' && params.q) {
+    return searchLeads_(params.q);
+  }
+
   return ContentService
     .createTextOutput(JSON.stringify({
       status: 'ok',
       message: 'NRB 2026 Lead Capture endpoint is live. Use POST to submit leads.'
     }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ----- Search leads in the sheet by name or email -----
+function searchLeads_(query) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Leads');
+    if (!sheet) sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+
+    var data = sheet.getDataRange().getValues();
+    var results = [];
+    var q = query.toLowerCase();
+
+    // Skip header row (row 0), search columns C (first name), D (last name), H (email), F (company)
+    for (var i = 1; i < data.length; i++) {
+      var firstName = String(data[i][2] || '');  // C
+      var lastName = String(data[i][3] || '');   // D
+      var email = String(data[i][7] || '');      // H
+      var company = String(data[i][5] || '');    // F
+      var fullName = firstName + ' ' + lastName;
+
+      if (fullName.toLowerCase().indexOf(q) !== -1 ||
+          firstName.toLowerCase().indexOf(q) !== -1 ||
+          lastName.toLowerCase().indexOf(q) !== -1 ||
+          email.toLowerCase().indexOf(q) !== -1 ||
+          company.toLowerCase().indexOf(q) !== -1) {
+        results.push({
+          row_number: i + 1,  // 1-indexed sheet row
+          first_name: firstName,
+          last_name: lastName,
+          title: String(data[i][4] || ''),          // E
+          company: company,
+          email: email,
+          products: String(data[i][9] || ''),        // J
+          intent_level: String(data[i][16] || ''),   // Q
+          distribution_channels: String(data[i][24] || '')  // Y
+        });
+      }
+      if (results.length >= 10) break; // Max 10 results
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'success', results: results }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'error', message: error.toString(), results: [] }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ----- Update meeting status on an existing row -----
+function updateMeetingStatus_(sheet, data) {
+  try {
+    var row = parseInt(data.row_number);
+    if (!row || row < 2) throw new Error('Invalid row number');
+
+    // Update Conversation Summary (col M = 13) — append meeting notes
+    var existingSummary = sheet.getRange(row, 13).getValue() || '';
+    var newNotes = data.meeting_notes || '';
+    var statusLabel = data.meeting_status === 'completed' ? 'SHOWED' :
+                      data.meeting_status === 'no_show' ? 'NO-SHOW' : 'RESCHEDULED';
+    var updateNote = '[Meeting ' + statusLabel + ' — ' + data.update_timestamp + ']';
+    if (newNotes) updateNote += ' ' + newNotes;
+    var combinedSummary = existingSummary ? existingSummary + '\n' + updateNote : updateNote;
+    sheet.getRange(row, 13).setValue(combinedSummary);
+
+    // Update Meeting Quality / Deal Potential (col L = 12)
+    if (data.deal_potential) {
+      sheet.getRange(row, 12).setValue(data.deal_potential);
+    }
+
+    // Update Next Steps (col O = 15) — append status
+    var existingSteps = sheet.getRange(row, 15).getValue() || '';
+    var statusNote = 'Meeting status: ' + statusLabel + ' (updated by ' + (data.updated_by || 'unknown') + ')';
+    sheet.getRange(row, 15).setValue(existingSteps ? existingSteps + '; ' + statusNote : statusNote);
+
+    // Update Scenario (col R = 18) to reflect prebooked
+    sheet.getRange(row, 18).setValue('Pre-Booked Meeting');
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'success', row: row, meeting_status: data.meeting_status }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'error', message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 // ----- Save a base64 photo to Google Drive using REST API -----

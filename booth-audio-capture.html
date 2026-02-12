@@ -824,6 +824,136 @@
     .rbadge-card { background: rgba(100,180,255,0.12); color: #64B4FF; }
     .rbadge-badge { background: rgba(156,39,176,0.12); color: #CE93D8; }
     .rbadge-typed { background: rgba(76,175,80,0.12); color: #4CAF50; }
+    .rbadge-prebooked { background: rgba(255,107,53,0.12); color: #FF6B35; }
+
+    /* ===== PRE-BOOKED MEETING PANEL ===== */
+    .prebooked-search {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .prebooked-search input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      color: #FFFFFF;
+      font-family: inherit;
+    }
+    .prebooked-search input:focus {
+      outline: none;
+      border-color: #E3AF4A;
+    }
+    .prebooked-search input::placeholder { color: rgba(255,255,255,0.3); }
+    .prebooked-search button {
+      background: #E3AF4A;
+      color: #0B0C0D;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .prebooked-lead-card {
+      display: none;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .prebooked-lead-card.visible { display: block; }
+    .prebooked-lead-card h3 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+    .prebooked-lead-card .plc-company {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 16px;
+    }
+    .plc-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .plc-detail {
+      font-size: 12px;
+    }
+    .plc-detail-label {
+      color: rgba(255,255,255,0.4);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 10px;
+    }
+    .plc-detail-value {
+      color: rgba(255,255,255,0.8);
+      margin-top: 2px;
+    }
+    .prebooked-status-btns {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .status-btn {
+      flex: 1;
+      padding: 14px 12px;
+      border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .status-btn:hover { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
+    .status-btn.selected-showed { border-color: #4CAF50; color: #4CAF50; background: rgba(76,175,80,0.08); }
+    .status-btn.selected-noshow { border-color: #e74c3c; color: #e74c3c; background: rgba(231,76,60,0.08); }
+    .status-btn.selected-rescheduled { border-color: #E3AF4A; color: #E3AF4A; background: rgba(227,175,74,0.08); }
+    .prebooked-no-results {
+      display: none;
+      text-align: center;
+      padding: 32px 20px;
+      color: rgba(255,255,255,0.4);
+      font-size: 14px;
+    }
+    .prebooked-no-results.visible { display: block; }
+    .prebooked-results-list {
+      display: none;
+      margin-bottom: 20px;
+    }
+    .prebooked-results-list.visible { display: block; }
+    .prebooked-result-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .prebooked-result-item:hover {
+      border-color: rgba(227,175,74,0.3);
+      background: rgba(227,175,74,0.04);
+    }
+    .pri-info { flex: 1; }
+    .pri-name { font-size: 14px; font-weight: 600; }
+    .pri-company { font-size: 12px; color: rgba(255,255,255,0.4); }
+    .pri-row { font-size: 11px; color: rgba(255,255,255,0.25); }
+    .pri-arrow { color: rgba(255,255,255,0.2); font-size: 18px; font-weight: 700; }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 600px) {
@@ -886,6 +1016,10 @@
       <button class="capture-tab" data-panel="manual" type="button">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7V4H20V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 20H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 4V20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Type It In
+      </button>
+      <button class="capture-tab" data-panel="prebooked" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M8 2V5M16 2V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 10H21" stroke="currentColor" stroke-width="2"/><path d="M9 16L11 18L15 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Pre-Booked
       </button>
     </div>
 
@@ -1055,6 +1189,96 @@
 
         <button class="photo-skip-btn" id="manualSubmitBtn" type="button" style="background: #E3AF4A; color: #0B0C0D; font-weight: 700; border-color: #E3AF4A;">Continue to Lead Form</button>
         <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px;">Fill in everything you know &mdash; you can leave fields blank</p>
+      </div>
+    </div>
+
+    <!-- ====== PANEL: PRE-BOOKED MEETING ====== -->
+    <div class="capture-panel" id="panelPrebooked">
+      <div class="photo-section">
+        <p class="section-hint">
+          <strong>Look up a pre-booked attendee</strong> to mark their meeting status.<br>
+          Search by name or email, then record whether they showed up.
+        </p>
+
+        <!-- Search -->
+        <div class="prebooked-search">
+          <input type="text" id="prebookedSearchInput" placeholder="Search by name or email...">
+          <button type="button" id="prebookedSearchBtn">Search</button>
+        </div>
+
+        <!-- Search results list -->
+        <div class="prebooked-results-list" id="prebookedResults"></div>
+
+        <!-- No results -->
+        <div class="prebooked-no-results" id="prebookedNoResults">
+          <p style="font-size: 24px; margin-bottom: 8px; opacity: 0.3;">&#128269;</p>
+          <p>No matching leads found in the sheet.</p>
+          <p style="font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 4px;">Check the name or email and try again.</p>
+        </div>
+
+        <!-- Selected lead card -->
+        <div class="prebooked-lead-card" id="prebookedLeadCard">
+          <h3 id="plcName">—</h3>
+          <p class="plc-company" id="plcCompany">—</p>
+          <div class="plc-details">
+            <div class="plc-detail">
+              <div class="plc-detail-label">Title</div>
+              <div class="plc-detail-value" id="plcTitle">—</div>
+            </div>
+            <div class="plc-detail">
+              <div class="plc-detail-label">Email</div>
+              <div class="plc-detail-value" id="plcEmail">—</div>
+            </div>
+            <div class="plc-detail">
+              <div class="plc-detail-label">Products Discussed</div>
+              <div class="plc-detail-value" id="plcProducts">—</div>
+            </div>
+            <div class="plc-detail">
+              <div class="plc-detail-label">Intent Level</div>
+              <div class="plc-detail-value" id="plcIntent">—</div>
+            </div>
+            <div class="plc-detail">
+              <div class="plc-detail-label">Distribution Channels</div>
+              <div class="plc-detail-value" id="plcChannels">—</div>
+            </div>
+            <div class="plc-detail">
+              <div class="plc-detail-label">Sheet Row</div>
+              <div class="plc-detail-value" id="plcRow">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status buttons -->
+        <div id="prebookedStatusSection" style="display: none;">
+          <p style="font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Meeting Status</p>
+          <div class="prebooked-status-btns">
+            <button class="status-btn" data-status="completed" type="button">&#10003; Showed</button>
+            <button class="status-btn" data-status="no_show" type="button">&#10007; No-Show</button>
+            <button class="status-btn" data-status="rescheduled" type="button">&#8634; Rescheduled</button>
+          </div>
+
+          <!-- Meeting notes -->
+          <div class="field-item full-width" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px;">
+            <div class="field-label" style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #E3AF4A; margin-bottom: 4px;">Meeting Notes</div>
+            <div class="field-value"><textarea id="prebookedNotes" placeholder="How did the meeting go? Products demoed, next steps, objections..." style="width:100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 8px 10px; font-size: 14px; color: #FFFFFF; font-family: inherit; resize: vertical; min-height: 80px;"></textarea></div>
+          </div>
+
+          <!-- Deal potential -->
+          <div style="margin-bottom: 20px;">
+            <p style="font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Deal Potential</p>
+            <div class="rating-stars" id="prebookedRating">
+              <button class="star-btn" data-rating="1" type="button">1</button>
+              <button class="star-btn" data-rating="2" type="button">2</button>
+              <button class="star-btn" data-rating="3" type="button">3</button>
+              <button class="star-btn" data-rating="4" type="button">4</button>
+              <button class="star-btn" data-rating="5" type="button">5</button>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <button class="submit-btn" id="prebookedSubmitBtn" type="button">Update Meeting Status</button>
+          <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px;">This updates the existing row in the Google Sheet</p>
+        </div>
       </div>
     </div>
 
@@ -1378,7 +1602,7 @@
     var transcript = '';
     var currentRating = 0;
     var recentCaptures = [];
-    var captureMode = 'audio'; // 'audio', 'photo', or 'manual'
+    var captureMode = 'audio'; // 'audio', 'photo', 'manual', or 'prebooked'
 
     // Photo state
     var photos = {
@@ -1880,6 +2104,191 @@
     document.getElementById('manualSubmitBtn').addEventListener('click', function() {
       if (!validateAeSelected()) return;
       showStructuredForm();
+    });
+
+    // =============================================
+    // PRE-BOOKED MEETING PANEL
+    // =============================================
+    var prebookedSelectedRow = null;
+    var prebookedSelectedData = null;
+    var prebookedMeetingStatus = '';
+    var prebookedDealRating = 0;
+
+    // Search
+    document.getElementById('prebookedSearchBtn').addEventListener('click', function() {
+      prebookedSearch();
+    });
+    document.getElementById('prebookedSearchInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') prebookedSearch();
+    });
+
+    function prebookedSearch() {
+      var query = document.getElementById('prebookedSearchInput').value.trim().toLowerCase();
+      if (!query || query.length < 2) return;
+
+      var resultsEl = document.getElementById('prebookedResults');
+      var noResultsEl = document.getElementById('prebookedNoResults');
+      var cardEl = document.getElementById('prebookedLeadCard');
+      var statusSection = document.getElementById('prebookedStatusSection');
+
+      // Reset
+      resultsEl.innerHTML = '';
+      resultsEl.classList.remove('visible');
+      noResultsEl.classList.remove('visible');
+      cardEl.classList.remove('visible');
+      statusSection.style.display = 'none';
+      prebookedSelectedRow = null;
+      prebookedSelectedData = null;
+
+      // Fetch rows from the Google Sheet via GET with search param
+      var searchUrl = GOOGLE_SHEETS_URL + '?action=search&q=' + encodeURIComponent(query);
+      document.getElementById('prebookedSearchBtn').textContent = 'Searching...';
+
+      fetch(searchUrl)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          document.getElementById('prebookedSearchBtn').textContent = 'Search';
+          if (!data.results || data.results.length === 0) {
+            noResultsEl.classList.add('visible');
+            return;
+          }
+          // Show results list
+          resultsEl.innerHTML = '';
+          data.results.forEach(function(row) {
+            var item = document.createElement('div');
+            item.className = 'prebooked-result-item';
+            item.innerHTML = '<div class="pri-info">' +
+              '<div class="pri-name">' + (row.first_name || '') + ' ' + (row.last_name || '') + '</div>' +
+              '<div class="pri-company">' + (row.company || '') + (row.title ? ' &mdash; ' + row.title : '') + '</div>' +
+              '<div class="pri-row">Row ' + row.row_number + ' &bull; ' + (row.email || 'No email') + '</div>' +
+              '</div><div class="pri-arrow">&rsaquo;</div>';
+            item.addEventListener('click', function() {
+              selectPrebookedLead(row);
+            });
+            resultsEl.appendChild(item);
+          });
+          resultsEl.classList.add('visible');
+        })
+        .catch(function(err) {
+          document.getElementById('prebookedSearchBtn').textContent = 'Search';
+          console.error('Search error:', err);
+          noResultsEl.classList.add('visible');
+        });
+    }
+
+    function selectPrebookedLead(row) {
+      prebookedSelectedRow = row.row_number;
+      prebookedSelectedData = row;
+
+      // Hide results, show card
+      document.getElementById('prebookedResults').classList.remove('visible');
+      var card = document.getElementById('prebookedLeadCard');
+      card.classList.add('visible');
+
+      document.getElementById('plcName').textContent = (row.first_name || '') + ' ' + (row.last_name || '');
+      document.getElementById('plcCompany').textContent = row.company || '—';
+      document.getElementById('plcTitle').textContent = row.title || '—';
+      document.getElementById('plcEmail').textContent = row.email || '—';
+      document.getElementById('plcProducts').textContent = row.products || '—';
+      document.getElementById('plcIntent').textContent = row.intent_level || '—';
+      document.getElementById('plcChannels').textContent = row.distribution_channels || '—';
+      document.getElementById('plcRow').textContent = 'Row ' + row.row_number;
+
+      // Show status section
+      document.getElementById('prebookedStatusSection').style.display = 'block';
+
+      // Reset status and notes
+      prebookedMeetingStatus = '';
+      prebookedDealRating = 0;
+      document.querySelectorAll('.status-btn').forEach(function(b) {
+        b.className = 'status-btn';
+      });
+      document.querySelectorAll('#prebookedRating .star-btn').forEach(function(b) {
+        b.classList.remove('active');
+      });
+      document.getElementById('prebookedNotes').value = '';
+    }
+
+    // Status buttons
+    document.querySelectorAll('.status-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        prebookedMeetingStatus = this.dataset.status;
+        document.querySelectorAll('.status-btn').forEach(function(b) { b.className = 'status-btn'; });
+        if (prebookedMeetingStatus === 'completed') this.classList.add('selected-showed');
+        else if (prebookedMeetingStatus === 'no_show') this.classList.add('selected-noshow');
+        else if (prebookedMeetingStatus === 'rescheduled') this.classList.add('selected-rescheduled');
+      });
+    });
+
+    // Deal potential rating
+    document.querySelectorAll('#prebookedRating .star-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        prebookedDealRating = parseInt(this.dataset.rating);
+        document.querySelectorAll('#prebookedRating .star-btn').forEach(function(b, i) {
+          b.classList.toggle('active', (i + 1) <= prebookedDealRating);
+        });
+      });
+    });
+
+    // Submit meeting status update
+    document.getElementById('prebookedSubmitBtn').addEventListener('click', function() {
+      if (!prebookedSelectedRow) return;
+      if (!prebookedMeetingStatus) {
+        alert('Please select a meeting status (Showed, No-Show, or Rescheduled)');
+        return;
+      }
+
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = 'Updating...';
+
+      var payload = {
+        action: 'update_meeting',
+        row_number: prebookedSelectedRow,
+        meeting_status: prebookedMeetingStatus,
+        meeting_notes: document.getElementById('prebookedNotes').value.trim(),
+        deal_potential: prebookedDealRating || '',
+        updated_by: document.getElementById('aeSelect').value || 'unknown',
+        update_timestamp: new Date().toISOString()
+      };
+
+      fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function() {
+        btn.textContent = 'Updated!';
+        btn.style.background = '#4CAF50';
+
+        // Add to recent captures
+        recentCaptures.unshift({
+          name: (prebookedSelectedData.first_name || '') + ' ' + (prebookedSelectedData.last_name || ''),
+          company: prebookedSelectedData.company || '',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          rating: prebookedDealRating,
+          badges: ['prebooked']
+        });
+        updateRecentList();
+
+        // Reset after 2 seconds
+        setTimeout(function() {
+          btn.disabled = false;
+          btn.textContent = 'Update Meeting Status';
+          btn.style.background = '';
+          document.getElementById('prebookedLeadCard').classList.remove('visible');
+          document.getElementById('prebookedStatusSection').style.display = 'none';
+          document.getElementById('prebookedSearchInput').value = '';
+          prebookedSelectedRow = null;
+          prebookedSelectedData = null;
+        }, 2000);
+      }).catch(function(err) {
+        console.error('Update error:', err);
+        btn.disabled = false;
+        btn.textContent = 'Retry — Update Status';
+        btn.style.background = '#e74c3c';
+        setTimeout(function() { btn.style.background = ''; }, 3000);
+      });
     });
 
     // =============================================
