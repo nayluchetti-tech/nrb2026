@@ -1195,9 +1195,10 @@
             <div class="field-value">
               <select id="leadIntentLevel">
                 <option value="" disabled selected>Select</option>
-                <option value="Hot">Hot — Asked about pricing / specific product</option>
-                <option value="Warm">Warm — Interested, no commitment yet</option>
-                <option value="Cold">Cold — Just browsing / no product interest</option>
+                <option value="Momentum">Momentum — Meet at NRB (qualified + urgency)</option>
+                <option value="Hot">Hot — Meet after NRB (qualified, no urgency)</option>
+                <option value="Warm">Warm — Need to qualify / not ready</option>
+                <option value="Disqualified">Disqualified — Not a fit</option>
               </select>
             </div>
           </div>
@@ -2169,7 +2170,7 @@
         })(),
         next_steps: document.getElementById('leadNextSteps').value,
         meeting_quality: currentRating,
-        intent_level: document.getElementById('leadIntentLevel').value || (captureMode === 'audio' ? 'Hot' : 'Warm'),
+        intent_level: document.getElementById('leadIntentLevel').value || (captureMode === 'audio' ? 'Momentum' : 'Warm'),
         scenario: document.getElementById('leadScenario').value || '',
         lifecycle_stage: document.getElementById('leadLifecycle').value || (captureMode === 'audio' ? 'SQL' : 'MQL'),
         previous_interactions: document.getElementById('leadPreviousInteractions').value || 'New Lead',
