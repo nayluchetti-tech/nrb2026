@@ -194,6 +194,7 @@
       margin-left: 12px;
       vertical-align: middle;
     }
+    .tag-momentum { background: rgba(255,107,53,0.15); color: #FF6B35; }
     .tag-high { background: rgba(227,175,74,0.15); color: #E3AF4A; }
     .tag-medium { background: rgba(100,180,255,0.15); color: #64B4FF; }
     .tag-low { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
@@ -393,13 +394,17 @@
     }
     .decision-branches {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
     }
     .branch {
       border-radius: 12px;
       padding: 20px;
       border: 1px solid;
+    }
+    .branch-momentum {
+      background: rgba(255,107,53,0.06);
+      border-color: rgba(255,107,53,0.25);
     }
     .branch-hot {
       background: rgba(227,175,74,0.05);
@@ -409,7 +414,7 @@
       background: rgba(100,180,255,0.05);
       border-color: rgba(100,180,255,0.15);
     }
-    .branch-nurture {
+    .branch-disqualified {
       background: rgba(255,255,255,0.02);
       border-color: rgba(255,255,255,0.08);
     }
@@ -418,9 +423,10 @@
       font-weight: 700;
       margin-bottom: 4px;
     }
+    .branch-momentum h4 { color: #FF6B35; }
     .branch-hot h4 { color: #E3AF4A; }
     .branch-warm h4 { color: #64B4FF; }
-    .branch-nurture h4 { color: rgba(255,255,255,0.5); }
+    .branch-disqualified h4 { color: rgba(255,255,255,0.4); }
     .branch .criteria {
       font-size: 12px;
       color: rgba(255,255,255,0.5);
@@ -472,7 +478,7 @@
       .pipeline-grid { grid-template-columns: repeat(2, 1fr); }
       .pipeline-step::after { display: none; }
       .scenario-columns { grid-template-columns: 1fr; }
-      .decision-branches { grid-template-columns: 1fr; }
+      .decision-branches { grid-template-columns: 1fr 1fr; }
       .hs-prop-list { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
@@ -500,7 +506,7 @@
       <a href="#scenario-4">4: Demo Interest</a>
       <a href="#scenario-5">5: Pre-Booked Meeting</a>
       <a href="#enrichment">Enrichment Engine</a>
-      <a href="#decision">Decision Tree</a>
+      <a href="#decision">Classification Tiers</a>
     </div>
   </nav>
 
@@ -522,7 +528,7 @@
         <div class="pipeline-step">
           <span class="pipeline-num">3</span>
           <h3>Classify</h3>
-          <p>Score the lead: HOT (pursue meeting at NRB), WARM (post-NRB meeting), or NURTURE (long-term drip sequence).</p>
+          <p>Tier the lead using demographics + buy intent: MOMENTUM (meeting at NRB), HOT (meeting after NRB), WARM (need to qualify), or DISQUALIFIED.</p>
         </div>
         <div class="pipeline-step">
           <span class="pipeline-num">4</span>
@@ -845,7 +851,7 @@
       <div class="scenario-header">
         <div class="scenario-number">4</div>
         <div class="scenario-title">
-          <h2>Meaningful Conversation + Demo Interest <span class="scenario-tag tag-high">High Intent</span></h2>
+          <h2>Meaningful Conversation + Demo Interest <span class="scenario-tag tag-momentum">Momentum</span></h2>
           <p>Deep conversation with booth staff, expressed interest in a demo. Highest-value interaction.</p>
         </div>
       </div>
@@ -1190,69 +1196,175 @@
         <div class="scenario-number" style="background: linear-gradient(135deg, #CE93D8, #9C27B0);">D</div>
         <div class="scenario-title">
           <h2>Lead Classification Decision Tree</h2>
-          <p>Based on capture scenario + enrichment data, every lead is classified into one of three tracks.</p>
+          <p>Every lead is tiered using two axes: <strong>demographics</strong> (are they qualified?) and <strong>buy intent</strong> (are they ready?). This determines whether we pursue a meeting at NRB, after NRB, or not at all.</p>
+        </div>
+      </div>
+
+      <!-- ===== CLASSIFICATION MATRIX ===== -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 28px; margin-bottom: 24px;">
+        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px;">Two-Axis Scoring Model</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 20px;">Demographics tell us <em>if</em> they're a fit. Buy intent tells us <em>when</em> to act.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 18px;">
+            <p style="font-size: 11px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Axis 1: Demographics (Qualified?)</p>
+            <ul style="list-style: none; font-size: 12.5px; color: rgba(255,255,255,0.65); line-height: 1.8;">
+              <li><strong style="color:#4CAF50;">QUALIFIED</strong> = Distributes via Broadcast TV, Radio, or Satellite &mdash; OR $60K+/yr marketing spend</li>
+              <li><strong style="color:#64B4FF;">POSSIBLE</strong> = Digital distribution (YouTube, Podcast, Streaming), revenue $1M+, shows pain points &mdash; needs more data</li>
+              <li><strong style="color:rgba(255,255,255,0.4);">NOT QUALIFIED</strong> = No distribution, revenue under $1M, no aligned pain points, wrong org type</li>
+            </ul>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 18px;">
+            <p style="font-size: 11px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Axis 2: Buy Intent (Ready?)</p>
+            <ul style="list-style: none; font-size: 12.5px; color: rgba(255,255,255,0.65); line-height: 1.8;">
+              <li><strong style="color:#FF6B35;">URGENCY</strong> = Asked about pricing, requested demo, wants proposal, NRB exhibitor/speaker (can meet in person), pre-booked meeting</li>
+              <li><strong style="color:#E3AF4A;">INTEREST</strong> = Engaged in conversation, asked questions, expressed need, but no commitment to next steps</li>
+              <li><strong style="color:rgba(255,255,255,0.4);">NONE</strong> = Badge scan only, "just looking," no conversation, no expressed need</li>
+            </ul>
+          </div>
         </div>
       </div>
 
       <div class="decision-branches">
+        <!-- MOMENTUM -->
+        <div class="branch branch-momentum">
+          <h4>MOMENTUM</h4>
+          <p style="font-size: 11px; font-weight: 700; color: #FF6B35; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Meet at NRB</p>
+          <p class="criteria">Qualified + urgency signals. Strike while they're here.</p>
+          <ul>
+            <li><strong style="color:#4CAF50;">QUALIFIED</strong> (paid TV/Radio/Satellite or $60K+ spend)</li>
+            <li>AND has urgency: asked about pricing, requested demo, wants a proposal</li>
+            <li>OR is NRB speaker/exhibitor (can meet them in person this week)</li>
+            <li>Decision maker: C-Suite, Pastor/Ministry Leader, Executive Director</li>
+            <li>Revenue $5M+ with strong media presence</li>
+            <li>Meeting quality 3+ (if Scenario 4/5)</li>
+          </ul>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,107,53,0.2);">
+            <p style="font-size: 11px; font-weight: 700; color: #FF6B35; text-transform: uppercase;">Sequence:</p>
+            <ul style="list-style: none; font-size: 11.5px; color: rgba(255,255,255,0.55); margin-top: 6px; line-height: 1.7;">
+              <li><strong style="color:rgba(255,255,255,0.75);">Within 30 min:</strong> Personal email from AE + SMS</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Same day:</strong> LinkedIn connect + visit their booth if exhibitor</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +1 (during NRB):</strong> Push for 2nd in-person meeting</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +2:</strong> Executive escalation if no response</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +3 (post-NRB):</strong> Tailored proposal or custom deck</li>
+            </ul>
+          </div>
+        </div>
+
         <!-- HOT -->
         <div class="branch branch-hot">
-          <h4>HOT: Pursue Meeting at NRB</h4>
-          <p class="criteria">Goal: Close or advance a deal before the conference ends</p>
+          <h4>HOT</h4>
+          <p style="font-size: 11px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Meet after NRB (urgent)</p>
+          <p class="criteria">Qualified but no in-person urgency. Book them within 2 weeks post-event.</p>
           <ul>
-            <li>Scenario 4 or 5 with positive meeting quality (3+)</li>
-            <li>Intent Level = <strong>Hot</strong> (asked about pricing or specific product)</li>
-            <li><strong style="color:#4CAF50;">QUALIFIED</strong>: Distributes via Broadcast TV, Radio, or Satellite &mdash; or $60K+ marketing spend</li>
-            <li>Decision maker (C-Suite Executive, Founder, Pastor/Ministry Leader)</li>
-            <li>Estimated Revenue $5M+ or strong media presence</li>
-            <li>Asked for a proposal or follow-up meeting</li>
+            <li><strong style="color:#4CAF50;">QUALIFIED</strong> (paid TV/Radio/Satellite or $60K+ spend)</li>
+            <li>Showed interest but no immediate commitment at NRB</li>
+            <li>Not an NRB exhibitor/speaker (or couldn't schedule at event)</li>
+            <li>Right org type and revenue ($5M+) but needs follow-up to close</li>
+            <li>"Check with my team" or "send me more info" energy</li>
+            <li>Has pain points that map directly to PRAY products</li>
           </ul>
           <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(227,175,74,0.15);">
-            <p style="font-size: 11px; font-weight: 700; color: #E3AF4A; text-transform: uppercase;">Action:</p>
-            <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px;">Same-day personal follow-up from AE. Push for second meeting at NRB. AE visits their booth if exhibitor. Executive escalation if needed.</p>
+            <p style="font-size: 11px; font-weight: 700; color: #E3AF4A; text-transform: uppercase;">Sequence:</p>
+            <ul style="list-style: none; font-size: 11.5px; color: rgba(255,255,255,0.55); margin-top: 6px; line-height: 1.7;">
+              <li><strong style="color:rgba(255,255,255,0.75);">Same day:</strong> Personal email from AE referencing conversation</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +1:</strong> SMS follow-up + tailored resource (case study, ROI calc)</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +3 (post-NRB):</strong> Direct meeting request with calendar link</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +5:</strong> Executive intro if no response</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +10:</strong> Final push &mdash; custom proposal or growth audit offer</li>
+            </ul>
           </div>
         </div>
 
         <!-- WARM -->
         <div class="branch branch-warm">
-          <h4>WARM: Post-NRB Meeting</h4>
-          <p class="criteria">Goal: Schedule a virtual meeting within 2 weeks of NRB</p>
+          <h4>WARM</h4>
+          <p style="font-size: 11px; font-weight: 700; color: #64B4FF; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Qualify &amp; nurture</p>
+          <p class="criteria">Unsure if qualified, or qualified but not ready to buy. Need to learn more.</p>
           <ul>
-            <li>Scenario 2, 3, or 4 with moderate engagement</li>
-            <li>Intent Level = <strong>Warm</strong> (interested, no commitment yet)</li>
-            <li>Revenue $1M-$5M, or digital-only distribution (YouTube, podcast, streaming)</li>
-            <li>Interested but didn't commit to next steps</li>
-            <li>Needs to "check with their team" or "discuss internally"</li>
-            <li>NRB exhibitor or speaker (can re-engage during event)</li>
-            <li>Has pain points aligned with PRAY products (consolidation, ROI, engagement)</li>
+            <li>Qualification unclear: digital-only distribution, revenue unknown or $1M&ndash;$5M</li>
+            <li>OR <strong style="color:#4CAF50;">QUALIFIED</strong> but no buy signals (not ready, no pain points expressed)</li>
+            <li>Had a conversation but no specific product interest</li>
+            <li>Needs to "think about it" &mdash; no timeline</li>
+            <li>Not a decision maker (passed along by someone else)</li>
+            <li>QR self-service scan with limited form data</li>
           </ul>
           <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(100,180,255,0.15);">
-            <p style="font-size: 11px; font-weight: 700; color: #64B4FF; text-transform: uppercase;">Action:</p>
-            <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px;">Same-day email with resource. Post-NRB meeting request within 3-5 days. Send tailored content based on interest area.</p>
+            <p style="font-size: 11px; font-weight: 700; color: #64B4FF; text-transform: uppercase;">Sequence:</p>
+            <ul style="list-style: none; font-size: 11.5px; color: rgba(255,255,255,0.55); margin-top: 6px; line-height: 1.7;">
+              <li><strong style="color:rgba(255,255,255,0.75);">Same day evening:</strong> Friendly email &mdash; "great to connect at NRB"</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +2:</strong> Social proof email (case study, partner metrics)</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +5:</strong> Value-add resource + soft CTA to book a call</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +14:</strong> If engaged &rarr; upgrade to HOT. If not &rarr; monthly newsletter drip</li>
+            </ul>
           </div>
         </div>
 
-        <!-- NURTURE -->
-        <div class="branch branch-nurture">
-          <h4>NURTURE: Long-Term Drip</h4>
-          <p class="criteria">Goal: Stay top of mind until they're ready</p>
+        <!-- DISQUALIFIED -->
+        <div class="branch branch-disqualified">
+          <h4>DISQUALIFIED</h4>
+          <p style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">No active pursuit</p>
+          <p class="criteria">Not a fit. Don't spend AE time here.</p>
           <ul>
-            <li>Scenario 1 (badge scan only, no conversation)</li>
-            <li>Intent Level = <strong>Cold</strong> (just browsing / no product interest)</li>
-            <li>Revenue under $1M, free platforms only, or just getting started</li>
-            <li>Not QUALIFIED (no paid distribution channels)</li>
-            <li>Browsing / "just looking" energy, no specific pain points</li>
-            <li>Not the right fit today but could grow into ICP</li>
+            <li>Not qualified: no distribution channels, no paid media, wrong org type</li>
+            <li>Revenue under $1M with no growth signals</li>
+            <li>Badge scan only, no conversation, no engagement</li>
+            <li>No pain points that map to PRAY products</li>
+            <li>Competitor employee, student, job seeker, or vendor</li>
+            <li>Explicitly said "not interested" or "wrong fit"</li>
           </ul>
-          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
-            <p style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase;">Action:</p>
-            <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px;">3-email NRB follow-up sequence over 2 weeks. Then enroll in general PRAY.COM monthly nurture (newsletter, product updates, webinar invites, case studies).</p>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <p style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase;">Sequence:</p>
+            <ul style="list-style: none; font-size: 11.5px; color: rgba(255,255,255,0.45); margin-top: 6px; line-height: 1.7;">
+              <li><strong style="color:rgba(255,255,255,0.55);">Day +1:</strong> Generic "thanks for stopping by NRB" email</li>
+              <li><strong style="color:rgba(255,255,255,0.55);">Day +7:</strong> Add to general PRAY.COM newsletter (no sales touches)</li>
+              <li><strong style="color:rgba(255,255,255,0.55);">Ongoing:</strong> If they engage with 3+ newsletter emails, re-evaluate for WARM</li>
+            </ul>
           </div>
         </div>
       </div>
 
-      <div class="callout" style="margin-top: 28px;">
-        <strong>Reclassification Rule:</strong> If a NURTURE lead engages with 2+ emails (opens + clicks) within the first week, auto-upgrade to WARM and notify the AE team. If a WARM lead requests a demo or responds positively to outreach, upgrade to HOT. Classification is dynamic &mdash; review and adjust daily during NRB, weekly after.
+      <!-- ===== QUICK REFERENCE MATRIX ===== -->
+      <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 28px; margin-top: 24px;">
+        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 16px;">Quick Classification Matrix</h3>
+        <table class="enrichment-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Urgency (pricing, demo, NRB exhibitor/speaker)</th>
+              <th>Interest (conversation, questions)</th>
+              <th>None (badge scan, passive)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:#4CAF50;">QUALIFIED</strong><br><span style="font-size:11px; color:rgba(255,255,255,0.4);">TV/Radio/Satellite or $60K+</span></td>
+              <td><strong style="color:#FF6B35;">MOMENTUM</strong></td>
+              <td><strong style="color:#E3AF4A;">HOT</strong></td>
+              <td><strong style="color:#64B4FF;">WARM</strong></td>
+            </tr>
+            <tr>
+              <td><strong style="color:#64B4FF;">POSSIBLE</strong><br><span style="font-size:11px; color:rgba(255,255,255,0.4);">Digital distribution, $1M+</span></td>
+              <td><strong style="color:#E3AF4A;">HOT</strong></td>
+              <td><strong style="color:#64B4FF;">WARM</strong></td>
+              <td><strong style="color:#64B4FF;">WARM</strong></td>
+            </tr>
+            <tr>
+              <td><strong style="color:rgba(255,255,255,0.4);">NOT QUALIFIED</strong><br><span style="font-size:11px; color:rgba(255,255,255,0.4);">No distribution, &lt;$1M</span></td>
+              <td><strong style="color:#64B4FF;">WARM</strong></td>
+              <td><strong style="color:rgba(255,255,255,0.4);">DISQUALIFIED</strong></td>
+              <td><strong style="color:rgba(255,255,255,0.4);">DISQUALIFIED</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout" style="margin-top: 24px; border-left: 3px solid #FF6B35;">
+        <strong style="color: #FF6B35;">Reclassification Rules:</strong><br>
+        <strong>WARM &rarr; HOT:</strong> If they respond positively to outreach, request a demo, or we confirm they're QUALIFIED through enrichment.<br>
+        <strong>HOT &rarr; MOMENTUM:</strong> If a HOT lead is still at NRB and we can get an in-person meeting scheduled.<br>
+        <strong>WARM &rarr; DISQUALIFIED:</strong> If enrichment confirms they don't fit ICP (wrong org type, no budget, no alignment).<br>
+        <strong>DISQUALIFIED &rarr; WARM:</strong> If they engage with 3+ newsletter emails or reach out proactively.<br>
+        <em style="color: rgba(255,255,255,0.5);">Classification is dynamic &mdash; review daily during NRB, weekly for 4 weeks after.</em>
       </div>
     </div>
   </section>
