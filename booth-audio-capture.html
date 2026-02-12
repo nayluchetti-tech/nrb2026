@@ -219,6 +219,33 @@
     }
     .record-btn.recording ~ .record-timer { color: #e74c3c; }
 
+    /* ===== AUDIO QUICK SEND ===== */
+    .audio-quick-send {
+      display: none;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .audio-quick-send.visible {
+      display: block;
+    }
+    .audio-quick-send .submit-btn {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .audio-quick-send .review-link {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      font-family: inherit;
+      transition: color 0.2s;
+    }
+    .audio-quick-send .review-link:hover {
+      color: #E3AF4A;
+    }
+
     /* ===== PROMPT GUIDE ===== */
     .prompt-guide {
       background: rgba(255,255,255,0.03);
@@ -880,6 +907,12 @@
         </button>
         <p class="record-status status-ready" id="recordStatus">Tap to Record</p>
         <p class="record-timer" id="recordTimer">0:00</p>
+
+        <!-- Quick Send (appears after recording completes) -->
+        <div class="audio-quick-send" id="audioQuickSend">
+          <button class="submit-btn" id="audioSendNowBtn" type="button">Send to Google Sheets</button>
+          <button class="review-link" id="audioReviewBtn" type="button">Review &amp; edit lead details first</button>
+        </div>
       </div>
 
       <!-- Recording Prompt -->
@@ -1817,6 +1850,20 @@
       document.getElementById('submitBtn').click();
     });
 
+    // Audio panel "Send Now" — submit directly after recording
+    document.getElementById('audioSendNowBtn').addEventListener('click', function() {
+      if (!validateAeSelected()) return;
+
+      // Trigger the main submit flow (form is already populated by processTranscript)
+      showStructuredForm();
+      document.getElementById('submitBtn').click();
+    });
+
+    // Audio panel "Review" — scroll to the structured form
+    document.getElementById('audioReviewBtn').addEventListener('click', function() {
+      structuredSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
     function validateAeSelected() {
       if (!document.getElementById('aeSelect').value) {
         document.getElementById('aeSelect').style.borderColor = '#e74c3c';
@@ -2015,6 +2062,9 @@
       document.getElementById('leadSummary').value = transcript.trim();
 
       showStructuredForm();
+
+      // Show quick-send button right after mic
+      document.getElementById('audioQuickSend').classList.add('visible');
     }
 
     function showStructuredForm() {
@@ -2080,6 +2130,9 @@
       var btn = this;
       btn.disabled = true;
       btn.textContent = 'Sending...';
+      var audioSendBtn = document.getElementById('audioSendNowBtn');
+      audioSendBtn.disabled = true;
+      audioSendBtn.textContent = 'Sending...';
 
       var captureMethod = 'manual_entry';
       if (captureMode === 'audio') {
@@ -2183,6 +2236,9 @@
         btn.disabled = false;
         btn.textContent = 'Retry — Send to Google Sheets';
         btn.style.background = '#e74c3c';
+        var audioSendBtn = document.getElementById('audioSendNowBtn');
+        audioSendBtn.disabled = false;
+        audioSendBtn.textContent = 'Send to Google Sheets';
         setTimeout(function() { btn.style.background = ''; }, 3000);
       }
 
@@ -2307,6 +2363,12 @@
       document.getElementById('manualPhotoThumbs').innerHTML = '';
       document.getElementById('manualPhotoThumbs').style.display = 'none';
       updatePhotoSendButtons();
+
+      // Reset audio quick-send
+      document.getElementById('audioQuickSend').classList.remove('visible');
+      var audioSendBtn = document.getElementById('audioSendNowBtn');
+      audioSendBtn.disabled = false;
+      audioSendBtn.textContent = 'Send to Google Sheets';
 
       // Reset submit
       var submitBtn = document.getElementById('submitBtn');
