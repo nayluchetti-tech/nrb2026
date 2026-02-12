@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lead Capture Tool — How to Use | PRAY.COM NRB 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0B0C0D;
+      color: #FFFFFF;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: #E3AF4A; }
+    .gold { color: #E3AF4A; }
+
+    /* Header */
+    .header {
+      background: linear-gradient(180deg, rgba(227,175,74,0.08) 0%, transparent 100%);
+      padding: 48px 24px 40px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(227,175,74,0.1);
+      border: 1px solid rgba(227,175,74,0.25);
+      color: #E3AF4A;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: clamp(24px, 4vw, 38px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .header p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.6);
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    /* Nav */
+    .tut-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(11,12,13,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 24px;
+      z-index: 100;
+      overflow-x: auto;
+    }
+    .tut-nav-inner {
+      display: flex;
+      gap: 8px;
+      max-width: 1000px;
+      margin: 0 auto;
+      justify-content: center;
+    }
+    .tut-nav a {
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tut-nav a:hover {
+      background: rgba(227,175,74,0.1);
+      border-color: rgba(227,175,74,0.3);
+      color: #E3AF4A;
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+    /* Step Section */
+    .step-section {
+      padding: 56px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .step-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #E3AF4A, #D4943A);
+      color: #0B0C0D;
+      font-size: 20px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-header h2 {
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 800;
+    }
+    .step-header h2 span {
+      color: rgba(255,255,255,0.4);
+      font-weight: 500;
+      font-size: 0.65em;
+    }
+
+    /* Instruction blocks */
+    .instruction {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 40px;
+      align-items: flex-start;
+    }
+    .instruction.reverse {
+      flex-direction: row-reverse;
+    }
+    .instr-visual {
+      flex: 0 0 340px;
+      max-width: 340px;
+    }
+    .instr-visual .mock {
+      background: #1A1B1E;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 20px;
+    }
+    .instr-visual .mock-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #E3AF4A;
+      margin-bottom: 8px;
+    }
+    .instr-visual .mock-element {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+    }
+    .instr-visual .mock-element.active {
+      border-color: rgba(227,175,74,0.4);
+      background: rgba(227,175,74,0.08);
+      color: #E3AF4A;
+    }
+    .instr-visual .mock-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    .instr-visual .mock-btn.gold {
+      background: #E3AF4A;
+      color: #0B0C0D;
+    }
+    .instr-visual .mock-btn.dark {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+    }
+    .instr-visual .mock-mic {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #E3AF4A, #D4943A);
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .instr-visual .mock-mic svg { width: 36px; height: 36px; }
+    .mock-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .mock-tab {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.4);
+    }
+    .mock-tab.active {
+      background: rgba(227,175,74,0.12);
+      border-color: rgba(227,175,74,0.4);
+      color: #E3AF4A;
+    }
+    .mock-field {
+      margin-bottom: 10px;
+    }
+    .mock-field-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #E3AF4A;
+      margin-bottom: 3px;
+    }
+    .mock-field-value {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+    .mock-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 4px;
+    }
+    .mock-checkbox .box {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .mock-checkbox .box.checked {
+      background: #E3AF4A;
+      border-color: #E3AF4A;
+    }
+    .mock-stars {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .mock-star {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.3);
+    }
+    .mock-star.active {
+      background: rgba(227,175,74,0.2);
+      border-color: #E3AF4A;
+      color: #E3AF4A;
+    }
+    .mock-success {
+      text-align: center;
+      padding: 24px;
+    }
+    .mock-success .check {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4CAF50, #388E3C);
+      color: white;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+    }
+    .mock-success h3 { font-size: 18px; margin-bottom: 6px; }
+    .mock-success p { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+    /* Instruction text */
+    .instr-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .instr-text .pointer {
+      font-size: 18px;
+      margin-right: 4px;
+    }
+    .instr-text p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+    .instr-text p strong {
+      color: #FFFFFF;
+    }
+    .instr-text .tip {
+      background: rgba(227,175,74,0.08);
+      border: 1px solid rgba(227,175,74,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 8px;
+    }
+    .instr-text .tip strong {
+      color: #E3AF4A;
+    }
+
+    /* Quick Reference */
+    .quick-ref {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 28px;
+      margin-top: 24px;
+    }
+    .quick-ref h3 {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: #E3AF4A;
+    }
+    .ref-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .ref-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .ref-item h4 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #E3AF4A;
+      margin-bottom: 4px;
+    }
+    .ref-item p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+    }
+
+    .callout {
+      background: rgba(255,255,255,0.03);
+      border-left: 3px solid #E3AF4A;
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin: 24px 0;
+    }
+
+    /* Footer */
+    .doc-footer {
+      text-align: center;
+      padding: 40px 24px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .instruction, .instruction.reverse { flex-direction: column; }
+      .instr-visual { flex: none; max-width: 100%; }
+      .ref-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-badge">Tutorial</div>
+    <h1>How to Use the <span class="gold">Lead Capture Tool</span></h1>
+    <p>A step-by-step guide for PRAY.COM AEs at NRB 2026. Learn how to capture leads via audio, photo, or manual entry.</p>
+  </div>
+
+  <!-- Nav -->
+  <nav class="tut-nav">
+    <div class="tut-nav-inner">
+      <a href="#step-1">1: Select Your Name</a>
+      <a href="#step-2">2: Choose Mode</a>
+      <a href="#step-3">3: Capture</a>
+      <a href="#step-4">4: Review Form</a>
+      <a href="#step-5">5: Submit</a>
+      <a href="#tips">Tips</a>
+    </div>
+  </nav>
+
+  <!-- ======== STEP 1 ======== -->
+  <section class="step-section" id="step-1">
+    <div class="container">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <h2>Select Your Name <span>+ Lead Email</span></h2>
+      </div>
+
+      <div class="instruction">
+        <div class="instr-visual">
+          <div class="mock">
+            <div class="mock-label">Your Name</div>
+            <div class="mock-element active">Robby Schwartz &nbsp; &#9662;</div>
+            <div style="height: 12px;"></div>
+            <div class="mock-label">Lead's Email</div>
+            <div class="mock-element">john@church.org</div>
+          </div>
+        </div>
+        <div class="instr-text">
+          <p><span class="pointer">&#9654;</span> <strong>Select your name</strong> from the dropdown. You only need to do this once per session &mdash; it stays selected for all leads you capture.</p>
+          <p><span class="pointer">&#9654;</span> If you know the lead's <strong>email</strong>, type it in the "Lead's Email" field. This is the most important data point for follow-up.</p>
+          <div class="tip">
+            <strong>Tip:</strong> If you're capturing a business card photo, the tool will try to auto-detect the email via OCR. You can always type it in or correct it later.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== STEP 2 ======== -->
+  <section class="step-section" id="step-2">
+    <div class="container">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <h2>Choose Your Capture Mode</h2>
+      </div>
+
+      <div class="instruction">
+        <div class="instr-visual">
+          <div class="mock">
+            <div class="mock-tabs">
+              <div class="mock-tab active">&#127908; Audio Note</div>
+              <div class="mock-tab">&#128247; Photo Capture</div>
+              <div class="mock-tab">&#9997; Type It In</div>
+            </div>
+            <div style="font-size: 12px; color: rgba(255,255,255,0.4); text-align: center; padding: 8px 0;">Select the mode that fits the moment</div>
+          </div>
+        </div>
+        <div class="instr-text">
+          <p>The tool has <strong>3 capture modes</strong>. Pick the one that makes sense for the situation:</p>
+          <p><strong>&#127908; Audio Note</strong> &mdash; Best after a conversation. Record a quick voice note summarizing who you talked to and what they said. The AI will transcribe it and fill in the form fields.</p>
+          <p><strong>&#128247; Photo Capture</strong> &mdash; Snap a photo of their business card or NRB badge. The tool will try to OCR the text and auto-fill name, email, company, and website.</p>
+          <p><strong>&#9997; Type It In</strong> &mdash; Manually enter the lead's details. Use this when you have their info from a conversation, email, or written note.</p>
+          <div class="tip">
+            <strong>Pro tip:</strong> You can combine modes! After recording audio, you can also attach a card photo. After snapping a photo, you can add more details in the form. All modes lead to the same form.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== STEP 3 ======== -->
+  <section class="step-section" id="step-3">
+    <div class="container">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <h2>Capture the Lead Data</h2>
+      </div>
+
+      <!-- Audio -->
+      <div class="instruction">
+        <div class="instr-visual">
+          <div class="mock">
+            <div class="mock-label">Audio Note Mode</div>
+            <div style="text-align: center; font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 8px;">Tap to start recording. Tap again to stop.</div>
+            <div class="mock-mic">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" fill="#0B0C0D"/><path d="M17 12C17 14.76 14.76 17 12 17C9.24 17 7 14.76 7 12H5C5 15.53 7.61 18.43 11 18.93V22H13V18.93C16.39 18.43 19 15.53 19 12H17Z" fill="#0B0C0D"/></svg>
+            </div>
+            <div style="text-align: center; font-size: 14px; font-weight: 600; color: #E3AF4A;">Tap to Record</div>
+          </div>
+        </div>
+        <div class="instr-text">
+          <p><span class="pointer">&#9654;</span> When you click the mic to <strong>start recording</strong>, a notification to allow recording will appear. You need to allow access only for the first recording you make.</p>
+          <p><span class="pointer">&#9654;</span> Speak naturally and include these details:</p>
+          <p style="padding-left: 16px; border-left: 2px solid rgba(227,175,74,0.3);">
+            <strong>1.</strong> Person's name and title<br>
+            <strong>2.</strong> Company / Ministry name<br>
+            <strong>3.</strong> What you discussed<br>
+            <strong>4.</strong> Their pain points / goals<br>
+            <strong>5.</strong> Next steps agreed<br>
+            <strong>6.</strong> Your gut feeling (rate 1-5)
+          </p>
+          <p><span class="pointer">&#9654;</span> Once the recording is complete, you can also <strong>add a photo</strong> of the contact's business card or NRB badge. Everything is <strong>optional</strong>.</p>
+          <p><span class="pointer">&#9654;</span> The AI tool will try to read your words and organize them into actionable fields. However, all fields are <strong>OPTIONAL</strong>. You can either manually insert more information or skip everything and click the submission button.</p>
+          <div class="tip">
+            <strong>PS:</strong> If you speak the field labels clearly in your recording, AI will fill everything easily. For example: "I just spoke with <em>John Smith</em>, he's the <em>Senior Pastor</em> at <em>Grace Community Church</em>..."
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo -->
+      <div class="instruction reverse">
+        <div class="instr-visual">
+          <div class="mock">
+            <div class="mock-label">Photo Capture Mode</div>
+            <div style="background: rgba(255,255,255,0.03); border: 2px dashed rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 10px;">
+              <div style="font-size: 32px; margin-bottom: 8px;">&#128444;</div>
+              <div style="font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.5);">Tap to photograph business card</div>
+              <div style="font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 4px;">Camera opens on mobile</div>
+            </div>
+            <div class="mock-btn gold">Send to Google Sheets</div>
+            <div class="mock-btn dark">Add More Details</div>
+          </div>
+        </div>
+        <div class="instr-text">
+          <p><span class="pointer">&#9654;</span> In Photo Capture mode, <strong>snap a photo</strong> of their business card or NRB badge. You can capture both.</p>
+          <p><span class="pointer">&#9654;</span> The tool will scan the card using <strong>OCR</strong> and try to auto-fill: first name, last name, email, company, and website.</p>
+          <p><span class="pointer">&#9654;</span> After the photo is captured, two buttons appear:</p>
+          <p><strong>"Send to Google Sheets"</strong> &mdash; Sends the photo + any detected data immediately. Use this for quick captures when you're busy.</p>
+          <p><strong>"Add More Details"</strong> &mdash; Opens the full lead form so you can add conversation notes, pain points, meeting quality, etc.</p>
+          <div class="tip">
+            <strong>Tip:</strong> You can also type a quick note in the "Quick Notes" box before sending. Even one sentence like "Interested in SuperFunnel, $3M ministry" makes the follow-up much better.
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual -->
+      <div class="instruction">
+        <div class="instr-visual">
+          <div class="mock">
+            <div class="mock-label">Type It In Mode</div>
+            <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 12px;">Type in the lead's details directly.</div>
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+              <div class="mock-btn dark" style="flex: 1; font-size: 11px;">&#128196; Business Card</div>
+              <div class="mock-btn dark" style="flex: 1; font-size: 11px;">&#128203; NRB Badge</div>
+            </div>
+            <div class="mock-btn gold" style="margin-top: 12px;">Continue to Lead Form</div>
+          </div>
+        </div>
+        <div class="instr-text">
+          <p><span class="pointer">&#9654;</span> Use <strong>Type It In</strong> when you want to enter the lead's details directly &mdash; from a conversation, email exchange, or written note.</p>
+          <p><span class="pointer">&#9654;</span> You can optionally attach a business card or badge photo for backup.</p>
+          <p><span class="pointer">&#9654;</span> Click <strong>"Continue to Lead Form"</strong> to proceed to the full form where you'll enter all the details.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== STEP 4 ======== -->
+  <section class="step-section" id="step-4">
+    <div class="container">
+      <div class="step-header">
+        <div class="step-num">4</div>
+        <h2>Review &amp; Complete the Lead Form</h2>
+      </div>
+
+      <div class="instruction">
+        <div class="instr-visual">
+          <div class="mock">
+            <div class="mock-label">Lead Data</div>
+            <div class="mock-field"><div class="mock-field-label">First Name</div><div class="mock-field-value">John</div></div>
+            <div class="mock-field"><div class="mock-field-label">Last Name</div><div class="mock-field-value">Smith</div></div>
+            <div class="mock-field"><div class="mock-field-label">Title / Role</div><div class="mock-field-value">Pastor/Ministry Leader &#9662;</div></div>
+            <div class="mock-field"><div class="mock-field-label">Company / Ministry</div><div class="mock-field-value">Grace Community Church</div></div>
+            <div class="mock-field"><div class="mock-field-label">Products Discussed</div><div class="mock-field-value">SuperFunnel &#9662;</div></div>
+            <div style="height: 8px;"></div>
+            <div class="mock-label">Pain Points / Goals</div>
+            <div class="mock-checkbox"><div class="box checked"></div> Reaching more people</div>
+            <div class="mock-checkbox"><div class="box checked"></div> Growing recurring giving</div>
+            <div class="mock-checkbox"><div class="box"></div> Automating content workflows</div>
+            <div style="height: 8px;"></div>
+            <div class="mock-label">Meeting Quality</div>
+            <div class="mock-stars">
+              <div class="mock-star active">1</div>
+              <div class="mock-star active">2</div>
+              <div class="mock-star active">3</div>
+              <div class="mock-star active">4</div>
+              <div class="mock-star">5</div>
+            </div>
+          </div>
+        </div>
+        <div class="instr-text">
+          <p><span class="pointer">&#9654;</span> The <strong>Lead Data form</strong> will be pre-filled if you used audio recording (AI extraction) or photo capture (OCR). Review and correct any fields.</p>
+          <p><span class="pointer">&#9654;</span> <strong>All fields are optional</strong> &mdash; fill in what you know. The most important ones are:</p>
+          <p style="padding-left: 16px;">
+            &#8226; <strong>Email</strong> (already at the top)<br>
+            &#8226; <strong>Name + Company</strong><br>
+            &#8226; <strong>Products Discussed</strong><br>
+            &#8226; <strong>Meeting Quality</strong> (1-5 stars)
+          </p>
+          <p><span class="pointer">&#9654;</span> Select the <strong>Pain Points</strong> checkboxes that match what the lead mentioned. This helps personalize the follow-up.</p>
+          <p><span class="pointer">&#9654;</span> Set the <strong>Intent Level</strong> (Hot/Warm/Cold), <strong>Scenario</strong>, and <strong>Lifecycle Stage</strong> for lead classification.</p>
+          <div class="tip">
+            <strong>Qualification Details:</strong> Click the gold expandable section below the classification fields to add distribution channels, revenue range, competitor signals, and more. If they distribute via <strong>TV or Radio</strong>, a green "QUALIFIED" badge will appear automatically.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== STEP 5 ======== -->
+  <section class="step-section" id="step-5">
+    <div class="container">
+      <div class="step-header">
+        <div class="step-num">5</div>
+        <h2>Submit &amp; Capture Next Lead</h2>
+      </div>
+
+      <div class="instruction">
+        <div class="instr-visual">
+          <div class="mock">
+            <div class="mock-btn gold" style="font-size: 15px; padding: 14px;">Send to Google Sheets</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 8px;">Contact + photos saved to NRB 2026 lead tracker</div>
+            <div style="height: 20px;"></div>
+            <div class="mock-success">
+              <div class="check">&#10003;</div>
+              <h3>Lead Captured!</h3>
+              <p>Contact has been saved to the NRB 2026 Google Sheet with all lead data and photo attachments.</p>
+              <div class="mock-btn gold" style="margin-top: 12px; font-size: 13px;">Capture Next Lead</div>
+            </div>
+          </div>
+        </div>
+        <div class="instr-text">
+          <p><span class="pointer">&#9654;</span> Click <strong>"Send to Google Sheets"</strong> to submit the lead.</p>
+          <p><span class="pointer">&#9654;</span> The data is sent to the <strong>NRB 2026 Lead Tracker</strong> spreadsheet. Photos are uploaded to <strong>Google Drive</strong> with links in the sheet.</p>
+          <p><span class="pointer">&#9654;</span> You'll see a <strong>"Lead Captured!"</strong> confirmation. Click <strong>"Capture Next Lead"</strong> to reset the form and start over.</p>
+          <p><span class="pointer">&#9654;</span> Your recent captures are listed at the bottom of the screen so you can see your session history.</p>
+          <div class="tip">
+            <strong>Note:</strong> Your AE name stays selected. The email field, form fields, and photos all reset. You're ready for the next conversation immediately.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== TIPS ======== -->
+  <section class="step-section" id="tips">
+    <div class="container">
+      <div class="step-header">
+        <div class="step-num" style="background: linear-gradient(135deg, #64B4FF, #3A8FE0);">?</div>
+        <h2>Quick Reference &amp; Tips</h2>
+      </div>
+
+      <div class="ref-grid">
+        <div class="ref-item">
+          <h4>Best for Quick Captures</h4>
+          <p>Photo mode &rarr; snap the card &rarr; "Send to Google Sheets." Takes 10 seconds. Add a quick note for bonus points.</p>
+        </div>
+        <div class="ref-item">
+          <h4>Best for Detailed Leads</h4>
+          <p>Audio mode after the conversation. Include name, company, product interest, pain points, and your gut feeling rating.</p>
+        </div>
+        <div class="ref-item">
+          <h4>When to Use Type It In</h4>
+          <p>When someone tells you their email verbally, or you're entering leads from written notes at the end of the day.</p>
+        </div>
+        <div class="ref-item">
+          <h4>QUALIFIED Lead Rule</h4>
+          <p>If they distribute via <strong>Broadcast TV</strong>, <strong>Radio</strong>, or <strong>Satellite</strong> (or spend $60K+/yr on marketing) &rarr; they're QUALIFIED. Open "Qualification Details" and check those boxes.</p>
+        </div>
+        <div class="ref-item">
+          <h4>OCR from Business Cards</h4>
+          <p>The tool tries to auto-read email, name, company, and website from card photos. It works best with clean, printed cards in good lighting.</p>
+        </div>
+        <div class="ref-item">
+          <h4>All Fields Are Optional</h4>
+          <p>Don't let the form slow you down. Email + name + a note is enough. You can always enrich the data later. Speed matters more at the booth.</p>
+        </div>
+        <div class="ref-item">
+          <h4>Products to Select</h4>
+          <p>PRAY Radio, PRAY TV, PRAYStudio Tools, PRAY AI Tools, SuperFunnel, PRAY CaaS, Advertise on PRAY, Partnership with PRAY</p>
+        </div>
+        <div class="ref-item">
+          <h4>Meeting Quality Scale</h4>
+          <p>1 = Long shot | 2 = Lukewarm | 3 = Warm opportunity | 4 = Strong interest | 5 = Ready to close</p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top: 32px;">
+        <strong>Remember:</strong> The goal is to capture every interaction, even brief ones. A business card photo with zero form fields filled out is still better than nothing. The marketing team can enrich the data later &mdash; but only if the lead is captured.
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <p><strong style="color: rgba(255,255,255,0.4);">PRAY.COM</strong> | NRB 2026 Lead Capture Tool Tutorial | Internal Use Only</p>
+    <p style="margin-top: 4px;">February 2026 | <a href="booth-audio-capture.html">Open the Lead Capture Tool</a> | <a href="nrb-communication-flow.html">View Communication Playbook</a></p>
+  </div>
+
+</body>
+</html>

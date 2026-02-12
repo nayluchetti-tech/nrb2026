@@ -885,13 +885,14 @@
         <div class="scenario-col">
           <div class="col-label"><span class="icon">2</span> Data Captured</div>
           <ul class="data-list">
-            <li><span class="data-label">From Badge/Card/Form</span><div class="data-value">Name, Email, Title, Company, Website, Domain, Phone</div></li>
-            <li><span class="data-label">From Audio/Typed Note</span><div class="data-value">Conversation summary, products discussed, budget signals, pain points, competitor mentions, decision timeline</div></li>
-            <li><span class="data-label">AE Meeting Notes</span><div class="data-value">Meeting quality (1-5), next steps agreed, decision maker confirmed (Y/N), demo given (Y/N)</div></li>
+            <li><span class="data-label">From Badge/Card/OCR</span><div class="data-value">Name, Email, Title, Company, Website, Phone (auto-extracted from business card photos when possible)</div></li>
+            <li><span class="data-label">From Audio/Typed Note</span><div class="data-value">Conversation summary, products discussed, pain points (17 checkboxes), competitor signals, decision timeline</div></li>
+            <li><span class="data-label">AE Classification</span><div class="data-value">Meeting quality (1-5), intent level (Hot/Warm/Cold), scenario, lifecycle stage, next steps, demo given</div></li>
+            <li><span class="data-label">Qualification Data</span><div class="data-value">Distribution channels, org type, est. revenue, NRB role, competitor signals, donation tools, podcast link</div></li>
             <li><span class="data-label">Photo Attachments</span><div class="data-value">Business card photo and/or NRB badge photo (saved to Google Drive)</div></li>
-            <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_demo_conversation</div></li>
-            <li><span class="data-label">Intent Level</span><div class="data-value">High (demo interest, active discussion)</div></li>
+            <li><span class="data-label">Intent Level</span><div class="data-value">Hot (demo interest, asked about pricing)</div></li>
             <li><span class="data-label">Lifecycle Stage</span><div class="data-value">SQL (Sales Qualified Lead)</div></li>
+            <li><span class="data-label">Qualified Status</span><div class="data-value">Auto-flagged if TV, Radio, or Satellite distribution channels selected</div></li>
           </ul>
         </div>
 
@@ -1090,75 +1091,91 @@
           <tr>
             <th>Data Point</th>
             <th>Source</th>
-            <th>Sheet Column / Property</th>
+            <th>Sheet Column</th>
             <th>Used For</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Company Website</td>
-            <td>Lead Capture Tool form field, business card, or form submission</td>
-            <td><code>website</code></td>
+            <td>Lead Capture Tool form field, business card OCR, or badge photo</td>
+            <td><code>G: Website</code></td>
             <td>Domain lookup for enrichment, company research, competitor analysis</td>
           </tr>
           <tr>
-            <td>Company Type</td>
-            <td>Domain lookup + manual research</td>
-            <td><code>company_type</code></td>
-            <td>Church, Ministry, Media Company, Nonprofit, Publisher, Broadcaster</td>
+            <td>Organization Description</td>
+            <td>Lead Capture Tool dropdown + domain lookup</td>
+            <td><code>U: Organization Description</code></td>
+            <td>Radio Broadcasting, Television/Film, Church/Ministry, Christian Nonprofit, Digital Media/Podcast, Tech/Software, Publishing, Marketing/PR/Agency, Education</td>
           </tr>
           <tr>
-            <td>Organization Size</td>
-            <td>Form data + LinkedIn + website research</td>
-            <td><code>org_size_tier</code></td>
-            <td>Small (&lt;$500K), Medium ($500K-$5M), Large ($5M+)</td>
+            <td>Estimated Revenue Range</td>
+            <td>Conversation + LinkedIn + website research</td>
+            <td><code>W: Estimated Revenue Range</code></td>
+            <td>$0-$1M, $1M-$5M, $5M-$10M, $10M-$25M, $25M-$50M, $50M-$100M, $100M-$250M, $250M+</td>
           </tr>
           <tr>
-            <td>Media Presence</td>
-            <td>Social media audit, podcast directories, broadcast listings</td>
-            <td><code>media_presence_score</code></td>
-            <td>Score 1-5: Does the org have existing broadcast/media distribution?</td>
+            <td>Distribution Channels</td>
+            <td>Lead Capture Tool multi-select (during conversation)</td>
+            <td><code>Y: Distribution Channels</code></td>
+            <td>Broadcast TV, Radio, Satellite, YouTube, Podcast, Streaming, Mobile App, Website, Email &mdash; <strong style="color:#4CAF50;">KEY for QUALIFIED status</strong></td>
           </tr>
           <tr>
             <td>Previous PRAY.COM Interactions</td>
-            <td>HubSpot CRM history, Google Sheet records, email engagement, past deals</td>
-            <td><code>previous_interaction</code></td>
-            <td>None, Inbound Lead, Past Demo, Current Customer, Churned</td>
+            <td>HubSpot CRM history, Google Sheet records, AE knowledge</td>
+            <td><code>T: Previous PRAY.COM Interactions</code></td>
+            <td>New Lead, Active Opportunity, Lost Opportunity, Active Customer, Churned Customer</td>
           </tr>
           <tr>
             <td>NRB Role</td>
-            <td>NRB exhibitor/speaker list cross-reference</td>
-            <td><code>nrb_attendee_role</code></td>
-            <td>Attendee only, Exhibitor (will see again at their booth), Speaker (can catch at session)</td>
+            <td>Lead Capture Tool dropdown + NRB exhibitor/speaker list</td>
+            <td><code>V: NRB Role</code></td>
+            <td>Attendee only, Exhibitor (visit their booth), Speaker (attend their session)</td>
           </tr>
           <tr>
             <td>NRB Exhibitor Booth</td>
             <td>NRB floor plan / exhibitor directory</td>
-            <td><code>nrb_exhibitor_booth</code></td>
+            <td><code>X: NRB Exhibitor Booth</code></td>
             <td>If exhibitor: booth number for AE to visit them back</td>
           </tr>
           <tr>
             <td>NRB Speaking Sessions</td>
             <td>NRB conference schedule</td>
-            <td><code>nrb_speaking_sessions</code></td>
+            <td><code>AC: NRB Speaking Sessions</code></td>
             <td>If speaker: session titles and times (AE can attend to build rapport)</td>
-          </tr>
-          <tr>
-            <td>Decision Maker Level</td>
-            <td>Title analysis + org chart research</td>
-            <td><code>decision_maker_level</code></td>
-            <td>C-Level, VP, Director, Manager, Individual Contributor</td>
           </tr>
           <tr>
             <td>Competitor Signals</td>
             <td>Conversation notes, website analysis</td>
-            <td><code>competitor_signals</code></td>
+            <td><code>Z: Competitor Signals</code></td>
             <td>Currently using: Subsplash, Pushpay, Church Community Builder, Gloo, etc.</td>
+          </tr>
+          <tr>
+            <td>Donation Tools in Use</td>
+            <td>Conversation notes</td>
+            <td><code>AA: Donation Tools in Use</code></td>
+            <td>Tithe.ly, Planning Center, Pushpay &mdash; identifies replacement opportunities</td>
+          </tr>
+          <tr>
+            <td>Pain Points</td>
+            <td>Lead Capture Tool multi-select checkboxes</td>
+            <td><code>N: Pain Points</code></td>
+            <td>17 pre-defined pain points: reaching more people, expanding platforms, automating workflows, growing giving, proving ROI, etc.</td>
+          </tr>
+          <tr>
+            <td>Podcast Link</td>
+            <td>Conversation + web research</td>
+            <td><code>AB: Podcast Link</code></td>
+            <td>Existing podcast presence &mdash; indicates content distribution maturity</td>
           </tr>
         </tbody>
       </table>
 
-      <div class="callout" style="margin-top: 24px;">
+      <div class="callout" style="margin-top: 24px; border-left: 3px solid #4CAF50;">
+        <strong style="color: #4CAF50;">QUALIFIED Lead Definition:</strong> A ministry that distributes their content via at least one <strong>traditional paid outlet</strong> (Broadcast TV, Broadcast Radio, or Satellite Radio), OR spends over <strong>$60K/year</strong> on marketing and content distribution. The Lead Capture Tool automatically flags QUALIFIED leads when TV/Radio distribution channels are selected.
+      </div>
+
+      <div class="callout" style="margin-top: 12px;">
         <strong>Enrichment Priority:</strong> For Scenario 4 (demo conversations) and Scenario 5 (pre-booked), enrich within 2 hours of capture. For Scenario 1 (badge scan) and Scenario 2 (AE conversations), enrich within same business day. For Scenario 3 (QR self-service), auto-enrich what you can from form data + domain, full enrichment within 24 hours.
       </div>
     </div>
@@ -1184,11 +1201,11 @@
           <p class="criteria">Goal: Close or advance a deal before the conference ends</p>
           <ul>
             <li>Scenario 4 or 5 with positive meeting quality (3+)</li>
-            <li>Decision maker (C-Level, VP, Founder)</li>
-            <li>Organization budget $1M+ or strong media presence</li>
-            <li>Expressed specific product interest or asked about pricing</li>
+            <li>Intent Level = <strong>Hot</strong> (asked about pricing or specific product)</li>
+            <li><strong style="color:#4CAF50;">QUALIFIED</strong>: Distributes via Broadcast TV, Radio, or Satellite &mdash; or $60K+ marketing spend</li>
+            <li>Decision maker (C-Suite Executive, Founder, Pastor/Ministry Leader)</li>
+            <li>Estimated Revenue $5M+ or strong media presence</li>
             <li>Asked for a proposal or follow-up meeting</li>
-            <li>Has authority to sign or strong influence</li>
           </ul>
           <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(227,175,74,0.15);">
             <p style="font-size: 11px; font-weight: 700; color: #E3AF4A; text-transform: uppercase;">Action:</p>
@@ -1202,11 +1219,12 @@
           <p class="criteria">Goal: Schedule a virtual meeting within 2 weeks of NRB</p>
           <ul>
             <li>Scenario 2, 3, or 4 with moderate engagement</li>
-            <li>Manager/Director level at a relevant organization</li>
-            <li>Budget $500K-$5M</li>
+            <li>Intent Level = <strong>Warm</strong> (interested, no commitment yet)</li>
+            <li>Revenue $1M-$5M, or digital-only distribution (YouTube, podcast, streaming)</li>
             <li>Interested but didn't commit to next steps</li>
             <li>Needs to "check with their team" or "discuss internally"</li>
             <li>NRB exhibitor or speaker (can re-engage during event)</li>
+            <li>Has pain points aligned with PRAY products (consolidation, ROI, engagement)</li>
           </ul>
           <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(100,180,255,0.15);">
             <p style="font-size: 11px; font-weight: 700; color: #64B4FF; text-transform: uppercase;">Action:</p>
@@ -1220,10 +1238,10 @@
           <p class="criteria">Goal: Stay top of mind until they're ready</p>
           <ul>
             <li>Scenario 1 (badge scan only, no conversation)</li>
-            <li>Small org (under $500K budget)</li>
-            <li>Low decision-maker level (IC, volunteer)</li>
-            <li>No specific product interest identified</li>
-            <li>Browsing / "just looking" energy</li>
+            <li>Intent Level = <strong>Cold</strong> (just browsing / no product interest)</li>
+            <li>Revenue under $1M, free platforms only, or just getting started</li>
+            <li>Not QUALIFIED (no paid distribution channels)</li>
+            <li>Browsing / "just looking" energy, no specific pain points</li>
             <li>Not the right fit today but could grow into ICP</li>
           </ul>
           <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
@@ -1242,7 +1260,7 @@
   <!-- ===== FOOTER ===== -->
   <div class="doc-footer">
     <p><strong style="color: rgba(255,255,255,0.4);">PRAY.COM</strong> | NRB 2026 Sales Communication Flow | Internal Use Only</p>
-    <p style="margin-top: 4px;">Last updated: February 11, 2026 | Questions? Contact the Marketing Ops team</p>
+    <p style="margin-top: 4px;">Last updated: February 12, 2026 | Questions? Contact the Marketing Ops team</p>
   </div>
 
 </body>
