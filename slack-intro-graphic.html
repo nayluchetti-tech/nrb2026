@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NRB 2026 Lead Capture Tool — AE Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .card {
+      width: 820px;
+      background: #0B0C0D;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, rgba(227,175,74,0.12) 0%, rgba(227,175,74,0.03) 100%);
+      border-bottom: 1px solid rgba(227,175,74,0.15);
+      padding: 36px 40px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left h1 {
+      font-size: 26px;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .header-left h1 span {
+      color: #E3AF4A;
+    }
+    .header-left p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    .header-right {
+      text-align: right;
+    }
+    .header-right .logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: 0.04em;
+    }
+    .header-right .logo sub {
+      font-size: 9px;
+      font-weight: 700;
+      color: #E3AF4A;
+      vertical-align: baseline;
+      position: relative;
+      top: -2px;
+      margin-left: 2px;
+    }
+    .header-right .dates {
+      font-size: 13px;
+      font-weight: 700;
+      color: #E3AF4A;
+      background: rgba(227,175,74,0.1);
+      border: 1px solid rgba(227,175,74,0.2);
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-top: 8px;
+      display: inline-block;
+    }
+
+    /* ===== BODY ===== */
+    .body {
+      padding: 36px 40px 40px;
+    }
+
+    /* What Is It */
+    .what-section {
+      margin-bottom: 32px;
+    }
+    .what-section h2 {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+    .what-section p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.65;
+    }
+    .what-section p strong {
+      color: #FFFFFF;
+    }
+
+    /* ===== 3 STEPS ===== */
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .step {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .step-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(227,175,74,0.08);
+      border: 1px solid rgba(227,175,74,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      font-size: 24px;
+    }
+    .step-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: #E3AF4A;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .step h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+    }
+    .step p {
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+    }
+
+    /* ===== CAPTURE MODES ===== */
+    .modes-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+    .modes {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .mode {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .mode-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .mode-icon.audio { background: rgba(227,175,74,0.12); }
+    .mode-icon.photo { background: rgba(100,180,255,0.12); }
+    .mode-icon.type  { background: rgba(76,175,80,0.12); }
+    .mode h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 2px;
+    }
+    .mode p {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.4;
+    }
+
+    /* ===== CTA ===== */
+    .cta-bar {
+      background: rgba(227,175,74,0.06);
+      border: 1px solid rgba(227,175,74,0.15);
+      border-radius: 14px;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cta-left p {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .cta-left span {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 2px;
+      display: block;
+    }
+    .cta-btn {
+      background: #E3AF4A;
+      color: #0B0C0D;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 28px;
+      border-radius: 10px;
+      border: none;
+      font-family: inherit;
+      letter-spacing: -0.01em;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <h1>NRB 2026 <span>Lead Capture Tool</span></h1>
+        <p>Your phone-based tool for capturing leads at the booth</p>
+      </div>
+      <div class="header-right">
+        <div class="logo">PRAY.COM<sub>NRB</sub></div>
+        <div class="dates">Feb 17 &ndash; 20 &bull; Nashville</div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+      <!-- What Is It -->
+      <div class="what-section">
+        <h2>What is this?</h2>
+        <p>A <strong>mobile-first web tool</strong> you'll use at the booth to capture every lead in real time. Talk into your phone, snap a business card, or type it in &mdash; the tool auto-extracts names, emails, and company info, then sends everything straight to our <strong>Google Sheet</strong>. No more napkin notes or forgotten follow-ups.</p>
+      </div>
+
+      <!-- How it works (3 steps) -->
+      <div class="steps">
+        <div class="step">
+          <div class="step-icon">1</div>
+          <div class="step-num">Step 1</div>
+          <h3>Select Your Name</h3>
+          <p>Pick yourself from the AE dropdown so every lead is tagged to you.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">2</div>
+          <div class="step-num">Step 2</div>
+          <h3>Capture the Lead</h3>
+          <p>Record an audio note, photograph their card/badge, or type it manually.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">3</div>
+          <div class="step-num">Step 3</div>
+          <h3>Hit Send</h3>
+          <p>Review the auto-filled form, rate the meeting, and submit. Done in seconds.</p>
+        </div>
+      </div>
+
+      <!-- 3 Capture Modes -->
+      <div class="modes-label">3 Capture Modes</div>
+      <div class="modes">
+        <div class="mode">
+          <div class="mode-icon audio">&#127908;</div>
+          <div>
+            <h4>Audio</h4>
+            <p>Talk about the conversation &mdash; AI extracts the data</p>
+          </div>
+        </div>
+        <div class="mode">
+          <div class="mode-icon photo">&#128247;</div>
+          <div>
+            <h4>Photo</h4>
+            <p>Snap their business card or NRB badge for OCR</p>
+          </div>
+        </div>
+        <div class="mode">
+          <div class="mode-icon type">&#9997;&#65039;</div>
+          <div>
+            <h4>Type It In</h4>
+            <p>Fill out the form manually when needed</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-bar">
+        <div class="cta-left">
+          <p>Try it now on your phone &mdash; takes 30 seconds</p>
+          <span>Open the link, pick your name, record a test note, and hit Send.</span>
+        </div>
+        <div class="cta-btn">Open Tool &rarr;</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
