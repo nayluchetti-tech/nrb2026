@@ -1041,14 +1041,14 @@
           </ul>
         </div>
 
-        <!-- COMMUNICATION -->
+        <!-- COMMUNICATION (INTERNAL TO AE ONLY) -->
         <div class="scenario-col">
-          <div class="col-label"><span class="icon">3</span> Communication Sequence</div>
+          <div class="col-label"><span class="icon">3</span> AE Enablement Sequence <span style="font-size:9px; font-weight:600; color:rgba(255,255,255,0.35); margin-left:4px;">(Internal only &mdash; AE owns all prospect outreach)</span></div>
 
           <div class="comm-card" style="border-color: rgba(255,107,53,0.25); background: rgba(255,107,53,0.04);">
             <span class="comm-timing timing-instant">Morning of Meeting (Auto)</span>
-            <h4 style="color: #FF6B35;">Slack/SMS Alert to AE: Meeting Prep Briefing</h4>
-            <p>Automated morning-of alert sent to the AE assigned to the meeting. Includes:</p>
+            <h4 style="color: #FF6B35;">Slack/SMS to AE: Meeting Prep Briefing</h4>
+            <p>Automated morning-of alert sent to the assigned AE. Includes:</p>
             <ul style="list-style: none; font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; line-height: 1.7;">
               <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Meeting time:</strong> Confirmed slot, location (Booth #401)</li>
               <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Lead snapshot:</strong> Name, title, company, revenue, distribution channels, QUALIFIED status</li>
@@ -1059,44 +1059,35 @@
             <span class="comm-channel">Slack DM</span><span class="comm-channel">SMS (backup)</span>
           </div>
 
-          <p style="font-size: 12px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; margin-top: 16px;">If Attended:</p>
-          <div class="comm-card">
-            <span class="comm-timing timing-same-day">Same Day</span>
-            <h4>Email 1: "Great meeting today"</h4>
-            <p>Personalized recap from AE. "Thanks for spending time with us today, [Name]. Here's a recap of what we discussed: [bullet points]. Next steps: [actions]." Attach one-pager or custom proposal.</p>
-            <span class="comm-channel">Email (AE)</span>
-          </div>
-          <div class="comm-card">
-            <span class="comm-timing timing-week">Day +3</span>
-            <h4>Email 2: Proposal / next-step asset</h4>
-            <p>Send the tailored proposal, pricing sheet, or partnership framework based on what was discussed. Include specific ROI projections.</p>
-            <span class="comm-channel">Email (AE)</span>
-          </div>
-          <div class="comm-card">
-            <span class="comm-timing timing-week">Day +7</span>
-            <h4>Email 3: Virtual follow-up meeting</h4>
-            <p>"Let's get the ball rolling. I have time [dates] to walk through the proposal together. Which works best?" Direct calendar link.</p>
-            <span class="comm-channel">Email (AE)</span><span class="comm-channel">Phone Call</span>
+          <p style="font-size: 12px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; margin-top: 16px;">After Meeting:</p>
+          <div class="comm-card" style="border-color: rgba(255,107,53,0.25); background: rgba(255,107,53,0.04);">
+            <span class="comm-timing timing-instant">Instant (Auto)</span>
+            <h4 style="color: #FF6B35;">Slack/SMS to AE: Post-Meeting Action Items</h4>
+            <p>Triggered when AE submits meeting notes via the Lead Capture Tool. Includes:</p>
+            <ul style="list-style: none; font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; line-height: 1.7;">
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Meeting recap:</strong> Summary, products discussed, pain points, deal potential rating</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Next steps:</strong> From the AE's own notes (proposal, demo, contract, etc.)</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Suggested actions:</strong> "Send follow-up email today," "Prepare proposal by Day +3," "Loop in [VP] for executive intro"</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Tier recommendation:</strong> Suggested classification based on meeting outcome (e.g., MOMENTUM if deal potential 4+)</li>
+            </ul>
+            <span class="comm-channel">Slack DM</span><span class="comm-channel">SMS (backup)</span>
           </div>
 
           <p style="font-size: 12px; font-weight: 700; color: #e74c3c; text-transform: uppercase; letter-spacing: 0.08em; margin: 20px 0 12px;">If No-Show:</p>
-          <div class="comm-card">
-            <span class="comm-timing timing-same-day">Same Day</span>
-            <h4>SMS + Email: "We missed you!"</h4>
-            <p>"Hi [Name], we had you down for a meeting today at Booth #401 but didn't see you. No worries &mdash; things get hectic at NRB! Want to reschedule? [calendar link]"</p>
-            <span class="comm-channel">SMS</span><span class="comm-channel">Email</span>
+          <div class="comm-card" style="border-color: rgba(255,107,53,0.25); background: rgba(255,107,53,0.04);">
+            <span class="comm-timing timing-instant">Instant (Auto)</span>
+            <h4 style="color: #FF6B35;">Slack/SMS to AE: No-Show Alert</h4>
+            <p>Triggered when booth manager marks <code>meeting_status = no_show</code>. Includes:</p>
+            <ul style="list-style: none; font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; line-height: 1.7;">
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Who missed:</strong> Name, company, original meeting time</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Suggested actions:</strong> "Send reschedule email," "Try SMS," "Check if they visited another booth"</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Calendar link:</strong> Pre-filled reschedule link to share with prospect</li>
+            </ul>
+            <span class="comm-channel">Slack DM</span><span class="comm-channel">SMS (backup)</span>
           </div>
-          <div class="comm-card">
-            <span class="comm-timing timing-next-day">Day +1</span>
-            <h4>Email: Offer alternative</h4>
-            <p>"If the conference got too busy, we totally understand. We'd love to do a 20-minute virtual meeting instead: [calendar link]. Or stop by Booth #401 anytime &mdash; we're here all week."</p>
-            <span class="comm-channel">Email</span>
-          </div>
-          <div class="comm-card">
-            <span class="comm-timing timing-week">Post-NRB</span>
-            <h4>Email: Final post-event outreach</h4>
-            <p>If still no response, send final meeting request with added value: "I put together a custom growth analysis for [Company] based on your profile. Want to walk through it? [calendar link]"</p>
-            <span class="comm-channel">Email (AE)</span>
+
+          <div class="callout" style="margin-top: 16px;">
+            <strong>Note:</strong> All prospect-facing communication for pre-booked meetings is handled directly by the AE. The system provides intel and action items &mdash; the AE owns the relationship and decides how and when to reach out.
           </div>
         </div>
       </div>
