@@ -401,7 +401,7 @@
   <div class="header">
     <div class="header-badge">Tutorial</div>
     <h1>How to Use the <span class="gold">Lead Capture Tool</span></h1>
-    <p>A step-by-step guide for PRAY.COM AEs at NRB 2026. Learn how to capture leads via audio, photo, or manual entry.</p>
+    <p>A step-by-step guide for PRAY.COM AEs at NRB 2026. Capture leads via audio, photo, or manual entry &mdash; and track pre-booked meetings.</p>
   </div>
 
   <!-- Nav -->
@@ -412,6 +412,7 @@
       <a href="#step-3">3: Capture</a>
       <a href="#step-4">4: Review Form</a>
       <a href="#step-5">5: Submit</a>
+      <a href="#step-6">6: Pre-Booked</a>
       <a href="#tips">Tips</a>
     </div>
   </nav>
@@ -457,20 +458,22 @@
         <div class="instr-visual">
           <div class="mock">
             <div class="mock-tabs">
-              <div class="mock-tab active">&#127908; Audio Note</div>
-              <div class="mock-tab">&#128247; Photo Capture</div>
-              <div class="mock-tab">&#9997; Type It In</div>
+              <div class="mock-tab active">&#127908; Audio</div>
+              <div class="mock-tab">&#128247; Photo</div>
+              <div class="mock-tab">&#9997; Type</div>
+              <div class="mock-tab">&#128197; Pre-Booked</div>
             </div>
             <div style="font-size: 12px; color: rgba(255,255,255,0.4); text-align: center; padding: 8px 0;">Select the mode that fits the moment</div>
           </div>
         </div>
         <div class="instr-text">
-          <p>The tool has <strong>3 capture modes</strong>. Pick the one that makes sense for the situation:</p>
+          <p>The tool has <strong>4 modes</strong>. The first 3 are for capturing new leads; the last one is for tracking pre-booked meetings:</p>
           <p><strong>&#127908; Audio Note</strong> &mdash; Best after a conversation. Record a quick voice note summarizing who you talked to and what they said. The AI will transcribe it and fill in the form fields.</p>
           <p><strong>&#128247; Photo Capture</strong> &mdash; Snap a photo of their business card or NRB badge. The tool will try to OCR the text and auto-fill name, email, company, and website.</p>
           <p><strong>&#9997; Type It In</strong> &mdash; Manually enter the lead's details. Use this when you have their info from a conversation, email, or written note.</p>
+          <p><strong>&#128197; Pre-Booked</strong> &mdash; Look up attendees who pre-booked a meeting before NRB. Search by name, email, or company, then mark whether they showed up, no-showed, or rescheduled. <a href="#step-6">See Step 6 for the full walkthrough.</a></p>
           <div class="tip">
-            <strong>Pro tip:</strong> You can combine modes! After recording audio, you can also attach a card photo. After snapping a photo, you can add more details in the form. All modes lead to the same form.
+            <strong>Pro tip:</strong> You can combine modes! After recording audio, you can also attach a card photo. After snapping a photo, you can add more details in the form. The first 3 modes all lead to the same lead form.
           </div>
         </div>
       </div>
@@ -508,7 +511,8 @@
             <strong>5.</strong> Next steps agreed<br>
             <strong>6.</strong> Your gut feeling (rate 1-5)
           </p>
-          <p><span class="pointer">&#9654;</span> Once the recording is complete, you can also <strong>add a photo</strong> of the contact's business card or NRB badge. Everything is <strong>optional</strong>.</p>
+          <p><span class="pointer">&#9654;</span> Once the recording is complete, a <strong>"Send to Google Sheets"</strong> button appears right below the mic. Tap it to submit the lead immediately &mdash; no scrolling needed. Or tap <strong>"Review &amp; edit lead details first"</strong> to scroll down and refine the form.</p>
+          <p><span class="pointer">&#9654;</span> You can also <strong>add a photo</strong> of the contact's business card or NRB badge. Everything is <strong>optional</strong>.</p>
           <p><span class="pointer">&#9654;</span> The AI tool will try to read your words and organize them into actionable fields. However, all fields are <strong>OPTIONAL</strong>. You can either manually insert more information or skip everything and click the submission button.</p>
           <div class="tip">
             <strong>PS:</strong> If you speak the field labels clearly in your recording, AI will fill everything easily. For example: "I just spoke with <em>John Smith</em>, he's the <em>Senior Pastor</em> at <em>Grace Community Church</em>..."
@@ -607,7 +611,14 @@
             &#8226; <strong>Meeting Quality</strong> (1-5 stars)
           </p>
           <p><span class="pointer">&#9654;</span> Select the <strong>Pain Points</strong> checkboxes that match what the lead mentioned. This helps personalize the follow-up.</p>
-          <p><span class="pointer">&#9654;</span> Set the <strong>Intent Level</strong> (Hot/Warm/Cold), <strong>Scenario</strong>, and <strong>Lifecycle Stage</strong> for lead classification.</p>
+          <p><span class="pointer">&#9654;</span> Set the <strong>Intent Level</strong> using our 4-tier system:</p>
+          <p style="padding-left: 16px;">
+            <strong style="color: #FF6B35;">MOMENTUM</strong> &mdash; Qualified + urgency (meet at NRB)<br>
+            <strong style="color: #E3AF4A;">HOT</strong> &mdash; Qualified, no urgency (meet after NRB)<br>
+            <strong style="color: #64B4FF;">WARM</strong> &mdash; Not sure if qualified, or not ready<br>
+            <strong style="color: rgba(255,255,255,0.4);">DISQUALIFIED</strong> &mdash; Not a fit
+          </p>
+          <p><span class="pointer">&#9654;</span> Also set the <strong>Scenario</strong> and <strong>Lifecycle Stage</strong> for lead classification.</p>
           <div class="tip">
             <strong>Qualification Details:</strong> Click the gold expandable section below the classification fields to add distribution channels, revenue range, competitor signals, and more. If they distribute via <strong>TV or Radio</strong>, a green "QUALIFIED" badge will appear automatically.
           </div>
@@ -651,6 +662,109 @@
     </div>
   </section>
 
+  <!-- ======== STEP 6 ======== -->
+  <section class="step-section" id="step-6">
+    <div class="container">
+      <div class="step-header">
+        <div class="step-num">6</div>
+        <h2>Pre-Booked Meetings <span>Separate Workflow</span></h2>
+      </div>
+
+      <div class="callout" style="margin-bottom: 32px;">
+        <strong>Different from Steps 1-5:</strong> The Pre-Booked tab is for tracking meetings that were scheduled <em>before</em> NRB. It searches a separate "Pre-Booked" tab in the Google Sheet &mdash; not the Leads tab. You don't capture new leads here; you look up existing ones and record their meeting status.
+      </div>
+
+      <!-- Search -->
+      <div class="instruction">
+        <div class="instr-visual">
+          <div class="mock">
+            <div class="mock-tabs">
+              <div class="mock-tab">&#127908; Audio</div>
+              <div class="mock-tab">&#128247; Photo</div>
+              <div class="mock-tab">&#9997; Type</div>
+              <div class="mock-tab active">&#128197; Pre-Booked</div>
+            </div>
+            <div style="height: 8px;"></div>
+            <div class="mock-label">Search Pre-Booked Meetings</div>
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+              <div class="mock-field-value" style="flex: 1; font-size: 13px;">John Smith</div>
+              <div class="mock-btn gold" style="margin: 0; padding: 8px 16px; font-size: 12px;">Search</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px;">
+              <div style="font-size: 13px; font-weight: 600;">John Smith</div>
+              <div style="font-size: 11px; color: rgba(255,255,255,0.4);">Grace Church &mdash; Senior Pastor</div>
+              <div style="font-size: 10px; color: rgba(255,255,255,0.3);">john@gracechurch.org &bull; Feb 18, 2:00 PM</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px;">
+              <div style="font-size: 13px; font-weight: 600;">John Smithson</div>
+              <div style="font-size: 11px; color: rgba(255,255,255,0.4);">Faith Media Group &mdash; VP Content</div>
+              <div style="font-size: 10px; color: rgba(255,255,255,0.3);">jsmithson@faithmedia.com &bull; Feb 19, 10:00 AM</div>
+            </div>
+          </div>
+        </div>
+        <div class="instr-text">
+          <p><span class="pointer">&#9654;</span> Select the <strong>"Pre-Booked"</strong> tab in the tool. You'll see a search bar.</p>
+          <p><span class="pointer">&#9654;</span> Type the attendee's <strong>name, email, or company</strong> and tap Search. The tool searches the "Pre-Booked" tab in the Google Sheet (separate from the Leads tab where booth captures go).</p>
+          <p><span class="pointer">&#9654;</span> Results appear with the attendee's name, company, email, and <strong>meeting time</strong>. Tap the correct person to select them.</p>
+          <div class="tip">
+            <strong>Tip:</strong> Even a partial match works. Searching "grace" will find anyone from Grace Church. The search checks first name, last name, email, and company.
+          </div>
+        </div>
+      </div>
+
+      <!-- Mark Status -->
+      <div class="instruction reverse">
+        <div class="instr-visual">
+          <div class="mock">
+            <div class="mock-label">Lead Card</div>
+            <div style="text-align: center; margin-bottom: 8px;">
+              <div style="font-size: 18px; font-weight: 800;">John Smith</div>
+              <div style="font-size: 13px; color: rgba(255,255,255,0.5);">Grace Church</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; font-size: 11px;">
+              <div><span style="color: #E3AF4A; font-weight: 700;">Title</span><br><span style="color: rgba(255,255,255,0.5);">Senior Pastor</span></div>
+              <div><span style="color: #E3AF4A; font-weight: 700;">Meeting Time</span><br><span style="color: rgba(255,255,255,0.5);">Feb 18, 2:00 PM</span></div>
+              <div><span style="color: #E3AF4A; font-weight: 700;">AE Owner</span><br><span style="color: rgba(255,255,255,0.5);">Robby Schwartz</span></div>
+              <div><span style="color: #E3AF4A; font-weight: 700;">Products</span><br><span style="color: rgba(255,255,255,0.5);">PRAY TV, SuperFunnel</span></div>
+            </div>
+            <div class="mock-label">Meeting Status</div>
+            <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+              <div style="flex:1; text-align:center; padding: 10px 6px; border-radius: 8px; background: rgba(76,175,80,0.15); border: 2px solid #4CAF50; font-size: 12px; font-weight: 700; color: #4CAF50;">&#10003; Showed</div>
+              <div style="flex:1; text-align:center; padding: 10px 6px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4);">&#10007; No-Show</div>
+              <div style="flex:1; text-align:center; padding: 10px 6px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4);">&#8634; Rescheduled</div>
+            </div>
+            <div class="mock-label">Meeting Notes</div>
+            <div class="mock-field-value" style="min-height: 40px; font-size: 12px; color: rgba(255,255,255,0.35);">How did the meeting go?...</div>
+            <div style="height: 8px;"></div>
+            <div class="mock-label">Deal Potential</div>
+            <div class="mock-stars">
+              <div class="mock-star active">1</div>
+              <div class="mock-star active">2</div>
+              <div class="mock-star active">3</div>
+              <div class="mock-star active">4</div>
+              <div class="mock-star">5</div>
+            </div>
+            <div class="mock-btn gold" style="margin-top: 12px;">Update Meeting Status</div>
+          </div>
+        </div>
+        <div class="instr-text">
+          <p><span class="pointer">&#9654;</span> After selecting an attendee, their <strong>lead card</strong> appears with their details: name, company, title, meeting time, AE owner, and products of interest.</p>
+          <p><span class="pointer">&#9654;</span> <strong>Mark the meeting status:</strong></p>
+          <p style="padding-left: 16px;">
+            <strong style="color: #4CAF50;">Showed</strong> &mdash; They attended the meeting<br>
+            <strong style="color: #FF6B35;">No-Show</strong> &mdash; They didn't show up<br>
+            <strong style="color: #64B4FF;">Rescheduled</strong> &mdash; Meeting moved to a new time
+          </p>
+          <p><span class="pointer">&#9654;</span> Add <strong>meeting notes</strong> &mdash; what you discussed, products demoed, objections heard, and next steps.</p>
+          <p><span class="pointer">&#9654;</span> Set a <strong>deal potential</strong> rating (1-5). Then tap <strong>"Update Meeting Status"</strong> to save.</p>
+          <div class="tip">
+            <strong>Important:</strong> This updates the existing row in the "Pre-Booked" tab of the sheet &mdash; it doesn't create a new row. The meeting status, notes, deal potential, and timestamp are all written back to the same record.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ======== TIPS ======== -->
   <section class="step-section" id="tips">
     <div class="container">
@@ -662,23 +776,23 @@
       <div class="ref-grid">
         <div class="ref-item">
           <h4>Best for Quick Captures</h4>
-          <p>Photo mode &rarr; snap the card &rarr; "Send to Google Sheets." Takes 10 seconds. Add a quick note for bonus points.</p>
+          <p>Audio mode &rarr; record &rarr; tap "Send to Google Sheets" right below the mic. No scrolling. Takes 20 seconds. Or snap a card photo and send.</p>
         </div>
         <div class="ref-item">
           <h4>Best for Detailed Leads</h4>
-          <p>Audio mode after the conversation. Include name, company, product interest, pain points, and your gut feeling rating.</p>
+          <p>Audio mode, then tap "Review &amp; edit lead details first" to scroll to the form. Include name, company, products, pain points, and your gut feeling.</p>
         </div>
         <div class="ref-item">
-          <h4>When to Use Type It In</h4>
-          <p>When someone tells you their email verbally, or you're entering leads from written notes at the end of the day.</p>
+          <h4>4-Tier Intent Levels</h4>
+          <p><strong style="color:#FF6B35;">MOMENTUM</strong> = Qualified + urgency (meet at NRB) | <strong style="color:#E3AF4A;">HOT</strong> = Qualified, no urgency | <strong style="color:#64B4FF;">WARM</strong> = Unsure | <strong style="color:rgba(255,255,255,0.4);">DISQUALIFIED</strong> = Not a fit</p>
         </div>
         <div class="ref-item">
           <h4>QUALIFIED Lead Rule</h4>
           <p>If they distribute via <strong>Broadcast TV</strong>, <strong>Radio</strong>, or <strong>Satellite</strong> (or spend $60K+/yr on marketing) &rarr; they're QUALIFIED. Open "Qualification Details" and check those boxes.</p>
         </div>
         <div class="ref-item">
-          <h4>OCR from Business Cards</h4>
-          <p>The tool tries to auto-read email, name, company, and website from card photos. It works best with clean, printed cards in good lighting.</p>
+          <h4>Pre-Booked Meetings</h4>
+          <p>Use the "Pre-Booked" tab to search scheduled attendees by name, email, or company. Mark Showed/No-Show/Rescheduled, add notes, rate the deal. Data lives in a separate sheet tab.</p>
         </div>
         <div class="ref-item">
           <h4>All Fields Are Optional</h4>
