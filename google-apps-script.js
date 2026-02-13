@@ -222,7 +222,7 @@ function doPost(e) {
       badgePhotoUrl = savePhotoToDrive(data.badge_photo, data.first_name, data.last_name, 'badge');
     }
 
-    // Append row to sheet (columns A through AI)
+    // Append row to sheet (columns A through AF)
     sheet.appendRow([
       data.timestamp || new Date().toISOString(),   // A: Timestamp
       data.ae_owner || '',                           // B: AE Owner
@@ -254,7 +254,8 @@ function doPost(e) {
       data.podcast_link || '',                       // AB: Podcast Link
       data.nrb_sessions || '',                       // AC: NRB Speaking Sessions
       cardPhotoUrl,                                  // AD: Card Photo Link
-      badgePhotoUrl                                  // AE: Badge Photo Link
+      badgePhotoUrl,                                 // AE: Badge Photo Link
+      data.company_type || ''                        // AF: Company Type (Ministry SaaS / Ads / Partner)
     ]);
 
     return ContentService
