@@ -1440,17 +1440,6 @@
             </div>
           </div>
           <div class="field-item">
-            <div class="field-label">Company Type <span style="font-weight:400;color:rgba(255,255,255,0.35);">(P&amp;L)</span></div>
-            <div class="field-value">
-              <select id="leadCompanyType">
-                <option value="" disabled selected>Select</option>
-                <option value="Ministry SaaS">Ministry / Faith-Based Org (Ministry SaaS P&amp;L)</option>
-                <option value="Ads">Brand / Advertiser (Ads P&amp;L)</option>
-                <option value="Partner">Service Provider to Faith Orgs (Partner)</option>
-              </select>
-            </div>
-          </div>
-          <div class="field-item">
             <div class="field-label">Lifecycle Stage</div>
             <div class="field-value">
               <select id="leadLifecycle">
@@ -1486,7 +1475,7 @@
           <div id="qualFields" style="display: none; margin-top: 12px;">
             <div class="field-grid">
               <div class="field-item">
-                <div class="field-label">Organization Type</div>
+                <div class="field-label">Organization Type <span style="font-weight:400;color:rgba(255,255,255,0.35);">(determines P&amp;L)</span></div>
                 <div class="field-value">
                   <select id="leadOrgDescription">
                     <option value="" disabled selected>Select type</option>
@@ -1501,6 +1490,7 @@
                     <option value="Education">Education</option>
                     <option value="Other">Other</option>
                   </select>
+                  <div id="plBadge" style="display:none; margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center;"></div>
                 </div>
               </div>
               <div class="field-item">
@@ -1995,6 +1985,33 @@
     distCheckboxes.forEach(function(cb) {
       cb.addEventListener('change', updateQualifiedBadge);
     });
+
+    // P&L badge: auto-classify based on Organization Type
+    var orgSelect = document.getElementById('leadOrgDescription');
+    var plBadge = document.getElementById('plBadge');
+    function updatePlBadge() {
+      var org = orgSelect.value;
+      if (!org) { plBadge.style.display = 'none'; return; }
+      var label, bg, color;
+      if (org === 'Marketing/PR/Agency') {
+        label = 'Ads P&L — Brand / Advertiser';
+        bg = 'rgba(100,180,255,0.15)'; color = '#64B4FF';
+      } else if (org === 'Tech/Software') {
+        label = 'PARTNER — Service Provider to Faith Orgs';
+        bg = 'rgba(206,147,216,0.15)'; color = '#CE93D8';
+      } else if (org === 'Other') {
+        label = 'Select a specific type above for auto P&L classification';
+        bg = 'rgba(255,255,255,0.05)'; color = 'rgba(255,255,255,0.4)';
+      } else {
+        label = 'Ministry SaaS P&L — Faith-Based Organization';
+        bg = 'rgba(227,175,74,0.15)'; color = '#E3AF4A';
+      }
+      plBadge.textContent = label;
+      plBadge.style.display = 'block';
+      plBadge.style.background = bg;
+      plBadge.style.color = color;
+    }
+    orgSelect.addEventListener('change', updatePlBadge);
 
     function updateAudioPhotoThumbs() {
       // Update thumbnails on both audio and manual panels
@@ -2596,7 +2613,15 @@
         meeting_quality: currentRating,
         intent_level: document.getElementById('leadIntentLevel').value || (captureMode === 'audio' ? 'Momentum' : 'Warm'),
         scenario: document.getElementById('leadScenario').value || '',
-        company_type: document.getElementById('leadCompanyType').value || '',
+        company_type: (function() {
+          var org = document.getElementById('leadOrgDescription').value;
+          var adsOrgs = ['Marketing/PR/Agency'];
+          var partnerOrgs = ['Tech/Software'];
+          if (adsOrgs.indexOf(org) !== -1) return 'Ads';
+          if (partnerOrgs.indexOf(org) !== -1) return 'Partner';
+          if (org && org !== 'Other') return 'Ministry SaaS';
+          return '';
+        })(),
         lifecycle_stage: document.getElementById('leadLifecycle').value || (captureMode === 'audio' ? 'SQL' : 'MQL'),
         previous_interactions: document.getElementById('leadPreviousInteractions').value || 'New Lead',
         org_description: document.getElementById('leadOrgDescription').value || '',
