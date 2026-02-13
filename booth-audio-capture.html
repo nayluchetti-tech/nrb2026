@@ -1354,6 +1354,7 @@
                 <option value="Partnership with PRAY">Partnership with PRAY</option>
                 <option value="General Discussion">General Discussion</option>
               </select>
+              <div id="plLineBadge" style="display:none; margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center;"></div>
             </div>
           </div>
           <div class="field-item">
@@ -1475,7 +1476,7 @@
           <div id="qualFields" style="display: none; margin-top: 12px;">
             <div class="field-grid">
               <div class="field-item">
-                <div class="field-label">Organization Type <span style="font-weight:400;color:rgba(255,255,255,0.35);">(determines P&amp;L)</span></div>
+                <div class="field-label">Organization Type <span style="font-weight:400;color:rgba(255,255,255,0.35);">(Prospect / Partner)</span></div>
                 <div class="field-value">
                   <select id="leadOrgDescription">
                     <option value="" disabled selected>Select type</option>
@@ -1986,32 +1987,51 @@
       cb.addEventListener('change', updateQualifiedBadge);
     });
 
-    // P&L badge: auto-classify based on Organization Type
+    // Lead Type badge: Prospect or Partner based on Organization Type
     var orgSelect = document.getElementById('leadOrgDescription');
     var plBadge = document.getElementById('plBadge');
-    function updatePlBadge() {
+    function updateLeadTypeBadge() {
       var org = orgSelect.value;
       if (!org) { plBadge.style.display = 'none'; return; }
       var label, bg, color;
       if (org === 'Marketing/PR/Agency') {
-        label = 'Ads P&L — Brand / Advertiser';
-        bg = 'rgba(100,180,255,0.15)'; color = '#64B4FF';
-      } else if (org === 'Tech/Software') {
-        label = 'PARTNER — Service Provider to Faith Orgs';
+        label = 'PARTNER — Marketing/PR/Agency';
         bg = 'rgba(206,147,216,0.15)'; color = '#CE93D8';
-      } else if (org === 'Other') {
-        label = 'Select a specific type above for auto P&L classification';
-        bg = 'rgba(255,255,255,0.05)'; color = 'rgba(255,255,255,0.4)';
       } else {
-        label = 'Ministry SaaS P&L — Faith-Based Organization';
+        label = 'PROSPECT';
         bg = 'rgba(227,175,74,0.15)'; color = '#E3AF4A';
       }
       plBadge.textContent = label;
       plBadge.style.display = 'block';
       plBadge.style.background = bg;
       plBadge.style.color = color;
+      updatePlLine();
     }
-    orgSelect.addEventListener('change', updatePlBadge);
+    orgSelect.addEventListener('change', updateLeadTypeBadge);
+
+    // P&L line: auto-derived from Products Discussed
+    // "Advertise on PRAY" → Ads & Others P&L; everything else → Ministry SaaS P&L
+    var productsSelect = document.getElementById('leadProducts');
+    var plLineBadge = document.getElementById('plLineBadge');
+    function updatePlLine() {
+      if (!plLineBadge) return;
+      var product = productsSelect.value;
+      var label, bg, color;
+      if (product === 'Advertise on PRAY') {
+        label = 'P&L: Ads & Others';
+        bg = 'rgba(100,180,255,0.15)'; color = '#64B4FF';
+      } else if (product) {
+        label = 'P&L: Ministry SaaS';
+        bg = 'rgba(227,175,74,0.15)'; color = '#E3AF4A';
+      } else {
+        plLineBadge.style.display = 'none'; return;
+      }
+      plLineBadge.textContent = label;
+      plLineBadge.style.display = 'block';
+      plLineBadge.style.background = bg;
+      plLineBadge.style.color = color;
+    }
+    productsSelect.addEventListener('change', updatePlLine);
 
     function updateAudioPhotoThumbs() {
       // Update thumbnails on both audio and manual panels
@@ -2487,14 +2507,16 @@
         document.getElementById('leadCompany').value = capitalizeWords(companyMatch[1].trim());
       }
 
-      if (text.indexOf('superfunnel') !== -1 || text.indexOf('super funnel') !== -1 || text.indexOf('donor') !== -1) {
-        document.getElementById('leadProducts').value = 'superfunnel';
+      if (text.indexOf('advertise') !== -1 || text.indexOf('advertising') !== -1 || text.indexOf('ads') !== -1 || text.indexOf('ad solutions') !== -1) {
+        document.getElementById('leadProducts').value = 'Advertise on PRAY';
+      } else if (text.indexOf('superfunnel') !== -1 || text.indexOf('super funnel') !== -1 || text.indexOf('donor') !== -1) {
+        document.getElementById('leadProducts').value = 'SuperFunnel';
       } else if (text.indexOf('studio') !== -1 || text.indexOf('ai') !== -1 || text.indexOf('content') !== -1) {
-        document.getElementById('leadProducts').value = 'pray_studio';
+        document.getElementById('leadProducts').value = 'PRAYStudio Tools';
       } else if (text.indexOf('reach') !== -1 || text.indexOf('distribution') !== -1) {
-        document.getElementById('leadProducts').value = 'reach';
+        document.getElementById('leadProducts').value = 'PRAY Radio';
       } else if (text.indexOf('america prays') !== -1 || text.indexOf('white house') !== -1) {
-        document.getElementById('leadProducts').value = 'america_prays';
+        document.getElementById('leadProducts').value = 'General Discussion';
       }
 
       if (text.indexOf('demo') !== -1 || text.indexOf('showed') !== -1 || text.indexOf('walked through') !== -1) {
@@ -2613,14 +2635,15 @@
         meeting_quality: currentRating,
         intent_level: document.getElementById('leadIntentLevel').value || (captureMode === 'audio' ? 'Momentum' : 'Warm'),
         scenario: document.getElementById('leadScenario').value || '',
-        company_type: (function() {
+        lead_type: (function() {
           var org = document.getElementById('leadOrgDescription').value;
-          var adsOrgs = ['Marketing/PR/Agency'];
-          var partnerOrgs = ['Tech/Software'];
-          if (adsOrgs.indexOf(org) !== -1) return 'Ads';
-          if (partnerOrgs.indexOf(org) !== -1) return 'Partner';
-          if (org && org !== 'Other') return 'Ministry SaaS';
-          return '';
+          if (org === 'Marketing/PR/Agency') return 'Partner';
+          return 'Prospect';
+        })(),
+        pl_line: (function() {
+          var product = document.getElementById('leadProducts').value;
+          if (product === 'Advertise on PRAY') return 'Ads & Others';
+          return 'Ministry SaaS';
         })(),
         lifecycle_stage: document.getElementById('leadLifecycle').value || (captureMode === 'audio' ? 'SQL' : 'MQL'),
         previous_interactions: document.getElementById('leadPreviousInteractions').value || 'New Lead',
@@ -2716,7 +2739,8 @@
           capture_method: leadData.nrb_capture_method,
           intent_level: leadData.intent_level,
           scenario: leadData.scenario,
-          company_type: leadData.company_type,
+          lead_type: leadData.lead_type,
+          pl_line: leadData.pl_line,
           lifecycle_stage: leadData.lifecycle_stage,
           previous_interactions: leadData.previous_interactions,
           org_description: leadData.org_description,

@@ -530,7 +530,7 @@
         <div class="pipeline-step">
           <span class="pipeline-num">3</span>
           <h3>Classify</h3>
-          <p>Categorize by Company Type (Ministry SaaS / Ads / Partner), then tier using demographics + buy intent: MOMENTUM, HOT, WARM, DISQUALIFIED, or PARTNER.</p>
+          <p>Classify Lead Type (Prospect/Partner) from Org Type, P&amp;L (Ministry SaaS / Ads &amp; Others) from Products Discussed, then tier using demographics + buy intent: MOMENTUM, HOT, WARM, DISQUALIFIED, or PARTNER.</p>
         </div>
         <div class="pipeline-step">
           <span class="pipeline-num">4</span>
@@ -623,7 +623,8 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = badge_scan</li>
           <li>intent_level = low</li>
-          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
+          <li>lead_type = [Prospect / Partner]</li>
+          <li>pl_line = [Ministry SaaS / Ads &amp; Others]</li>
           <li>scenario = walk_by_scan</li>
           <li>nrb_conversation = false</li>
           <li>nrb_demo_interest = false</li>
@@ -675,6 +676,15 @@
           </ul>
           <div class="callout">
             <strong>AE Protocol:</strong> Always add a note about the conversation topic when submitting. E.g., "Interested in SuperFunnel, runs a $3M ministry, wants demo." You can attach photos in any capture mode.
+          </div>
+          <div class="callout" style="border-left-color: #E3AF4A;">
+            <strong style="color: #E3AF4A;">AE Opening Pitch:</strong><br>
+            <em>"Let me tell you more about PRAY.com: We are a faith tech platform and media publisher, purpose-built to help grow faith-based organizations. We have tools to grow reach and donations, as well as advertising solutions. Do either of these solutions align with your organization's goals?"</em>
+          </div>
+          <div class="callout" style="border-left-color: #64B4FF;">
+            <strong style="color: #64B4FF;">P&amp;L from In-Person Conversations:</strong><br>
+            &bull; If the lead is interested in <strong>advertising solutions</strong> or mentions "Ads &amp; Others" &rarr; set Products Discussed = <strong>"Advertise on PRAY"</strong>. P&amp;L auto-sets to <strong style="color:#64B4FF;">Ads &amp; Others</strong>.<br>
+            &bull; If the lead says they want to <strong>partner with PRAY</strong> or similar &rarr; set Products Discussed = <strong>"Partnership with PRAY"</strong> and set Organization Type = <strong>Marketing/PR/Agency</strong>. Lead Type auto-sets to <strong style="color:#CE93D8;">Partner</strong>.
           </div>
         </div>
 
@@ -728,7 +738,8 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = photo_capture / manual_entry / audio_note</li>
           <li>intent_level = medium</li>
-          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
+          <li>lead_type = [Prospect / Partner]</li>
+          <li>pl_line = [Ministry SaaS / Ads &amp; Others]</li>
           <li>scenario = ae_conversation</li>
           <li>conversation_summary = [text]</li>
           <li>ae_owner = [AE name]</li>
@@ -755,7 +766,7 @@
       <div class="scenario-columns">
         <!-- CAPTURE -->
         <div class="scenario-col">
-          <div class="col-label"><span class="icon">1</span> Capture Method</div>
+          <div class="col-label"><span class="icon">1</span> Capture &amp; Qualification Flow</div>
           <ul class="step-list">
             <li>
               <span class="step-num">1</span>
@@ -763,23 +774,47 @@
             </li>
             <li>
               <span class="step-num">2</span>
-              <span>QR redirects to the <strong>NRB Landing Page</strong> (index.html) with the booking form</span>
+              <span>QR redirects to the <strong>NRB Landing Page</strong> with the booking form</span>
             </li>
             <li>
               <span class="step-num">3</span>
-              <span>Attendee fills in: name, email, phone, organization, company website, role, budget, interest, preferred time</span>
+              <span>Attendee fills in: <strong>name, email, phone, organization, company website, company type</strong></span>
             </li>
             <li>
               <span class="step-num">4</span>
-              <span>Form data flows to the <strong>NRB 2026 Lead Tracker</strong> Google Sheet and <strong>HubSpot</strong> &mdash; contact is created/updated instantly with all properties</span>
-            </li>
-            <li>
-              <span class="step-num">5</span>
-              <span>If they choose "Same Day" or "Next Day," a <strong>Calendly link</strong> is presented to confirm the exact time slot</span>
+              <span><strong style="color:#E3AF4A;">Qualification Question:</strong> <em>"We are purpose-built for faith-based organizations that invest over $60K in marketing and content distribution. Does this describe your organization?"</em></span>
             </li>
           </ul>
-          <div class="callout">
+
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; margin-top: 12px;">
+            <p style="font-size: 11px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">Qualification Gate &mdash; 3 Paths</p>
+            <ul style="list-style: none; font-size: 12.5px; color: rgba(255,255,255,0.65); line-height: 2;">
+              <li><strong style="color:#4CAF50;">YES</strong> &rarr; <strong>Qualified.</strong> Proceed to booking flow (Step 5).</li>
+              <li><strong style="color:rgba(255,255,255,0.4);">NO</strong> &rarr; <strong>Disqualified.</strong> Thank-you screen, add to general newsletter. No booking.</li>
+              <li><strong style="color:#64B4FF;">I WANT TO ADVERTISE ON PRAY APP</strong> &rarr; <strong>Ads &amp; Others P&amp;L.</strong> Proceed to booking flow (Step 5), routed to Dustin Sisney (Ads AE).</li>
+            </ul>
+          </div>
+
+          <ul class="step-list" style="margin-top: 12px;">
+            <li>
+              <span class="step-num">5</span>
+              <span><strong>If qualified:</strong> Attendee provides current <strong>content distribution channels</strong> and notes any <strong>PRAY contacts they wish to meet</strong></span>
+            </li>
+            <li>
+              <span class="step-num">6</span>
+              <span><strong>Calendar redirect:</strong> Attendee is shown a meeting calendar link. <em>If they chose a specific AE &rarr; that AE's calendar. If no choice but their company has a CRM owner &rarr; owner's calendar. Otherwise &rarr; next available AE.</em></span>
+            </li>
+            <li>
+              <span class="step-num">7</span>
+              <span>Form data flows to <strong>HubSpot</strong> &mdash; contact is created/updated instantly with all properties</span>
+            </li>
+          </ul>
+
+          <div class="callout" style="margin-top: 12px;">
             <strong>QR Placement:</strong> Main booth entrance banner, demo station table tents, handout one-pagers, AE business cards, and the booth backdrop wall. Every surface = a capture point.
+          </div>
+          <div class="callout" style="margin-top: 8px; border-left-color: #64B4FF;">
+            <strong style="color: #64B4FF;">Ads &amp; Others P&amp;L Rule:</strong> If the attendee selects "I want to advertise on PRAY app" OR chooses to meet only with <strong>Dustin Sisney</strong> (Ads &amp; Others AE) &rarr; P&amp;L = Ads &amp; Others.
           </div>
         </div>
 
@@ -787,11 +822,13 @@
         <div class="scenario-col">
           <div class="col-label"><span class="icon">2</span> Data Captured</div>
           <ul class="data-list">
-            <li><span class="data-label">From Form</span><div class="data-value">First Name, Last Name, Email, Phone, Organization, Company Website, Role, Budget Range, Interest Area, Preferred Meeting Time, Notes</div></li>
+            <li><span class="data-label">From Form</span><div class="data-value">First Name, Last Name, Email, Phone, Organization, Company Website, Company Type</div></li>
+            <li><span class="data-label">Qualification</span><div class="data-value">YES (Qualified) / NO (Disqualified) / ADVERTISE (Ads &amp; Others P&amp;L)</div></li>
+            <li><span class="data-label">If Qualified</span><div class="data-value">Distribution Channels, PRAY Contact Preference, Calendar Booking</div></li>
             <li><span class="data-label">Source Tag</span><div class="data-value">nrb_2026_qr_scan</div></li>
             <li><span class="data-label">Intent Level</span><div class="data-value">Medium-High (proactive action)</div></li>
-            <li><span class="data-label">Lifecycle Stage</span><div class="data-value">MQL</div></li>
-            <li><span class="data-label">UTM Params</span><div class="data-value">utm_source=nrb2026&utm_medium=qr&utm_campaign=booth</div></li>
+            <li><span class="data-label">Lead Type</span><div class="data-value">Prospect (or Partner if Marketing/PR/Agency)</div></li>
+            <li><span class="data-label">P&amp;L Line</span><div class="data-value">Ministry SaaS (default) or Ads &amp; Others (if advertiser)</div></li>
           </ul>
         </div>
 
@@ -801,12 +838,12 @@
           <div class="comm-card" style="border-color: rgba(255,107,53,0.25); background: rgba(255,107,53,0.04);">
             <span class="comm-timing timing-instant">Instant (Auto)</span>
             <h4 style="color: #FF6B35;">Slack/SMS Alert to AE: Meeting Booked</h4>
-            <p>Automated alert to the assigned AE (or booth manager) the moment someone books a meeting via QR. Includes:</p>
+            <p>Automated alert to the assigned AE the moment someone books a meeting via QR. Includes:</p>
             <ul style="list-style: none; font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; line-height: 1.7;">
-              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Who:</strong> Name, title, company, organization type</li>
-              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">When:</strong> Requested meeting time and slot</li>
-              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Interest:</strong> Products they selected, budget range, notes from form</li>
-              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Prep items:</strong> "Review their website," "Check if existing HubSpot contact," "Prepare [product] demo"</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Who:</strong> Name, company, organization type, P&amp;L line</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">When:</strong> Booked meeting time slot</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Qualification:</strong> Qualified / Ads &amp; Others, distribution channels noted</li>
+              <li>&bull; <strong style="color:rgba(255,255,255,0.8);">Prep items:</strong> "Review their website," "Check if existing HubSpot contact," "Prepare demo"</li>
             </ul>
             <span class="comm-channel">Slack DM</span><span class="comm-channel">SMS (backup)</span>
           </div>
@@ -843,7 +880,8 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = qr_form</li>
           <li>intent_level = medium_high</li>
-          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
+          <li>lead_type = [Prospect / Partner]</li>
+          <li>pl_line = [Ministry SaaS / Ads &amp; Others]</li>
           <li>scenario = qr_self_service</li>
           <li>meeting_requested = true</li>
           <li>preferred_time = [value]</li>
@@ -968,7 +1006,8 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = audio_note / manual_entry</li>
           <li>intent_level = high</li>
-          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
+          <li>lead_type = [Prospect / Partner]</li>
+          <li>pl_line = [Ministry SaaS / Ads &amp; Others]</li>
           <li>scenario = demo_conversation</li>
           <li>demo_given = true/false</li>
           <li>meeting_quality = [1-5]</li>
@@ -1097,7 +1136,8 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = prebooked</li>
           <li>intent_level = high</li>
-          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
+          <li>lead_type = [Prospect / Partner]</li>
+          <li>pl_line = [Ministry SaaS / Ads &amp; Others]</li>
           <li>scenario = prebooked_meeting</li>
           <li>meeting_status = completed/no_show</li>
           <li>meeting_notes = [text]</li>
@@ -1146,10 +1186,16 @@
             <td>Radio Broadcasting, Television/Film, Church/Ministry, Christian Nonprofit, Digital Media/Podcast, Tech/Software, Publishing, Marketing/PR/Agency, Education</td>
           </tr>
           <tr>
-            <td><strong style="color:#CE93D8;">Company Type (P&amp;L)</strong></td>
+            <td><strong style="color:#E3AF4A;">Lead Type</strong></td>
             <td>Auto-derived from Organization Type dropdown</td>
-            <td><code>AF: Company Type</code></td>
-            <td><strong style="color:#E3AF4A;">Ministry SaaS</strong> = Radio Broadcasting, TV/Film, Church/Ministry, Christian Nonprofit, Digital Media/Podcast, Publishing, Education &nbsp;|&nbsp; <strong style="color:#64B4FF;">Ads</strong> = Marketing/PR/Agency &nbsp;|&nbsp; <strong style="color:#CE93D8;">Partner</strong> = Tech/Software</td>
+            <td><code>AF: Lead Type</code></td>
+            <td><strong style="color:#E3AF4A;">Prospect</strong> = all org types except Marketing/PR/Agency &nbsp;|&nbsp; <strong style="color:#CE93D8;">Partner</strong> = Marketing/PR/Agency</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#64B4FF;">P&amp;L Line</strong></td>
+            <td>Auto-derived from Products Discussed (or QR qualification answer)</td>
+            <td><code>AG: P&amp;L Line</code></td>
+            <td><strong style="color:#E3AF4A;">Ministry SaaS</strong> = default for all prospects &nbsp;|&nbsp; <strong style="color:#64B4FF;">Ads &amp; Others</strong> = triggered by "Advertise on PRAY" product, QR "I want to advertise" answer, or meeting with Dustin Sisney only</td>
           </tr>
           <tr>
             <td>Estimated Revenue Range</td>
@@ -1219,10 +1265,13 @@
       </div>
 
       <div class="callout" style="margin-top: 12px; border-left: 3px solid #CE93D8;">
-        <strong style="color: #CE93D8;">P&amp;L Routing by Company Type</strong> (auto-derived from Organization Type dropdown):<br>
-        <strong style="color:#E3AF4A;">Ministry SaaS P&amp;L</strong> &mdash; Radio Broadcasting, Television/Film Production, Church/Ministry, Christian Nonprofit, Digital Media/Podcast, Publishing, Education. Prospects for SuperFunnel, AI Chat, and PRAYStudio Production.<br>
-        <strong style="color:#64B4FF;">Ads P&amp;L</strong> &mdash; Marketing/PR/Agency. Prospects for advertising and sponsorship products on pray.com.<br>
-        <strong style="color:#CE93D8;">Partner</strong> &mdash; Tech/Software. Companies offering services to faith-based organizations. Not prospects &mdash; route to BD/Partnerships for co-marketing, integrations, or referral opportunities.
+        <strong style="color: #CE93D8;">Lead Type &amp; P&amp;L Routing:</strong><br><br>
+        <strong>Lead Type</strong> (from Organization Type):<br>
+        <strong style="color:#E3AF4A;">Prospect</strong> &mdash; All organization types except Marketing/PR/Agency.<br>
+        <strong style="color:#CE93D8;">Partner</strong> &mdash; Marketing/PR/Agency. Route to BD/Partnerships for co-marketing, integrations, or referral opportunities.<br><br>
+        <strong>P&amp;L Line</strong> (from Products Discussed or qualification question):<br>
+        <strong style="color:#E3AF4A;">Ministry SaaS</strong> &mdash; Default for all Prospects. Faith-based orgs wanting to broadcast on PRAY app. Prospects for SuperFunnel, AI Chat, and PRAYStudio Production.<br>
+        <strong style="color:#64B4FF;">Ads &amp; Others</strong> &mdash; Triggered when Products Discussed = "Advertise on PRAY", or QR qualification answer = "I want to advertise on PRAY app", or meeting booked only with Dustin Sisney (Ads AE). Prospects for advertising and sponsorship products on pray.com.
       </div>
 
       <div class="callout" style="margin-top: 12px;">
@@ -1247,14 +1296,15 @@
       <!-- ===== CLASSIFICATION MATRIX ===== -->
       <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 28px; margin-bottom: 24px;">
         <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px;">Scoring Model</h3>
-        <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 20px;">Company Type determines P&amp;L routing. Demographics + Buy Intent determine the tier.</p>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 20px;">Organization Type determines <strong>Lead Type</strong> (Prospect/Partner). Products Discussed determines <strong>P&amp;L</strong>. Demographics + Buy Intent determine the tier.</p>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
           <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 18px;">
-            <p style="font-size: 11px; font-weight: 700; color: #CE93D8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Primary Categorizer: Company Type</p>
+            <p style="font-size: 11px; font-weight: 700; color: #CE93D8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Lead Type (from Org Type) &amp; P&amp;L (from Products)</p>
             <ul style="list-style: none; font-size: 12.5px; color: rgba(255,255,255,0.65); line-height: 1.8;">
-              <li><strong style="color:#E3AF4A;">MINISTRY SaaS P&amp;L</strong> = Faith-based orgs that want to broadcast content on PRAY app (churches, ministries, broadcasters, nonprofits)</li>
-              <li><strong style="color:#64B4FF;">ADS P&amp;L</strong> = Brands that want to advertise on pray.com (consumer brands, agencies, advertisers)</li>
-              <li><strong style="color:#CE93D8;">PARTNER</strong> = Companies that offer services to faith-based organizations (tech vendors, consultants, service providers)</li>
+              <li><strong style="color:#E3AF4A;">PROSPECT</strong> = All org types except Marketing/PR/Agency</li>
+              <li><strong style="color:#CE93D8;">PARTNER</strong> = Marketing/PR/Agency &rarr; route to BD/Partnerships</li>
+              <li style="margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;"><strong style="color:#E3AF4A;">Ministry SaaS P&amp;L</strong> = Default for all prospects</li>
+              <li><strong style="color:#64B4FF;">Ads &amp; Others P&amp;L</strong> = Products Discussed = "Advertise on PRAY"</li>
             </ul>
           </div>
           <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 18px;">
@@ -1381,10 +1431,9 @@
           <p style="font-size: 11px; font-weight: 700; color: #CE93D8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Service provider to faith orgs</p>
           <p class="criteria">Not a prospect &mdash; a potential partner. Companies that sell services <em>to</em> ministries and faith-based organizations.</p>
           <ul>
-            <li>Company Type = <strong style="color:#CE93D8;">Partner</strong> (tech vendor, consultant, agency serving faith orgs)</li>
+            <li>Organization Type = <strong style="color:#CE93D8;">Marketing/PR/Agency</strong> &rarr; Lead Type auto-set to Partner</li>
             <li>Not a ministry, church, broadcaster, or advertiser themselves</li>
-            <li>Offers tools, platforms, or services that complement PRAY.COM</li>
-            <li>Examples: church management software, donation platforms, streaming services, creative agencies for ministries</li>
+            <li>Offers marketing, PR, or agency services that complement PRAY.COM</li>
             <li>Could represent co-marketing, integration, or referral opportunities</li>
           </ul>
           <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(206,147,216,0.15);">
@@ -1431,7 +1480,7 @@
               <td><strong style="color:rgba(255,255,255,0.4);">DISQUALIFIED</strong></td>
             </tr>
             <tr>
-              <td><strong style="color:#CE93D8;">SERVICE PROVIDER</strong><br><span style="font-size:11px; color:rgba(255,255,255,0.4);">Serves faith orgs, not a prospect</span></td>
+              <td><strong style="color:#CE93D8;">MARKETING/PR/AGENCY</strong><br><span style="font-size:11px; color:rgba(255,255,255,0.4);">Partner, not a prospect</span></td>
               <td colspan="3" style="text-align:center;"><strong style="color:#CE93D8;">PARTNER</strong><br><span style="font-size:11px; color:rgba(255,255,255,0.4);">Route to BD / Partnerships &mdash; regardless of intent level</span></td>
             </tr>
           </tbody>
@@ -1444,7 +1493,7 @@
         <strong>HOT &rarr; MOMENTUM:</strong> If a HOT lead is still at NRB and we can get an in-person meeting scheduled.<br>
         <strong>WARM &rarr; DISQUALIFIED:</strong> If enrichment confirms they don't fit ICP (wrong org type, no budget, no alignment).<br>
         <strong>DISQUALIFIED &rarr; WARM:</strong> If they engage with 3+ newsletter emails or reach out proactively.<br>
-        <strong style="color:#CE93D8;">Any &rarr; PARTNER:</strong> If we discover they offer services to faith-based orgs (not a prospect themselves). Route to BD / Partnerships.<br>
+        <strong style="color:#CE93D8;">Any &rarr; PARTNER:</strong> If Org Type is set to Marketing/PR/Agency. Route to BD / Partnerships.<br>
         <strong style="color:#CE93D8;">PARTNER &rarr; HOT/WARM:</strong> If a partner also turns out to be a prospect for PRAY products (e.g., they also run a ministry), create a second contact record or dual-tag.<br>
         <em style="color: rgba(255,255,255,0.5);">Classification is dynamic &mdash; review daily during NRB, weekly for 4 weeks after.</em>
       </div>
