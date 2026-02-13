@@ -1423,6 +1423,7 @@
                 <option value="Hot">Hot — Meet after NRB (qualified, no urgency)</option>
                 <option value="Warm">Warm — Need to qualify / not ready</option>
                 <option value="Disqualified">Disqualified — Not a fit</option>
+                <option value="Partner">Partner — Offers services to faith orgs</option>
               </select>
             </div>
           </div>
@@ -1435,6 +1436,17 @@
                 <option value="Attendee, no meeting, qualified">Attendee — no meeting, qualified</option>
                 <option value="Attendee with interview booked">Attendee — interview booked</option>
                 <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-item">
+            <div class="field-label">Company Type <span style="font-weight:400;color:rgba(255,255,255,0.35);">(P&amp;L)</span></div>
+            <div class="field-value">
+              <select id="leadCompanyType">
+                <option value="" disabled selected>Select</option>
+                <option value="Ministry SaaS">Ministry / Faith-Based Org (Ministry SaaS P&amp;L)</option>
+                <option value="Ads">Brand / Advertiser (Ads P&amp;L)</option>
+                <option value="Partner">Service Provider to Faith Orgs (Partner)</option>
               </select>
             </div>
           </div>
@@ -2584,6 +2596,7 @@
         meeting_quality: currentRating,
         intent_level: document.getElementById('leadIntentLevel').value || (captureMode === 'audio' ? 'Momentum' : 'Warm'),
         scenario: document.getElementById('leadScenario').value || '',
+        company_type: document.getElementById('leadCompanyType').value || '',
         lifecycle_stage: document.getElementById('leadLifecycle').value || (captureMode === 'audio' ? 'SQL' : 'MQL'),
         previous_interactions: document.getElementById('leadPreviousInteractions').value || 'New Lead',
         org_description: document.getElementById('leadOrgDescription').value || '',
@@ -2678,6 +2691,7 @@
           capture_method: leadData.nrb_capture_method,
           intent_level: leadData.intent_level,
           scenario: leadData.scenario,
+          company_type: leadData.company_type,
           lifecycle_stage: leadData.lifecycle_stage,
           previous_interactions: leadData.previous_interactions,
           org_description: leadData.org_description,

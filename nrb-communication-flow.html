@@ -530,7 +530,7 @@
         <div class="pipeline-step">
           <span class="pipeline-num">3</span>
           <h3>Classify</h3>
-          <p>Tier the lead using demographics + buy intent: MOMENTUM (meeting at NRB), HOT (meeting after NRB), WARM (need to qualify), or DISQUALIFIED.</p>
+          <p>Categorize by Company Type (Ministry SaaS / Ads / Partner), then tier using demographics + buy intent: MOMENTUM, HOT, WARM, DISQUALIFIED, or PARTNER.</p>
         </div>
         <div class="pipeline-step">
           <span class="pipeline-num">4</span>
@@ -623,6 +623,7 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = badge_scan</li>
           <li>intent_level = low</li>
+          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
           <li>scenario = walk_by_scan</li>
           <li>nrb_conversation = false</li>
           <li>nrb_demo_interest = false</li>
@@ -727,6 +728,7 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = photo_capture / manual_entry / audio_note</li>
           <li>intent_level = medium</li>
+          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
           <li>scenario = ae_conversation</li>
           <li>conversation_summary = [text]</li>
           <li>ae_owner = [AE name]</li>
@@ -841,6 +843,7 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = qr_form</li>
           <li>intent_level = medium_high</li>
+          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
           <li>scenario = qr_self_service</li>
           <li>meeting_requested = true</li>
           <li>preferred_time = [value]</li>
@@ -965,6 +968,7 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = audio_note / manual_entry</li>
           <li>intent_level = high</li>
+          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
           <li>scenario = demo_conversation</li>
           <li>demo_given = true/false</li>
           <li>meeting_quality = [1-5]</li>
@@ -1093,6 +1097,7 @@
           <li>lead_source = nrb_2026</li>
           <li>capture_method = prebooked</li>
           <li>intent_level = high</li>
+          <li>company_type = [Ministry SaaS / Ads / Partner]</li>
           <li>scenario = prebooked_meeting</li>
           <li>meeting_status = completed/no_show</li>
           <li>meeting_notes = [text]</li>
@@ -1139,6 +1144,12 @@
             <td>Lead Capture Tool dropdown + domain lookup</td>
             <td><code>U: Organization Description</code></td>
             <td>Radio Broadcasting, Television/Film, Church/Ministry, Christian Nonprofit, Digital Media/Podcast, Tech/Software, Publishing, Marketing/PR/Agency, Education</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#CE93D8;">Company Type (P&amp;L)</strong></td>
+            <td>Lead Capture Tool dropdown &mdash; primary categorizer</td>
+            <td><code>AF: Company Type</code></td>
+            <td><strong style="color:#E3AF4A;">Ministry SaaS</strong> = faith-based org wanting to broadcast on PRAY app &nbsp;|&nbsp; <strong style="color:#64B4FF;">Ads</strong> = brand wanting to advertise on pray.com &nbsp;|&nbsp; <strong style="color:#CE93D8;">Partner</strong> = service provider to faith orgs</td>
           </tr>
           <tr>
             <td>Estimated Revenue Range</td>
@@ -1207,6 +1218,13 @@
         <strong style="color: #4CAF50;">QUALIFIED Lead Definition:</strong> A ministry that distributes their content via at least one <strong>traditional paid outlet</strong> (Broadcast TV, Broadcast Radio, or Satellite Radio), OR spends over <strong>$60K/year</strong> on marketing and content distribution. The Lead Capture Tool automatically flags QUALIFIED leads when TV/Radio distribution channels are selected.
       </div>
 
+      <div class="callout" style="margin-top: 12px; border-left: 3px solid #CE93D8;">
+        <strong style="color: #CE93D8;">P&amp;L Routing by Company Type:</strong><br>
+        <strong style="color:#E3AF4A;">Ministry SaaS P&amp;L</strong> &mdash; Faith-based organizations (churches, ministries, broadcasters, nonprofits) that want to broadcast their content on the PRAY app. These are prospects for SuperFunnel, AI Chat, and PRAYStudio Production.<br>
+        <strong style="color:#64B4FF;">Ads P&amp;L</strong> &mdash; Brands and advertisers that want to reach the PRAY.COM audience. These are prospects for advertising and sponsorship products.<br>
+        <strong style="color:#CE93D8;">Partner</strong> &mdash; Companies that offer services to faith-based organizations (tech vendors, consultants, agencies). Not prospects &mdash; route to BD/Partnerships for co-marketing, integrations, or referral opportunities.
+      </div>
+
       <div class="callout" style="margin-top: 12px;">
         <strong>Enrichment Priority:</strong> For Scenario 4 (demo conversations) and Scenario 5 (pre-booked), enrich within 2 hours of capture. For Scenario 1 (badge scan) and Scenario 2 (AE conversations), enrich within same business day. For Scenario 3 (QR self-service), auto-enrich what you can from form data + domain, full enrichment within 24 hours.
       </div>
@@ -1222,15 +1240,23 @@
         <div class="scenario-number" style="background: linear-gradient(135deg, #CE93D8, #9C27B0);">D</div>
         <div class="scenario-title">
           <h2>Lead Classification Decision Tree</h2>
-          <p>Every lead is tiered using two axes: <strong>demographics</strong> (are they qualified?) and <strong>buy intent</strong> (are they ready?). This determines whether we pursue a meeting at NRB, after NRB, or not at all.</p>
+          <p>Every lead is first categorized by <strong>Company Type</strong> (Ministry SaaS P&amp;L, Ads P&amp;L, or Partner), then tiered using <strong>demographics</strong> &times; <strong>buy intent</strong>. This determines the P&amp;L owner, whether we pursue a meeting at NRB, after NRB, or route to partnerships.</p>
         </div>
       </div>
 
       <!-- ===== CLASSIFICATION MATRIX ===== -->
       <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 28px; margin-bottom: 24px;">
-        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px;">Two-Axis Scoring Model</h3>
-        <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 20px;">Demographics tell us <em>if</em> they're a fit. Buy intent tells us <em>when</em> to act.</p>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px;">Scoring Model</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 20px;">Company Type determines P&amp;L routing. Demographics + Buy Intent determine the tier.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 18px;">
+            <p style="font-size: 11px; font-weight: 700; color: #CE93D8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Primary Categorizer: Company Type</p>
+            <ul style="list-style: none; font-size: 12.5px; color: rgba(255,255,255,0.65); line-height: 1.8;">
+              <li><strong style="color:#E3AF4A;">MINISTRY SaaS P&amp;L</strong> = Faith-based orgs that want to broadcast content on PRAY app (churches, ministries, broadcasters, nonprofits)</li>
+              <li><strong style="color:#64B4FF;">ADS P&amp;L</strong> = Brands that want to advertise on pray.com (consumer brands, agencies, advertisers)</li>
+              <li><strong style="color:#CE93D8;">PARTNER</strong> = Companies that offer services to faith-based organizations (tech vendors, consultants, service providers)</li>
+            </ul>
+          </div>
           <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 18px;">
             <p style="font-size: 11px; font-weight: 700; color: #E3AF4A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">Axis 1: Demographics (Qualified?)</p>
             <ul style="list-style: none; font-size: 12.5px; color: rgba(255,255,255,0.65); line-height: 1.8;">
@@ -1348,6 +1374,29 @@
             </ul>
           </div>
         </div>
+
+        <!-- PARTNER -->
+        <div class="branch" style="border-color: rgba(206,147,216,0.25);">
+          <h4 style="color: #CE93D8;">PARTNER</h4>
+          <p style="font-size: 11px; font-weight: 700; color: #CE93D8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Service provider to faith orgs</p>
+          <p class="criteria">Not a prospect &mdash; a potential partner. Companies that sell services <em>to</em> ministries and faith-based organizations.</p>
+          <ul>
+            <li>Company Type = <strong style="color:#CE93D8;">Partner</strong> (tech vendor, consultant, agency serving faith orgs)</li>
+            <li>Not a ministry, church, broadcaster, or advertiser themselves</li>
+            <li>Offers tools, platforms, or services that complement PRAY.COM</li>
+            <li>Examples: church management software, donation platforms, streaming services, creative agencies for ministries</li>
+            <li>Could represent co-marketing, integration, or referral opportunities</li>
+          </ul>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(206,147,216,0.15);">
+            <p style="font-size: 11px; font-weight: 700; color: #CE93D8; text-transform: uppercase;">Sequence:</p>
+            <ul style="list-style: none; font-size: 11.5px; color: rgba(255,255,255,0.55); margin-top: 6px; line-height: 1.7;">
+              <li><strong style="color:#CE93D8;">Same day:</strong> Personal email from AE &mdash; "Great connecting at NRB. I'd love to explore how we could work together."</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +3:</strong> Share PRAY.COM partner info or integration overview</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Day +7:</strong> Route to BD / Partnerships team for evaluation</li>
+              <li><strong style="color:rgba(255,255,255,0.75);">Ongoing:</strong> Monthly partner newsletter + co-marketing opportunities</li>
+            </ul>
+          </div>
+        </div>
       </div>
 
       <!-- ===== QUICK REFERENCE MATRIX ===== -->
@@ -1381,6 +1430,10 @@
               <td><strong style="color:rgba(255,255,255,0.4);">DISQUALIFIED</strong></td>
               <td><strong style="color:rgba(255,255,255,0.4);">DISQUALIFIED</strong></td>
             </tr>
+            <tr>
+              <td><strong style="color:#CE93D8;">SERVICE PROVIDER</strong><br><span style="font-size:11px; color:rgba(255,255,255,0.4);">Serves faith orgs, not a prospect</span></td>
+              <td colspan="3" style="text-align:center;"><strong style="color:#CE93D8;">PARTNER</strong><br><span style="font-size:11px; color:rgba(255,255,255,0.4);">Route to BD / Partnerships &mdash; regardless of intent level</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -1391,6 +1444,8 @@
         <strong>HOT &rarr; MOMENTUM:</strong> If a HOT lead is still at NRB and we can get an in-person meeting scheduled.<br>
         <strong>WARM &rarr; DISQUALIFIED:</strong> If enrichment confirms they don't fit ICP (wrong org type, no budget, no alignment).<br>
         <strong>DISQUALIFIED &rarr; WARM:</strong> If they engage with 3+ newsletter emails or reach out proactively.<br>
+        <strong style="color:#CE93D8;">Any &rarr; PARTNER:</strong> If we discover they offer services to faith-based orgs (not a prospect themselves). Route to BD / Partnerships.<br>
+        <strong style="color:#CE93D8;">PARTNER &rarr; HOT/WARM:</strong> If a partner also turns out to be a prospect for PRAY products (e.g., they also run a ministry), create a second contact record or dual-tag.<br>
         <em style="color: rgba(255,255,255,0.5);">Classification is dynamic &mdash; review daily during NRB, weekly for 4 weeks after.</em>
       </div>
     </div>
@@ -1410,7 +1465,7 @@
       </div>
 
       <div class="callout" style="margin-bottom: 24px; border-left-color: #FF6B35;">
-        <strong style="color: #FF6B35;">Who receives it:</strong> HOT + WARM leads + <strong>HubSpot Engaged Prospects Database</strong> (not MOMENTUM &mdash; they get personalized AE outreach. Not DISQUALIFIED &mdash; they get the generic newsletter only).<br>
+        <strong style="color: #FF6B35;">Who receives it:</strong> HOT + WARM leads + <strong>HubSpot Engaged Prospects Database</strong> (not MOMENTUM &mdash; they get personalized AE outreach. Not DISQUALIFIED &mdash; they get the generic newsletter only. Not PARTNER &mdash; they get the partnership sequence).<br>
         <strong style="color: #FF6B35;">When it starts:</strong> Day +1 after NRB starts (Feb 18, 2026). One email per day for 3 days.<br>
         <strong style="color: #FF6B35;">Sent from:</strong> The assigned AE's email (personal, not marketing blast). Replies go directly to the AE.<br>
         <strong style="color: #FF6B35;">Full email templates:</strong> <a href="nrb-product-spotlight-emails.html" style="color:#E3AF4A;">View all 3 emails &rarr;</a>
@@ -1484,7 +1539,8 @@
       </div>
 
       <div class="callout" style="margin-top: 20px;">
-        <strong>MOMENTUM leads skip the spotlight.</strong> They receive personalized AE outreach throughout NRB and immediately post-event. Their sequence is already tailored proposals and executive escalation &mdash; generic product emails would dilute that urgency.
+        <strong>MOMENTUM leads skip the spotlight.</strong> They receive personalized AE outreach throughout NRB and immediately post-event. Their sequence is already tailored proposals and executive escalation &mdash; generic product emails would dilute that urgency.<br><br>
+        <strong style="color:#CE93D8;">PARTNER leads skip the spotlight.</strong> They receive a dedicated partnership sequence &mdash; same-day intro email, Day +3 partner info, Day +7 route to BD/Partnerships team. Product spotlight emails aren't relevant since they serve faith orgs rather than being prospects.
       </div>
     </div>
   </section>
